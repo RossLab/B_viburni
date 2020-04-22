@@ -70,16 +70,16 @@ Get assembly metrics
 	/ceph/software/scripts/scaffold_stats.pl -t 200 1000 -d " " -f pseudococcus_viburni.redbean.raw.fa > pseudococcus_viburni.redbean.raw.stats
 
 Stats for raw
- For scaffolds longer than 1000 bp:
-  * Num 2861
-  * Span 439642885
-  * Min 1394
-  * Mean 153667
-  * N50 816797
-  * NumN50 164
-  * GC 0.336
- Busco (insecta) C:83.1%[S:82.0%,D:1.1%],F:6.7%,M:10.2%,n:1367
- Busco (hemiptera) C:85.7%[S:83.4%,D:2.3%],F:2.2%,M:12.1%,n:2510   
+  * For scaffolds longer than 1000 bp:
+  	- Num 2861
+  	- Span 439642885
+  	- Min 1394
+  	- Mean 153667
+  	- N50 816797
+  	- NumN50 164
+  	- GC 0.336
+  * Busco (insecta) C:83.1%[S:82.0%,D:1.1%],F:6.7%,M:10.2%,n:1367
+  * Busco (hemiptera) C:85.7%[S:83.4%,D:2.3%],F:2.2%,M:12.1%,n:2510   
 
 ## 7. Polishing the genome
 
