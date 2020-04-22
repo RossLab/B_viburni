@@ -1,7 +1,5 @@
 
-# B-chr in Pseudococcus viburni: 1. PacBio assembly
-
-/ceph/software/utilities/sge/qlogin -pe smp 16 -N busco -l h=c2
+# Generating a __P.viburni__ assembly
 
 Start date: 08.10.2019, restarted 21.04.2020
 
