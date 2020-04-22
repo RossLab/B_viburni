@@ -69,7 +69,7 @@ Get assembly metrics
 
 	/ceph/software/scripts/scaffold_stats.pl -t 200 1000 -d " " -f pseudococcus_viburni.redbean.raw.fa > pseudococcus_viburni.redbean.raw.stats
 
-Stats for raw
+Stats for raw:
   * For scaffolds longer than 1000 bp:
   	- Num 2861
   	- Span 439642885
@@ -90,16 +90,16 @@ Polish with minimap2 v2.17-r941 (conda env afilia)
 
 	export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 16 -i pseudococcus_viburni.redbean.cns.fa -o pseudococcus_viburni.redbean.cns.busco.hemiptera -f -l hemiptera_odb10
 
-Stats for cns
-	*	For scaffolds longer than 1000 bp:
-		*	Num 2852
-		*	Span 436032832
-		*	Min 1041
-		*	Mean 152886
-		*	N50 816708
-		*	NumN50 163
-		*	GC 0.336  
-	*	Busco (hemiptera) C:90.3%[S:87.8%,D:2.5%],F:1.4%,M:8.3%,n:2510
+Stats for cns:
+  * For scaffolds longer than 1000 bp:
+	-	Num 2852
+	-	Span 436032832
+	-	Min 1041
+	-	Mean 152886
+	-	N50 816708
+	-	NumN50 163
+	-	GC 0.336  
+  * Busco (hemiptera) C:90.3%[S:87.8%,D:2.5%],F:1.4%,M:8.3%,n:2510
 
 Additional polishment using short reads
 
@@ -113,13 +113,13 @@ Additional polishment using short reads
 
 	export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 16 -i pseudococcus_viburni.redbean.cns.srp.fa -o pseudococcus_viburni.redbean.cns.srp.busco.hemiptera -f -l hemiptera_odb10
 
-Stats for cns-srp
-	*	For scaffolds longer than 1000 bp:
-		*	Num 2848
-		*	Span 422785487
-		*	Min 1010
-		*	Mean 148449
-		*	N50 797178
-		*	NumN50 163
-		*	GC 0.336
-	* C:91.7%[S:88.6%,D:3.1%],F:1.0%,M:7.3%,n:2510
+Stats for cns-srp:
+  * For scaffolds longer than 1000 bp:
+	-	Num 2848
+	-	Span 422785487
+	-	Min 1010
+	-	Mean 148449
+	-	N50 797178
+	-	NumN50 163
+	-	GC 0.336
+* Busco (hemiptera) C:91.7%[S:88.6%,D:3.1%],F:1.0%,M:7.3%,n:2510
