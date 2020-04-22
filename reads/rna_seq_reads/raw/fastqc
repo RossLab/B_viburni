@@ -1,0 +1,35 @@
+#!/bin/bash
+
+#$ -V
+#$ -cwd
+#$ -j y
+#$ -o fastqc.$JOB_ID.log
+ 
+# Submit using:
+#  qsub -pe smp 8
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/13F_1/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/13F_2/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/13F_3/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/13M_1/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/13M_2/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/13M_3/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/13M_4/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/15F_1/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/15F_2/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/15F_3/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/15M_1/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/15M_2/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/15M_3/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/21F_1/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/21F_2/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/21F_3/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/21M_1/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/21M_2/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/21M_3/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/21M_4/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/4F_1/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/4F_2/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/4F_3/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/4M_1/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/4M_2/*fastq.gz
+fastqc --nogroup /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/4M_3/*fastq.gz

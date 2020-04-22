@@ -1,0 +1,9 @@
+Module	Section	Sample Name	Source
+FastQC	all_sections	180608_A00291_0042_BH3CC3DRXX_2_11372RL0001L01_2	/data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads/180608_A00291_0042_BH3CC3DRXX_2_11372RL0001L01_2_fastqc.zip
+FastQC	all_sections	180608_A00291_0042_BH3CC3DRXX_2_11372RL0002L01_2	/data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads/180608_A00291_0042_BH3CC3DRXX_2_11372RL0002L01_2_fastqc.zip
+FastQC	all_sections	PV_18-13.Illumina.350.trimmed_1	/data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1_fastqc.zip
+FastQC	all_sections	PV_18-13.Illumina.550.trimmed_2	/data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2_fastqc.zip
+FastQC	all_sections	180608_A00291_0042_BH3CC3DRXX_2_11372RL0001L01_1	/data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads/180608_A00291_0042_BH3CC3DRXX_2_11372RL0001L01_1_fastqc.zip
+FastQC	all_sections	PV_18-13.Illumina.550.trimmed_1	/data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1_fastqc.zip
+FastQC	all_sections	180608_A00291_0042_BH3CC3DRXX_2_11372RL0002L01_1	/data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads/180608_A00291_0042_BH3CC3DRXX_2_11372RL0002L01_1_fastqc.zip
+FastQC	all_sections	PV_18-13.Illumina.350.trimmed_2	/data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2_fastqc.zip
