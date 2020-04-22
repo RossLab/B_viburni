@@ -1,2 +1,2 @@
 # B_chr_in_P_viburni
- Characterising the B chromosome of __Pseudococcus viburni__
+ Characterising the B chromosome of *Pseudococcus viburni*
