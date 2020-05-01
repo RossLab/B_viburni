@@ -128,7 +128,7 @@ Stats for cns-srp:
 * Busco (insecta) C:93.0%[S:90.1%,D:2.9%],F:1.3%,M:5.7%,n:1367
 * Busco (arthropoda) C:94.5%[S:92.2%,D:2.3%],F:1.5%,M:4.0%,n:1013 
 
-## 8. Further polishing: 3x rounds with long reads, 2x rounds with Illumina reads
+## 8. Further polishing: 3x rounds with long reads, 1x rounds with Illumina reads
 
 Polish cns assembly 2 more times with minimap2
 
@@ -145,7 +145,7 @@ BUSCO for cns2 and 3:
 * C:90.2%[S:87.6%,D:2.6%],F:1.4%,M:8.4%,n:2510 (cns2)
 * C:90.6%[S:88.2%,D:2.4%],F:1.4%,M:8.0%,n:2510 (cns3)
 
-Polishing with short reads -- is racon better than wtpoa-cns? Let's do a first round with wtpoa-cns for now
+Polishing with short reads
 
 	bwa index pseudococcus_viburni.redbean.cns3.fa
 	bwa mem -t 32 pseudococcus_viburni.redbean.cns3.fa /data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz | samtools sort -O SAM -o /scratch/afilia/PV_18-13.Illumina.350.alignedtocns3.sorted.sam
