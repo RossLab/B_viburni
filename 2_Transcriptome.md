@@ -6,7 +6,7 @@
 	# raw reads
 	/data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812
 
-## 1. Raw reads
+## 1. Raw RNAseq reads
 
 	# Novaseq (/data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads)
 	ln -s /data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812/13F_1/190805_A00291_0195_AHKLMLDMXX_2_11791RL0015L01_1.fastq.gz 13F_1_1.fastq.gz
