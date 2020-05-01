@@ -1,8 +1,6 @@
 
 # Coverage analysis
 
-Start date: 10.10.2019
-
 	# working directory	
 	/data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads
 
