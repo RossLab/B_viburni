@@ -1,0 +1,15 @@
+sample	condition
+04M_1	B+
+04M_2	B+
+04M_3	B+
+13M_1	B+
+13M_2	B+
+13M_3	B+
+13M_4	B+
+15M_1	B-
+15M_2	B-
+15M_3	B-
+21M_1	B-
+21M_2	B-
+21M_3	B-
+21M_4	B-

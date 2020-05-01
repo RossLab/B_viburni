@@ -1,0 +1,230 @@
+rm(list=ls())
+ls()
+library(dplyr)
+library(tidyr)
+library(Rmisc)
+library(ggplot2)
+library(readr)
+library(lattice)
+library(grid)
+library(gridExtra)
+
+# install Sleuth
+#source("http://bioconductor.org/biocLite.R")
+#biocLite("rhdf5")
+# had to xcode-select --install 
+#install.packages("devtools")
+#devtools::install_github("pachterlab/sleuth")
+library(sleuth)
+
+# results from v2
+setwd('/Users/agarcia/Documents/genomics/B_chr_viburni/scott_miniproject/')
+de.transcripts.v2 <- read.table(file.path("kallisto/output_v2/DEgenes_viburniv2.txt"),
+                    header = T,stringsAsFactors = F)
+summary.v2 <- read.table(file.path("kallisto/output_v2/KallistoSummary_viburniv2.txt"),
+                          header = T,stringsAsFactors = F)
+summary.v2.tpm <- summary.v2[c(1,2,4)]
+summary.v2.tpm$tpm <- as.inter(summary.v2.tpm$tpm)
+str(summary.v2.tpm)
+summary.v2.counts <- summary.v2[c(1,2,3)]
+summary.v2.tpm.wide <- spread(summary.v2.tpm, sample, tpm)
+summary.v2.counts.wide <- spread(summary.v2.counts, sample, est_counts)
+
+# change column names (we don't want a column name starting with a number and we know they are all males)
+colnames(summary.v2.tpm.wide)[1] <- "transcript"
+colnames(summary.v2.tpm.wide)[2] <- "PV_04_1"
+colnames(summary.v2.tpm.wide)[3] <- "PV_04_2"
+colnames(summary.v2.tpm.wide)[4] <- "PV_04_3"
+colnames(summary.v2.tpm.wide)[5] <- "PV_13_1"
+colnames(summary.v2.tpm.wide)[6] <- "PV_13_2"
+colnames(summary.v2.tpm.wide)[7] <- "PV_13_3"
+colnames(summary.v2.tpm.wide)[8] <- "PV_13_4"
+colnames(summary.v2.tpm.wide)[9] <- "PV_15_1"
+colnames(summary.v2.tpm.wide)[10] <- "PV_15_2"
+colnames(summary.v2.tpm.wide)[11] <- "PV_15_3"
+colnames(summary.v2.tpm.wide)[12] <- "PV_21_1"
+colnames(summary.v2.tpm.wide)[13] <- "PV_21_2"
+colnames(summary.v2.tpm.wide)[14] <- "PV_21_3"
+colnames(summary.v2.tpm.wide)[15] <- "PV_21_4"
+
+colnames(summary.v2.counts.wide)[1] <- "transcript"
+colnames(summary.v2.counts.wide)[2] <- "PV_04_1"
+colnames(summary.v2.counts.wide)[3] <- "PV_04_2"
+colnames(summary.v2.counts.wide)[4] <- "PV_04_3"
+colnames(summary.v2.counts.wide)[5] <- "PV_13_1"
+colnames(summary.v2.counts.wide)[6] <- "PV_13_2"
+colnames(summary.v2.counts.wide)[7] <- "PV_13_3"
+colnames(summary.v2.counts.wide)[8] <- "PV_13_4"
+colnames(summary.v2.counts.wide)[9] <- "PV_15_1"
+colnames(summary.v2.counts.wide)[10] <- "PV_15_2"
+colnames(summary.v2.counts.wide)[11] <- "PV_15_3"
+colnames(summary.v2.counts.wide)[12] <- "PV_21_1"
+colnames(summary.v2.counts.wide)[13] <- "PV_21_2"
+colnames(summary.v2.counts.wide)[14] <- "PV_21_3"
+colnames(summary.v2.counts.wide)[15] <- "PV_21_4"
+
+# plot
+boxplot(log2(summary.v2.tpm.wide[c(-1)]), outline=T, notch=T, ylab="Log2(TPM)")
+
+# plot using ggplot (note that we have used the "long" dataset -- works better with ggplot)
+ggplot(summary.v2.tpm, aes(sample, log2(tpm))) + geom_boxplot(notch=T)
+
+# change low tpm values (tpm < 1) correponding to low (or no) expression transcripts to NA
+summary.v2.tpm.wide.ge1 <- summary.v2.tpm.wide
+summary.v2.tpm.wide.ge1[summary.v2.tpm.wide.ge1 < 1 ] <- NA
+head(summary.v2.tpm.wide.ge1)
+boxplot(log2(summary.v2.tpm.wide.ge1[c(-1)]), outline=T, notch=T, ylab="Log2(TPM)")
+
+# change to long format again for ggplot (tidyr again)
+summary.v2.tpm.long.ge1 <- gather(summary.v2.tpm.wide.ge1, sample, tpm, 2:15, factor_key=TRUE)
+nrow(summary.v2.tpm.long.ge1) - nrow(summary.v2.tpm)
+ggplot(summary.v2.tpm.long.ge1, aes(sample, log2(tpm))) + geom_boxplot(notch=T)
+#are non plotted values all NA? You can check with
+count(is.na(summary.v2.tpm.long.ge1))
+
+# examine correlation between samples. We are now interested in lowly expressed genes too so we'll use the previous wide dataset
+tpm.cor.plot <- cor(summary.v2.tpm.wide.ge1[c(-1)], method="spearman", use = "complete.obs") # for genes with tpm >1
+tpm.cor.plot <- cor(summary.v2.tpm.wide[c(-1)], method="spearman", use = "complete.obs") # for all genes
+
+library(corrplot)
+library(grDevices)
+library(RColorBrewer)
+mycolors <- colorRampPalette(brewer.pal(8, "Blues"))(1000)
+corrplot(tpm.cor.plot,method = "color",col=mycolors,order = "hclust", addrect = 4)
+
+# now let's analyse significant genes
+
+# first we are going to create means for B+ and B-. We'll use the wide format
+
+summary.v2.tpm.wide$B.plus.TPM <- rowMeans(subset(summary.v2.tpm.wide,select = c(PV_04_1,PV_04_2,PV_04_3,PV_13_1,PV_13_2,PV_13_3,PV_13_4)))
+summary.v2.tpm.wide$B.minus.TPM <- rowMeans(subset(summary.v2.tpm.wide,select = c(PV_15_1,PV_15_2,PV_15_3,PV_21_1,PV_21_2,PV_21_3,PV_21_4)))
+summary.v2.counts.wide$B.plus.counts <- round(rowMeans(subset(summary.v2.counts.wide,select = c(PV_04_1,PV_04_2,PV_04_3,PV_13_1,PV_13_2,PV_13_3,PV_13_4))),4)
+summary.v2.counts.wide$B.minus.counts <- round(rowMeans(subset(summary.v2.counts.wide,select = c(PV_15_1,PV_15_2,PV_15_3,PV_21_1,PV_21_2,PV_21_3,PV_21_4))),4)
+
+# count the total number of entries in the file. This will give us the total number of transcripts in our viburni transcriptome
+nrow(summary.v2.tpm.wide)
+
+# however, not all of them are reported in the de list
+de.transcripts.nona <- de.transcripts.v2[complete.cases(de.transcripts.v2),]
+View(de.transcripts.nona)
+colnames(de.transcripts.nona)[1] <- "transcript"
+nrow(de.transcripts.v2)-nrow(de.transcripts.nona)
+# the missing genes are those that do not have at least 5 estimated counts in at least 47% of the samples
+# we have a balanced design (50% of samples are B, 50% are no B), so these genes would likely be false positives 
+filtered.transcripts <- anti_join(summary.v2.counts.wide, de.transcripts.nona, by="transcript") # we can inspect the filtered genes here
+
+# how many transcripts show differential expression between B+/B- lines?
+de.transcripts.sign <- de.transcripts.nona[de.transcripts.nona$qval < 0.05,]
+nrow(de.transcripts.sign) # count of DE transcripts
+nrow(de.transcripts.sign)*100/nrow(de.transcripts.nona) # percentage of transcripts showing DE among transcripts that passed the sleuth filter
+nrow(de.transcripts.sign)*100/nrow(de.transcripts.v2) # percentage of transcripts showing DE among all transcripts
+# now let's look at TPM -- we need to merge the DE file with the TPM file
+de.transcripts.sign.qval.only <- de.transcripts.sign[c(1,3)] # let's keep transcript name and qval only
+summary.v2.tpm.wide.means.only <- summary.v2.tpm.wide[c(1,16,17)] # let's keep the means only in our TPM dataset
+de.transcripts.sign.tpm <- left_join(de.transcripts.sign.qval.only,summary.v2.tpm.wide.means.only,by="transcript") # merge both
+View(de.transcripts.sign.tpm)
+# we have a smaller subset of interesting genes now. We are probably not very interested in genes that have very low expression in both B+ and B-, so we are only going to keep genes that have TPM >= in either of them
+de.transcripts.sign.tpm.expr <- de.transcripts.sign.tpm[!(de.transcripts.sign.tpm$B.plus.TPM<1 & de.transcripts.sign.tpm$B.minus.TPM<1),]
+nrow(de.transcripts.sign.tpm.expr)
+# now we need to compute fold change. We are defining it as log2(B+/B-). We have a problem... what to do with 0 values to avoid -/+Inf?
+# we are going to set 1e-5 as our minimum TPM value. Any transcript with <1e-5 will be changed to 1e-
+
+de.transcripts.sign.tpm.expr$B.plus.TPM.corr <- ifelse(de.transcripts.sign.tpm.expr$B.plus.TPM > 1e-5,de.transcripts.sign.tpm.expr$B.plus.TPM,1e-5)
+de.transcripts.sign.tpm.expr$B.minus.TPM.corr <- ifelse(de.transcripts.sign.tpm.expr$B.minus.TPM > 1e-5,de.transcripts.sign.tpm.expr$B.minus.TPM,1e-5)
+de.transcripts.sign.tpm.expr$FC <- log2(de.transcripts.sign.tpm.expr$B.plus.TPM.corr/de.transcripts.sign.tpm.expr$B.minus.TPM.corr)
+View(de.transcripts.sign.tpm.expr)
+transcripts.overexpr.in.B <- de.transcripts.sign.tpm.expr[de.transcripts.sign.tpm.expr$FC > 2,]
+transcripts.overexpr.in.B.stringent <- de.transcripts.sign.tpm.expr[de.transcripts.sign.tpm.expr$FC > 10,]
+
+transcripts.underexpr.in.B <- de.transcripts.sign.tpm.expr[de.transcripts.sign.tpm.expr$FC < -2,]
+transcripts.underexpr.in.B.stringent <- de.transcripts.sign.tpm.expr[de.transcripts.sign.tpm.expr$FC < -10,]
+
+#how many of each class??
+nrow(transcripts.overexpr.in.B)
+nrow(transcripts.overexpr.in.B.stringent)
+nrow(transcripts.underexpr.in.B)
+nrow(transcripts.underexpr.in.B.stringent)
+
+# incorporate annotation information
+
+viburni_trinotate_annotation_scott <- read_csv("viburni_trinotate_annotation_scott.csv")
+viburni_trinotate_annotation_scott_reorder <- viburni_trinotate_annotation_scott[c(1,2,3,6,7,8,9,10,11,4,5)]
+nrow(viburni_trinotate_annotation_scott) # total number of transcripts that have survived the annotation pipeline (i.e. that look like real transcripts)
+viburni_trinotate_annotation_scott_not_annotated <- viburni_trinotate_annotation_scott_reorder[is.na(viburni_trinotate_annotation_scott_reorder$sprot_Top_BLASTX_hit) &
+                                                                                      is.na(viburni_trinotate_annotation_scott_reorder$sprot_Top_BLASTP_hit) &
+                                                                                        is.na(viburni_trinotate_annotation_scott_reorder$Pfam) &
+                                                                                        is.na(viburni_trinotate_annotation_scott_reorder$eggnog) &
+                                                                                        is.na(viburni_trinotate_annotation_scott_reorder$Kegg) &
+                                                                                        is.na(viburni_trinotate_annotation_scott_reorder$gene_ontology_BLASTX) &
+                                                                                        is.na(viburni_trinotate_annotation_scott_reorder$gene_ontology_BLASTP) &
+                                                                                        is.na(viburni_trinotate_annotation_scott_reorder$prot_id) &
+                                                                                        is.na(viburni_trinotate_annotation_scott_reorder$prot_coords),] # total number of transcripts that haven't been annotated after the pipeline
+
+viburni_trinotate_annotation_scott_annotated <- anti_join(viburni_trinotate_annotation_scott,viburni_trinotate_annotation_scott_not_annotated) # total number of transcripts with some form of annotation
+
+# combine them with your datasets
+transcripts.overexpr.in.B.stringent_annotated <- merge(transcripts.overexpr.in.B.stringent,viburni_trinotate_annotation_scott_annotated,by=c("transcript"))
+transcripts.overexpr.in.B_annotated <- merge(transcripts.overexpr.in.B,viburni_trinotate_annotation_scott_annotated,by=c("transcript"))
+transcripts.underexpr.in.B.stringent_annotated <- merge(transcripts.underexpr.in.B.stringent,viburni_trinotate_annotation_scott_annotated,by=c("transcript"))
+transcripts.underexpr.in.B_annotated <- merge(transcripts.underexpr.in.B,viburni_trinotate_annotation_scott_annotated,by=c("transcript"))
+
+nrow(transcripts.overexpr.in.B_annotated)
+View(transcripts.overexpr.in.B.stringent_annotated)
+nrow(transcripts.underexpr.in.B_annotated)
+nrow(transcripts.underexpr.in.B.stringent_annotated)
+
+# GO analysis
+
+# the background population will be that for which a test could be computed (genes not included in sleuth are irrelevant for this kind of analysis)
+#write.csv(de.transcripts.nona[c(1)], '/Users/agarcia/Documents/genomics/B_chr_viburni/scott_miniproject/go/background.pop.scott.csv')
+#write.csv(transcripts.overexpr.in.B[c(1)], '/Users/agarcia/Documents/genomics/B_chr_viburni/scott_miniproject/go/b_overtranscripts.csv')
+#write.csv(transcripts.underexpr.in.B[c(1)], '/Users/agarcia/Documents/genomics/B_chr_viburni/scott_miniproject/go/b_undertranscripts.in.B.csv')
+
+# how many have GO terms?
+go_annotations <- read_delim("go_annotations.txt", "\t", escape_double = FALSE, col_names = FALSE,  trim_ws = TRUE)
+colnames(go_annotations)[1] <- "transcript"
+colnames(go_annotations)[2] <- "GO"
+
+de.transcripts.nona.with.GO <- merge(de.transcripts.nona,go_annotations,by="transcript")
+transcripts.overexpr.in.B.stringent.with.GO <- merge(transcripts.overexpr.in.B.stringent,go_annotations,by="transcript")
+nrow(transcripts.overexpr.in.B.stringent.with.GO)
+
+# you can export the files to an excel spreadsheet
+#write.csv(transcripts.overexpr.in.B_annotated, "/Users/path/to/your/folder/transcripts.overexpr.in.B_annotated_stringent.csv")
+
+
+# repeat steps before to generate a file with all transcripts (de or not) to make a volcano plot
+
+de.transcripts.nona.plot <- de.transcripts.nona[c(1,3)]
+de.transcripts.nona.tpm.plot <- left_join(de.transcripts.nona.plot,summary.v2.tpm.wide.means.only,by="transcript") # merge both
+
+de.transcripts.nona.tpm.plot$B.plus.TPM.corr <- ifelse(de.transcripts.nona.tpm.plot$B.plus.TPM > 1e-5,de.transcripts.nona.tpm.plot$B.plus.TPM,1e-5)
+de.transcripts.nona.tpm.plot$B.minus.TPM.corr <- ifelse(de.transcripts.nona.tpm.plot$B.minus.TPM > 1e-5,de.transcripts.nona.tpm.plot$B.minus.TPM,1e-5)
+de.transcripts.nona.tpm.plot$FC <- log2(de.transcripts.nona.tpm.plot$B.plus.TPM.corr/de.transcripts.nona.tpm.plot$B.minus.TPM.corr)
+
+de.transcripts.nona.tpm.plot$info <- as.factor(de.transcripts.nona.tpm.plot$qval < 0.05)
+de.transcripts.nona.tpm.plot$info <- ifelse(de.transcripts.nona.tpm.plot$qval < 0.05, "sign", "NS")
+de.transcripts.nona.tpm.plot$info <- ifelse((de.transcripts.nona.tpm.plot$info != "NS" & de.transcripts.nona.tpm.plot$FC >= 2),"over2",
+                                            de.transcripts.nona.tpm.plot$info)
+de.transcripts.nona.tpm.plot$info <- ifelse((de.transcripts.nona.tpm.plot$info != "NS" & de.transcripts.nona.tpm.plot$FC <= -2),"under2",
+                                            de.transcripts.nona.tpm.plot$info)
+
+de.transcripts.nona.tpm.plot$info <- ifelse((de.transcripts.nona.tpm.plot$info == "over2" & de.transcripts.nona.tpm.plot$FC >= 10),"over10",
+                                            de.transcripts.nona.tpm.plot$info)
+de.transcripts.nona.tpm.plot$info <- ifelse((de.transcripts.nona.tpm.plot$info == "under2" & de.transcripts.nona.tpm.plot$FC <= -10),"under10",
+                                            de.transcripts.nona.tpm.plot$info)
+
+
+ggplot(de.transcripts.nona.tpm.plot, aes(x = FC, y = -log(qval))) +
+  geom_hline(yintercept=-log(0.05)) +
+  geom_vline(xintercept=(2)) +
+  geom_vline(xintercept=(10)) +
+  geom_vline(xintercept=(-2)) +
+  geom_vline(xintercept=(-10)) +
+  geom_point(aes(colour=info),size=0.3,alpha=0.3) +
+  scale_colour_manual(name="Category",values=c("#2980B9","#85C1E9","#AED6F1","#3498DB","#2471A3","gray40"),
+                      breaks=c("NS","sign","over2","over10","under2","under10"),
+                      labels=c("NS", "S (no FC)", "FC > 2 ","FC > 10","FC < -2 ","FC < -10")) + theme_bw()
+
+           
+   

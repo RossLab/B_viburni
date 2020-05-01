@@ -1,0 +1,176 @@
+# GO for Scott
+
+Background population: all transcripts included in the differential expression analysis (that is, those that passed the sleuth filter of >47% samples with >=5 reads)
+
+#### First pass: overexpressed in B (stringent)
+
+# GO basic
+
+find_enrichment.py --pval 0.05 --method fdr_bh --obo go-basic.obo --outfile results1/b_overtranscripts_stringent.txt.GO.basic.tsv input/b_overtranscripts_stringent.txt input/background.pop.scott.txt go_annotations_viburni_with_ancestral_for_GOATTOOLS.txt
+
+Study: 211 vs. Population 106158
+
+Load BP Gene Ontology Analysis ...
+Propagating term counts up: is_a
+ 39% 41,342 of 106,158 population items found in association
+
+Load CC Gene Ontology Analysis ...
+Propagating term counts up: is_a
+ 40% 42,572 of 106,158 population items found in association
+
+Load MF Gene Ontology Analysis ...
+Propagating term counts up: is_a
+ 40% 42,300 of 106,158 population items found in association
+
+Run BP Gene Ontology Analysis: current study set of 211 IDs ...
+ 35%     73 of    211 study items found in association
+100%    211 of    211 study items found in population(106158)
+Calculating 14,029 uncorrected p-values using fisher
+  14,029 GO terms are associated with 41,342 of 106,158 population items
+   1,616 GO terms are associated with     73 of    211 study items
+  METHOD fdr_bh:
+       0 GO terms found significant (< 0.05=alpha) (  0 enriched +   0 purified): statsmodels fdr_bh
+       0 study items associated with significant GO IDs (enriched)
+       0 study items associated with significant GO IDs (purified)
+
+Run CC Gene Ontology Analysis: current study set of 211 IDs ...
+ 36%     75 of    211 study items found in association
+100%    211 of    211 study items found in population(106158)
+Calculating 1,850 uncorrected p-values using fisher
+   1,850 GO terms are associated with 42,572 of 106,158 population items
+     221 GO terms are associated with     75 of    211 study items
+  METHOD fdr_bh:
+       0 GO terms found significant (< 0.05=alpha) (  0 enriched +   0 purified): statsmodels fdr_bh
+       0 study items associated with significant GO IDs (enriched)
+       0 study items associated with significant GO IDs (purified)
+
+Run MF Gene Ontology Analysis: current study set of 211 IDs ...
+ 36%     77 of    211 study items found in association
+100%    211 of    211 study items found in population(106158)
+Calculating 3,856 uncorrected p-values using fisher
+   3,856 GO terms are associated with 42,300 of 106,158 population items
+     396 GO terms are associated with     77 of    211 study items
+  METHOD fdr_bh:
+      35 GO terms found significant (< 0.05=alpha) ( 35 enriched +   0 purified): statsmodels fdr_bh
+      11 study items associated with significant GO IDs (enriched)
+       0 study items associated with significant GO IDs (purified)
+    364 of 19,735 results have uncorrected P-values <= 0.05=pval
+
+
+#### Second pass: underexpressed in B (stringent)
+
+# GO basic
+
+find_enrichment.py --pval 0.05 --method fdr_bh --obo go-basic.obo --outfile results1/b_undertranscripts_stringent.txt.GO.basic.tsv input/b_undertranscripts_stringent.txt input/background.pop.scott.txt go_annotations_viburni_with_ancestral_for_GOATTOOLS.txt
+
+Study: 366 vs. Population 106158
+
+Load BP Gene Ontology Analysis ...
+Propagating term counts up: is_a
+ 39% 41,342 of 106,158 population items found in association
+
+Load CC Gene Ontology Analysis ...
+Propagating term counts up: is_a
+ 40% 42,572 of 106,158 population items found in association
+
+Load MF Gene Ontology Analysis ...
+Propagating term counts up: is_a
+ 40% 42,300 of 106,158 population items found in association
+
+Run BP Gene Ontology Analysis: current study set of 366 IDs ...
+ 37%    135 of    366 study items found in association
+100%    366 of    366 study items found in population(106158)
+Calculating 14,029 uncorrected p-values using fisher
+  14,029 GO terms are associated with 41,342 of 106,158 population items
+   2,196 GO terms are associated with    135 of    366 study items
+  METHOD fdr_bh:
+       0 GO terms found significant (< 0.05=alpha) (  0 enriched +   0 purified): statsmodels fdr_bh
+       0 study items associated with significant GO IDs (enriched)
+       0 study items associated with significant GO IDs (purified)
+
+Run CC Gene Ontology Analysis: current study set of 366 IDs ...
+ 41%    150 of    366 study items found in association
+100%    366 of    366 study items found in population(106158)
+Calculating 1,850 uncorrected p-values using fisher
+   1,850 GO terms are associated with 42,572 of 106,158 population items
+     338 GO terms are associated with    150 of    366 study items
+  METHOD fdr_bh:
+       0 GO terms found significant (< 0.05=alpha) (  0 enriched +   0 purified): statsmodels fdr_bh
+       0 study items associated with significant GO IDs (enriched)
+       0 study items associated with significant GO IDs (purified)
+
+Run MF Gene Ontology Analysis: current study set of 366 IDs ...
+ 39%    144 of    366 study items found in association
+100%    366 of    366 study items found in population(106158)
+Calculating 3,856 uncorrected p-values using fisher
+   3,856 GO terms are associated with 42,300 of 106,158 population items
+     472 GO terms are associated with    144 of    366 study items
+  METHOD fdr_bh:
+       7 GO terms found significant (< 0.05=alpha) (  7 enriched +   0 purified): statsmodels fdr_bh
+      41 study items associated with significant GO IDs (enriched)
+       0 study items associated with significant GO IDs (purified)
+    407 of 19,735 results have uncorrected P-values <= 0.05=pval
+
+      7 items WROTE: results1/b_undertranscripts_stringent.txt.GO.basic.tsv
+
+#### Third pass: overexpressed in B (all FC>2)
+
+# GO basic
+
+find_enrichment.py --pval 0.05 --method fdr_bh --obo go-basic.obo --outfile results1/b_overtranscripts.txt.GO.basic.tsv input/b_overtranscripts.in.B.txt input/background.pop.scott.txt go_annotations_viburni_with_ancestral_for_GOATTOOLS.txt
+
+Study: 3851 vs. Population 106158
+
+Load BP Gene Ontology Analysis ...
+Propagating term counts up: is_a
+ 39% 41,342 of 106,158 population items found in association
+
+Load CC Gene Ontology Analysis ...
+Propagating term counts up: is_a
+ 40% 42,572 of 106,158 population items found in association
+
+Load MF Gene Ontology Analysis ...
+Propagating term counts up: is_a
+ 40% 42,300 of 106,158 population items found in association
+
+Run BP Gene Ontology Analysis: current study set of 3851 IDs ...
+ 37%  1,426 of  3,851 study items found in association
+100%  3,851 of  3,851 study items found in population(106158)
+Calculating 14,029 uncorrected p-values using fisher
+  14,029 GO terms are associated with 41,342 of 106,158 population items
+   6,404 GO terms are associated with  1,426 of  3,851 study items
+  METHOD fdr_bh:
+      15 GO terms found significant (< 0.05=alpha) ( 12 enriched +   3 purified): statsmodels fdr_bh
+      42 study items associated with significant GO IDs (enriched)
+     220 study items associated with significant GO IDs (purified)
+
+Run CC Gene Ontology Analysis: current study set of 3851 IDs ...
+ 38%  1,462 of  3,851 study items found in association
+100%  3,851 of  3,851 study items found in population(106158)
+Calculating 1,850 uncorrected p-values using fisher
+   1,850 GO terms are associated with 42,572 of 106,158 population items
+     900 GO terms are associated with  1,462 of  3,851 study items
+  METHOD fdr_bh:
+      21 GO terms found significant (< 0.05=alpha) ( 15 enriched +   6 purified): statsmodels fdr_bh
+     168 study items associated with significant GO IDs (enriched)
+     746 study items associated with significant GO IDs (purified)
+
+Run MF Gene Ontology Analysis: current study set of 3851 IDs ...
+ 38%  1,478 of  3,851 study items found in association
+100%  3,851 of  3,851 study items found in population(106158)
+Calculating 3,856 uncorrected p-values using fisher
+   3,856 GO terms are associated with 42,300 of 106,158 population items
+   1,589 GO terms are associated with  1,478 of  3,851 study items
+  METHOD fdr_bh:
+      44 GO terms found significant (< 0.05=alpha) ( 30 enriched +  14 purified): statsmodels fdr_bh
+     635 study items associated with significant GO IDs (enriched)
+     180 study items associated with significant GO IDs (purified)
+  1,130 of 19,735 results have uncorrected P-values <= 0.05=pval
+
+     80 items WROTE: results1/b_overtranscripts.txt.GO.basic.tsv
+
+#### Fourth pass: overexpressed in B (all FC>2)
+
+# GO basic
+
+find_enrichment.py --pval 0.05 --method fdr_bh --obo go-basic.obo --outfile results1/b_undertranscripts.txt.GO.basic.tsv input/b_undertranscripts.in.B.txt input/background.pop.scott.txt go_annotations_viburni_with_ancestral_for_GOATTOOLS.txt

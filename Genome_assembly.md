@@ -1,5 +1,5 @@
 
-# Generating a *P.viburni* assembly
+# Generating a *P. viburni* assembly
 
 Start date: 08.10.2019, restarted 21.04.2020
 
