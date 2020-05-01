@@ -5,7 +5,7 @@ Start date: 15.10.2019
 
 	# working directory	
 	/data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads
-	# raw RNAseq reads
+	# raw  reads
 	/data/ross/mealybugs/raw/11791_Ross_Laura/raw_data/20190812
 
 ## 1. Raw reads
