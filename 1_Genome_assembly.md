@@ -143,14 +143,10 @@ BUSCO for cns2 and 3:
 
 * C:90.2%[S:87.6%,D:2.6%],F:1.4%,M:8.4%,n:2510 
 
-export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 24 -i ../pseudococcus_viburni.redbean.cns2.fa -o pseudococcus_viburni.redbean.cns2.busco.insecta -f -l insecta_odb10
+	export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 24 -i ../pseudococcus_viburni.redbean.cns3.fa -o pseudococcus_viburni.redbean.cns3.busco.hemiptera -f -l hemiptera_odb10
 
-export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 24 -i ../pseudococcus_viburni.redbean.cns3.fa -o pseudococcus_viburni.redbean.cns3.busco.hemiptera -f -l hemiptera_odb10
 
 * C:90.6%[S:88.2%,D:2.4%],F:1.4%,M:8.0%,n:2510 
-
-export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 24 -i pseudococcus_viburni.redbean.cns3.fa -o pseudococcus_viburni.redbean.cns3.busco.insecta -f -l insecta_odb10
-
 
 Polishing with short reads -- is racon better than wtpoa-cns?
 
@@ -164,12 +160,12 @@ Polishing with short reads -- is racon better than wtpoa-cns?
 
 Stats for cns-srp:
   * For scaffolds longer than 1000 bp:
-	-	Num 2848
-	-	Span 422785487
-	-	Min 1010
-	-	Mean 148449
-	-	N50 797178
-	-	NumN50 163
+	-	Num 2859
+	-	Span 420719638
+	-	Min 222
+	-	Mean 147156
+	-	N50 801500
+	-	NumN50 162
 	-	GC 0.336
 * Busco (hemiptera) C:91.7%[S:88.6%,D:3.1%],F:1.0%,M:7.3%,n:2510
 * Busco (insecta) C:93.0%[S:90.1%,D:2.9%],F:1.3%,M:5.7%,n:1367
