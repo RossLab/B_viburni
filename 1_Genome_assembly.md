@@ -187,21 +187,21 @@ Mapping reads to reference
 	minimap2 -ax map-pb -t 32 ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz | samtools view -hF 256 - | samtools sort -@32 -O BAM -o /scratch/afilia/p.viburni.decon.to.cns3.srp1.sorted.bam -
 
 Mapping stats:
-	-	raw total sequences:	1696469
-	-	filtered sequences:	0
-	-	sequences:	1696469
-	-	is sorted:	1
-	-	1st fragments:	1696469
-	-	last fragments:	0
-	-	reads mapped:	1495328
-	-	reads mapped and paired:	0	# paired-end technology bit set + both mates mapped
-	-	reads unmapped:	201141
-	-	reads properly paired:	0	# proper-pair bit set
-	-	reads paired:	0	# paired-end technology bit set
-	-	reads duplicated:	0	# PCR or optical duplicate bit set
-	-	reads MQ0:	3523	# mapped and MQ=0
-	-	reads QC failed:	0
-	-	non-primary alignments:	0
+	*	raw total sequences:	1696469
+	*	filtered sequences:	0
+	*	sequences:	1696469
+	*	is sorted:	1
+	*	1st fragments:	1696469
+	*	last fragments:	0
+	*	reads mapped:	1495328
+	*	reads mapped and paired:	0	# paired-end technology bit set + both mates mapped
+	*	reads unmapped:	201141
+	*	reads properly paired:	0	# proper-pair bit set
+	*	reads paired:	0	# paired-end technology bit set
+	*	reads duplicated:	0	# PCR or optical duplicate bit set
+	*	reads MQ0:	3523	# mapped and MQ=0
+	*	reads QC failed:	0
+	*	non-primary alignments:	0
 	
 Running blobtools (v1.1.1)
 
@@ -211,4 +211,4 @@ Running blobtools (v1.1.1)
 
 	/ceph/users/afilia/.conda/envs/afilia_blobtools/bin/blobtools create -i ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa -b p.viburni.decon.to.cns3.srp1.sorted.bam -t p.viburni.decon.blast.out -t p.viburni.decon.diamond.taxified.out -o p.viburni.decon2
 
-![Blobtools 1](https://drive.google.com/drive/folders/1jp4meOt5FaY80CsgNg8E4iq7kypHZctW?usp=sharing)
+![Blobtools 1](https://drive.google.com/open?id=1EEjx2KEongQtEYyMTOK1ESCkEVkTuBgW)
