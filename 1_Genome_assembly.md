@@ -207,7 +207,10 @@ Running blobtools (v1.1.1)
 	/ceph/software/blobtools/blobtools create -i ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa -b p.viburni.decon.to.cns3.srp1.sorted.bam -t p.viburni.decon.blast.out -t p.viburni.decon.diamond.taxified.out -o p.viburni.decon
 	/ceph/users/afilia/.conda/envs/afilia_blobtools/bin/blobtools view -i p.viburni.decon.blobDB.json
 	/ceph/users/afilia/.conda/envs/afilia_blobtools/bin/blobtools plot -i p.viburni.decon.blobDB.json 
-
-<img src="/Users/agarcia/Desktop/sync/p.viburni.decon.blobDB.json.bestsum.phylum.p8.span.100.blobplot.bam0.png" /> ![](/Users/agarcia/Desktop/sync/p.viburni.decon.blobDB.json.bestsum.phylum.p8.span.100.blobplot.bam0.png)
+	
+	
+	
+	
+With the previous blobtools version (v1.0)
 
 	/ceph/users/afilia/.conda/envs/afilia_blobtools/bin/blobtools create -i ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa -b p.viburni.decon.to.cns3.srp1.sorted.bam -t p.viburni.decon.blast.out -t p.viburni.decon.diamond.taxified.out -o p.viburni.decon2
