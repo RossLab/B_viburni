@@ -221,23 +221,25 @@ This is not a concern: blobtools v1.1 plots mapped reads/the total number of ali
 
 I can now filter out contaminant contigs. Let's see what we have:
 
- -               Arthropoda  970
- -               Ascomycota    2
- -            Bacteroidetes    1
- -              Brachiopoda    1
+ - Arthropoda  970
+ - Ascomycota    2
+ - Bacteroidetes    1
+ - Brachiopoda    1
  - Candidatus Tectomicrobia    1
- -               Chlamydiae    1
- -                 Chordata   21
- -                 Cnidaria    5
- -            Echinodermata    1
- -            Euryarchaeota    1
- -                 Mollusca    9
- -                 Nematoda   45
- -                   no-hit 1773
- -                 Porifera    3
- -           Proteobacteria   20
- -                 Rotifera    1
- -             Spirochaetes    1
- -             Streptophyta    3
- -    Thermodesulfobacteria    1
- -            Viruses-undef    2
+ - Chlamydiae    1
+ - Chordata   21
+ - Cnidaria    5
+ - Echinodermata    1
+ - Euryarchaeota    1
+ - Mollusca    9
+ - Nematoda   45
+ - no-hit 1773
+ - Porifera    3
+ - Proteobacteria   20
+ - Rotifera    1
+ - Spirochaetes    1
+ - Streptophyta    3
+ - Thermodesulfobacteria    1
+ - Viruses-undef    2
+
+ I will extract all eukaryotic contigs.
