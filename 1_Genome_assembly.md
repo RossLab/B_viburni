@@ -205,8 +205,8 @@ Mapping stats:
 Running blobtools (v1.1.1)
 
 	/ceph/software/blobtools/blobtools create -i ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa -b p.viburni.decon.to.cns3.srp1.sorted.bam -t p.viburni.decon.blast.out -t p.viburni.decon.diamond.taxified.out -o p.viburni.decon
-	/ceph/users/afilia/.conda/envs/afilia_blobtools/bin/blobtools view -i p.viburni.decon.blobDB.json
-	/ceph/users/afilia/.conda/envs/afilia_blobtools/bin/blobtools plot -i p.viburni.decon.blobDB.json 
+	
+	/ceph/software/blobtools/blobtools plot -i p.viburni.decon.blobDB.json 
 	
 The blobplots look good. However, note the low propotion of mapping reads in the ReadCovPlot.
 
@@ -218,3 +218,26 @@ This is not a concern: blobtools v1.1 plots mapped reads/the total number of ali
 	/ceph/users/afilia/.conda/envs/afilia_blobtools/bin/blobtools create -i ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa -b p.viburni.decon.to.cns3.srp1.sorted.bam -t p.viburni.decon.blast.out -t p.viburni.decon.diamond.taxified.out -o p.viburni.decon2
 	
 ![](misc/p.viburni.decon2.blobDB.json.bestsum.phylum.p7.span.100.blobplot.read_cov.bam0.png)
+
+I can now filter out contaminant contigs. Let's see what we have:
+
+ -               Arthropoda  970
+ -               Ascomycota    2
+ -            Bacteroidetes    1
+ -              Brachiopoda    1
+ - Candidatus Tectomicrobia    1
+ -               Chlamydiae    1
+ -                 Chordata   21
+ -                 Cnidaria    5
+ -            Echinodermata    1
+ -            Euryarchaeota    1
+ -                 Mollusca    9
+ -                 Nematoda   45
+ -                   no-hit 1773
+ -                 Porifera    3
+ -           Proteobacteria   20
+ -                 Rotifera    1
+ -             Spirochaetes    1
+ -             Streptophyta    3
+ -    Thermodesulfobacteria    1
+ -            Viruses-undef    2
