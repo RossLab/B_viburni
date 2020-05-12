@@ -6,7 +6,7 @@ Start date: 08.10.2019, restarted 21.04.2020
 	# Working directory	
 	/data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly
 	/ceph/software/utilities/sge/qlogin -pe smp64 1 -N blobtools -l h=bigfoot
-qlogin -pe smp64 64 -N gg3 -l h=bigbird
+    qlogin -pe smp 1 -N samtools 
 
 ## 1. Raw reads
 
@@ -247,11 +247,12 @@ I can now filter out contaminant contigs. Let's see what we have:
 
 ## 10. A detour: the endosymbionts
 
-We have 20 proteobacterial contigs adding up to ~5.6Mb (too big!).
+We have 20 proteobacterial contigs adding up to ~5.6Mb. What do we know about endosymbionts in *P. viburni*?
+ * Primary endosymbiont: beta Candidatus *Tremblaya princeps* (Gatehouse et al. 2012), genome size ~150kb in *longispinus* (Husnik & McCutcheon 2016)
+ * Secondary embosymbionts: two massive gamma endosymbionts in *longispinus* (>4 Mbp each) (one of them belonging to the *Sodalis* clade; the other one more related to *Dickeya*) (Husnik & McCutcheon 2016)
 
 |contig  | length | GC    | cov   | hits                                                                                                     |
 |--------|--------|-------|-------|----------------------------------------------------------------------------------------------------------|
-|ctg82   | 654212 | 0.339 | 18.4  | tax0=Arthropoda:305.0;tax1=Proteobacteria:676.0;                                                         |
 |ctg82   | 654212 | 0.339 | 18.4  | tax0=Arthropoda:305.0;tax1=Proteobacteria:676.0;                                                         |
 |ctg88   | 644353 | 0.342 | 22.9  | tax0=Arthropoda:444.0;tax1=Proteobacteria:587.4;                                                         |
 |ctg182  | 751204 | 0.434 | 94.2  | tax0=Proteobacteria:67094.0;tax1=Proteobacteria:2548.9;                                                  |
@@ -272,3 +273,13 @@ We have 20 proteobacterial contigs adding up to ~5.6Mb (too big!).
 |ctg2111 | 8641   | 0.359 | 7.61  | tax0=no-hit:0.0;tax1=Proteobacteria:204.9;                                                               |
 |ctg2236 | 6947   | 0.34  | 49.2  | tax0=no-hit:0.0;tax1=Proteobacteria:654.8;                                                               |
 |ctg2741 | 4803   | 0.601 | 1386. | tax0=Proteobacteria:34512.0;tax1=Proteobacteria:241.5;                                                   |
+
+According to coverage and GC content differences, these contigs look like promising candidates:
+
+ * Primary endosymbiont:
+  - ctg2741: Candidatus *Tremblaya princeps* (however too short); another hit to *Tremblaya* in ctg64 might be HGT (tax0=Arthropoda:1101.0|Proteobacteria:633.0|Streptophyta:185.0;tax1=Chordata:1565.3)
+ * Secondary endosymbionts:
+  - ctg1645, ctg182: Candidatus *Sodalis*, gamma proteobacterium endosymbiont of *P. viburni* isolate Vib 1-1 p505BB11 (~750kb)
+  - ctg376,	*Morganella/Buchnera/Gullanella* (*Sodalis?*) (~300kb)
+  - ctg300, *Wolbachia* (~700kb)
+  - ctg436, *Dickeya* (pathogens from herbaceous plants) (~300Mb)
