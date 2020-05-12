@@ -249,6 +249,9 @@ I can now filter out contaminant contigs. Let's see what we have:
 
 We have 20 proteobacterial contigs adding up to ~5.6Mb (too big!).
 
+|contig  | length | GC    | cov   | hits                                                                                                     |
+|--------|--------|-------|-------|----------------------------------------------------------------------------------------------------------|
+|ctg82   | 654212 | 0.339 | 18.4  | tax0=Arthropoda:305.0;tax1=Proteobacteria:676.0;                                                         |
 |ctg82   | 654212 | 0.339 | 18.4  | tax0=Arthropoda:305.0;tax1=Proteobacteria:676.0;                                                         |
 |ctg88   | 644353 | 0.342 | 22.9  | tax0=Arthropoda:444.0;tax1=Proteobacteria:587.4;                                                         |
 |ctg182  | 751204 | 0.434 | 94.2  | tax0=Proteobacteria:67094.0;tax1=Proteobacteria:2548.9;                                                  |
