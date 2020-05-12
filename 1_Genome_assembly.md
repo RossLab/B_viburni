@@ -182,6 +182,12 @@ Homology searches
 	cp /ceph/software/databases/uniprot_2019_08/full/reference_proteomes.taxid_map.gz .
 	/ceph/software/blobtools/blobtools taxify -f p.viburni.decon.diamond.out -m reference_proteomes.taxid_map -s 0 -t 1
 
+Homology searches with raw
+
+	blastn -task megablast -query ../raw/pseudococcus_viburni.redbean.raw.fa -db /ceph/software/databases/ncbi_2020_02/nt -outfmt '6 qseqid staxids bitscore std' -max_target_seqs 10 -max_hsps 1 -num_threads 30 -evalue 1e-25 -out /scratch/afilia/p.viburni.raw.blast.out && rsync /scratch/afilia/p.viburni.raw.blast.out .
+	diamond blastx --query ../raw/pseudococcus_viburni.redbean.raw.fa --max-target-seqs 1 --sensitive --threads 32 --db /ceph/software/databases/uniprot_2019_08/full/reference_proteomes.dmnd --evalue 1e-25 --tmpdir /scratch/afilia/ --outfmt 6 --out /scratch/afilia/p.viburni.raw.diamond.out && rsync /scratch/afilia/p.viburni.raw.diamond.out .
+	/ceph/software/blobtools/blobtools taxify -f p.viburni.decon.diamond.out -m reference_proteomes.taxid_map -s 0 -t 1
+
 Mapping reads to reference
 
 	minimap2 -ax map-pb -t 32 ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz | samtools view -hF 256 - | samtools sort -@32 -O BAM -o /scratch/afilia/p.viburni.decon.to.cns3.srp1.sorted.bam -
@@ -205,8 +211,10 @@ Mapping stats:
 Running blobtools (v1.1.1)
 
 	/ceph/software/blobtools/blobtools create -i ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa -b p.viburni.decon.to.cns3.srp1.sorted.bam -t p.viburni.decon.blast.out -t p.viburni.decon.diamond.taxified.out -o p.viburni.decon
-	/ceph/software/blobtools/blobtools view -i p.viburni.decon.blobDB.json -b --hits
-	/ceph/software/blobtools/blobtools plot -i p.viburni.decon.blobDB.json 
+	/ceph/software/blobtools/blobtools view -i p.viburni.decon.blobDB.json -b
+	/ceph/software/blobtools/blobtools plot -i p.viburni.decon.blobDB.json
+
+	/ceph/software/blobtools/blobtools create -i ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa -b p.viburni.decon.to.cns3.srp1.sorted.bam -t p.viburni.decon.blast.out -t p.viburni.decon.diamond.taxified.out -x bestsumorder -o p.viburni.decon.bestsumorder
 	
 The blobplots look good. However, note the low propotion of mapping reads in the ReadCovPlot.
 
@@ -279,7 +287,7 @@ According to coverage and GC content differences, these contigs look like promis
  * Primary endosymbiont:
 	- ctg2741: Candidatus *Tremblaya princeps* (however too short); another hit to *Tremblaya* in ctg64 might be HGT (tax0=Arthropoda:1101.0|Proteobacteria:633.0|Streptophyta:185.0;tax1=Chordata:1565.3)
  * Secondary endosymbionts:
-	- ctg1645, ctg182: Candidatus *Sodalis*, gamma proteobacterium endosymbiont of *P. viburni* isolate Vib 1-1 p505BB11 (~750kb)
-	- ctg376,	*Morganella/Buchnera/Gullanella* (*Sodalis?*) (~300kb)
+	- ctg182, ctg1645: Candidatus *Sodalis*, gamma proteobacterium endosymbiont of *P. viburni* isolate Vib 1-1 p505BB11 (~750kb)
+	- ctg376, *Morganella/Buchnera/Gullanella* (*Sodalis?*) (~300kb)
 	- ctg300, *Wolbachia* (~700kb)
 	- ctg436, *Dickeya* (pathogens from herbaceous plants) (~300Mb)
