@@ -205,7 +205,7 @@ Mapping stats:
 Running blobtools (v1.1.1)
 
 	/ceph/software/blobtools/blobtools create -i ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa -b p.viburni.decon.to.cns3.srp1.sorted.bam -t p.viburni.decon.blast.out -t p.viburni.decon.diamond.taxified.out -o p.viburni.decon
-	
+	/ceph/software/blobtools/blobtools view -i p.viburni.decon.blobDB.json -b --hits
 	/ceph/software/blobtools/blobtools plot -i p.viburni.decon.blobDB.json 
 	
 The blobplots look good. However, note the low propotion of mapping reads in the ReadCovPlot.
@@ -242,4 +242,30 @@ I can now filter out contaminant contigs. Let's see what we have:
  - Thermodesulfobacteria    1
  - Viruses-undef    2
 
- I will extract all eukaryotic contigs.
+ I will extract all the eukaryotic contigs. It would be good to filter out contigs with too low coverage as well (contigs with very high coverage *might* be B-chromosome related, let's keep these).
+
+
+## 10. A detour: the endosymbionts
+
+We have 20 proteobacterial contigs adding up to ~5.6Mb (too big!).
+
+ 1 ctg82   654212 0.339     0   18.4  Proteobacteria     676         1 tax0=Arthropoda:305.0;tax1=Proteobacteria:676.0;                                                     
+ 2 ctg88   644353 0.342     0   22.9  Proteobacteria     587.        1 tax0=Arthropoda:444.0;tax1=Proteobacteria:587.4;                                                     
+ 3 ctg182  751204 0.434     0   94.2  Proteobacteria   69643.        0 tax0=Proteobacteria:67094.0;tax1=Proteobacteria:2548.9;                                              
+ 4 ctg300  688257 0.323     0   23.0  Proteobacteria    2839         3 tax0=Proteobacteria:2839.0|Viruses-undef:2412.0|Arthropoda:1388.0|undef:850.0;tax1=Arthropoda:1146.3;
+ 5 ctg332  897554 0.34      0   18.2  Proteobacteria     490.        1 tax0=Arthropoda:207.0;tax1=Proteobacteria:489.6;                                                     
+ 6 ctg376  268281 0.278     0   93.7  Proteobacteria   43296         1 tax0=Proteobacteria:43296.0;tax1=Nematoda:4144.8;                                                    
+ 7 ctg390  253583 0.328     0   21.3  Proteobacteria     687.        1 tax0=Arthropoda:603.0;tax1=Proteobacteria:686.8;                                                     
+ 8 ctg436  311299 0.332     0   21.5  Proteobacteria     771.        0 tax0=Proteobacteria:265.0;tax1=Proteobacteria:505.8;                                                 
+ 9 ctg455  217774 0.335     0   19.7  Proteobacteria     466.        1 tax0=Arthropoda:337.0;tax1=Proteobacteria:465.6;                                                     
+10 ctg497  260073 0.336     0   19.9  Proteobacteria     592.        1 tax0=Arthropoda:560.0;tax1=Proteobacteria:592.4;                                                     
+11 ctg500  189316 0.342     0   17.4  Proteobacteria     211.        0 tax0=no-hit:0.0;tax1=Proteobacteria:211.1;                                                           
+12 ctg513  177649 0.336     0   19.5  Proteobacteria     640.        0 tax0=no-hit:0.0;tax1=Proteobacteria:639.7;                                                           
+13 ctg571  151401 0.322     0   19.1  Proteobacteria     169.        0 tax0=no-hit:0.0;tax1=Proteobacteria:168.7;                                                           
+14 ctg1140  33216 0.339     0    7.13 Proteobacteria     164.        0 tax0=no-hit:0.0;tax1=Proteobacteria:163.7;                                                           
+15 ctg1458  14519 0.338     0    4.53 Proteobacteria     512.        0 tax0=no-hit:0.0;tax1=Proteobacteria:512.3;                                                           
+16 ctg1645  12289 0.397     0  469.   Proteobacteria   31980.        0 tax0=Proteobacteria:31102.0;tax1=Proteobacteria:877.9;                                               
+17 ctg1772  10591 0.316     0    9.31 Proteobacteria     324.        0 tax0=no-hit:0.0;tax1=Proteobacteria:324.3;                                                           
+18 ctg2111   8641 0.359     0    7.61 Proteobacteria     205.        0 tax0=no-hit:0.0;tax1=Proteobacteria:204.9;                                                           
+19 ctg2236   6947 0.34      0   49.2  Proteobacteria     655.        0 tax0=no-hit:0.0;tax1=Proteobacteria:654.8;                                                           
+20 ctg2741   4803 0.601     0 1386.   Proteobacteria   34754.        0 tax0=Proteobacteria:34512.0;tax1=Proteobacteria:241.5;              
