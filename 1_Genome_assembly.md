@@ -277,9 +277,9 @@ We have 20 proteobacterial contigs adding up to ~5.6Mb. What do we know about en
 According to coverage and GC content differences, these contigs look like promising candidates:
 
  * Primary endosymbiont:
-  - ctg2741: Candidatus *Tremblaya princeps* (however too short); another hit to *Tremblaya* in ctg64 might be HGT (tax0=Arthropoda:1101.0|Proteobacteria:633.0|Streptophyta:185.0;tax1=Chordata:1565.3)
+	- ctg2741: Candidatus *Tremblaya princeps* (however too short); another hit to *Tremblaya* in ctg64 might be HGT (tax0=Arthropoda:1101.0|Proteobacteria:633.0|Streptophyta:185.0;tax1=Chordata:1565.3)
  * Secondary endosymbionts:
-  - ctg1645, ctg182: Candidatus *Sodalis*, gamma proteobacterium endosymbiont of *P. viburni* isolate Vib 1-1 p505BB11 (~750kb)
-  - ctg376,	*Morganella/Buchnera/Gullanella* (*Sodalis?*) (~300kb)
-  - ctg300, *Wolbachia* (~700kb)
-  - ctg436, *Dickeya* (pathogens from herbaceous plants) (~300Mb)
+	- ctg1645, ctg182: Candidatus *Sodalis*, gamma proteobacterium endosymbiont of *P. viburni* isolate Vib 1-1 p505BB11 (~750kb)
+	- ctg376,	*Morganella/Buchnera/Gullanella* (*Sodalis?*) (~300kb)
+	- ctg300, *Wolbachia* (~700kb)
+	- ctg436, *Dickeya* (pathogens from herbaceous plants) (~300Mb)
