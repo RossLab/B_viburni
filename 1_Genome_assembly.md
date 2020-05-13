@@ -241,7 +241,7 @@ I can now filter out contaminant contigs. Let's see what we have:
  - Thermodesulfobacteria    1
  - Viruses-undef    2
 
- I will extract all the Metazoan contigs + contigs with good secondary hits to Arthopoda and too low coverage as well (contigs with very high coverage *might* be B-chromosome related, let's keep these)
+ I will extract all metazoan contigs + contigs with good secondary hits to Arthopoda and too low coverage as well (contigs with very high coverage *might* be B-chromosome related, let's keep these)
 
 	contigs.animals <- contigs.bestsum[(contigs.bestsum$phylum == "Arthropoda" | contigs.bestsum$phylum == "Brachiopoda" | contigs.bestsum$phylum == "Chordata" | contigs.bestsum$phylum == "Cnidaria" | contigs.bestsum$phylum == "Echinodermata" | contigs.bestsum$phylum == "Mollusca" | contigs.bestsum$phylum == "Nematoda" | contigs.bestsum$phylum == "Porifera" | contigs.bestsum$phylum == "Rotifera"),]
 	contigs.no.hit <- contigs.bestsum[(contigs.bestsum$phylum == "no-hit"),]
