@@ -241,7 +241,7 @@ I can now filter out contaminant contigs. Let's see what we have:
  - Thermodesulfobacteria    1
  - Viruses-undef    2
 
- I will extract all metazoan contigs + contigs with good secondary hits to Arthopoda and too low coverage as well (contigs with very high coverage *might* be B-chromosome related, let's keep these)
+ I will extract all metazoan contigs + contigs with good secondary hits to Arthopoda, and filter our too short/ low coverage contigs as well (contigs with very high coverage *might* be B-chromosome related, let's keep these)
 
 	contigs.animals <- contigs.bestsum[(contigs.bestsum$phylum == "Arthropoda" | contigs.bestsum$phylum == "Brachiopoda" | contigs.bestsum$phylum == "Chordata" | contigs.bestsum$phylum == "Cnidaria" | contigs.bestsum$phylum == "Echinodermata" | contigs.bestsum$phylum == "Mollusca" | contigs.bestsum$phylum == "Nematoda" | contigs.bestsum$phylum == "Porifera" | contigs.bestsum$phylum == "Rotifera"),]
 	contigs.no.hit <- contigs.bestsum[(contigs.bestsum$phylum == "no-hit"),]
@@ -249,7 +249,11 @@ I can now filter out contaminant contigs. Let's see what we have:
 	contigs.other <- anti_join(contigs.bestsum,contigs.animals.no.hit,by="contig")
 	contigs.other.arthropoda.2nd <- contigs.other[grepl('Arthropoda', contigs.other$phylum_hits),]
 	contigs.animals.no.hit.other.arthropoda.2nd <- rbind(contigs.animals.no.hit,contigs.other.arthropoda.2nd)
-	contigs.keep <- contigs.animals.no.hit.other.arthropoda.2nd[(contigs.animals.no.hit.other.arthropoda.2nd$len > 1000) & (contigs.animals.no.hit.other.arthropoda.2nd$cov > 2),]
+	p.viburni.decon.contigs.keep <- contigs.animals.no.hit.other.arthropoda.2nd[(contigs.animals.no.hit.other.arthropoda.2nd$len > 1000) & (contigs.animals.no.hit.other.arthropoda.2nd$cov > 2),]
+
+Extract contigs
+
+	/ceph/software/assemblage/fastaqual_select.pl -f ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa -i p.viburni.decon.contigs.keep.txt > ../polished/pseudococcus_viburni.redbean.cns3.srp1.blobtools.fa
 
 ### A detour: the endosymbionts
 
@@ -285,10 +289,10 @@ According to coverage and GC content differences, these contigs look like promis
  * Primary endosymbiont:
 	- ctg2741: Candidatus *Tremblaya princeps* (however too short); another hit to *Tremblaya* in ctg64 might be HGT (tax0=Arthropoda:1101.0|Proteobacteria:633.0|Streptophyta:185.0;tax1=Chordata:1565.3)
  * Secondary endosymbionts:
-	- ctg182, ctg1645: Candidatus *Sodalis*, gamma proteobacterium endosymbiont of *P. viburni* isolate Vib 1-1 p505BB11 (~750kb)
+	- ctg182, ctg1645: Candidatus *Sodalis*, gamma proteobacterium endosymbiont of *P. viburni* isolate Vib 1-1 p505BB11 (~750kb) (PLON gamma 1)
 	- ctg376, *Morganella/Buchnera/Gullanella* (*Sodalis?*) (~300kb)
 	- ctg300, *Wolbachia* (~700kb)
-	- ctg436, *Dickeya* (pathogens from herbaceous plants) (~300Mb)
+	- ctg436, *Dickeya* (pathogens from herbaceous plants, related to PLON gamma 2) (~300Mb)
 
 
 
