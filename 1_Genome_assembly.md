@@ -6,7 +6,7 @@ Start date: 08.10.2019, restarted 21.04.2020
 	# Working directory	
 	/data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly
 	/ceph/software/utilities/sge/qlogin -pe smp64 1 -N blobtools -l h=bigfoot
-    qlogin -pe smp 1 -N samtools 
+    qlogin -pe smp 1 -N busco 
 
 ## 1. Raw reads
 
@@ -206,8 +206,6 @@ Running blobtools (v1.1.1)
 	/ceph/software/blobtools/blobtools create -i ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa -b p.viburni.decon.to.cns3.srp1.sorted.bam -t p.viburni.decon.blast.out -t p.viburni.decon.diamond.taxified.out -o p.viburni.decon
 	/ceph/software/blobtools/blobtools view -i p.viburni.decon.blobDB.json -b
 	/ceph/software/blobtools/blobtools plot -i p.viburni.decon.blobDB.json
-
-	/ceph/software/blobtools/blobtools create -i ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa -b p.viburni.decon.to.cns3.srp1.sorted.bam -t p.viburni.decon.blast.out -t p.viburni.decon.diamond.taxified.out -x bestsumorder -o p.viburni.decon.bestsumorder
 	
 The blobplots look good. However, note the low propotion of mapping reads in the ReadCovPlot.
 
@@ -243,10 +241,17 @@ I can now filter out contaminant contigs. Let's see what we have:
  - Thermodesulfobacteria    1
  - Viruses-undef    2
 
- I will extract all the eukaryotic contigs + contigs with good secondary hits to Arthopoda and genome-line coverage. It would be good to filter out contigs with too low coverage as well (contigs with very high coverage *might* be B-chromosome related, let's keep these).
+ I will extract all the Metazoan contigs + contigs with good secondary hits to Arthopoda and too low coverage as well (contigs with very high coverage *might* be B-chromosome related, let's keep these)
 
+	contigs.animals <- contigs.bestsum[(contigs.bestsum$phylum == "Arthropoda" | contigs.bestsum$phylum == "Brachiopoda" | contigs.bestsum$phylum == "Chordata" | contigs.bestsum$phylum == "Cnidaria" | contigs.bestsum$phylum == "Echinodermata" | contigs.bestsum$phylum == "Mollusca" | contigs.bestsum$phylum == "Nematoda" | contigs.bestsum$phylum == "Porifera" | contigs.bestsum$phylum == "Rotifera"),]
+	contigs.no.hit <- contigs.bestsum[(contigs.bestsum$phylum == "no-hit"),]
+	contigs.animals.no.hit <- rbind(contigs.animals,contigs.no.hit)
+	contigs.other <- anti_join(contigs.bestsum,contigs.animals.no.hit,by="contig")
+	contigs.other.arthropoda.2nd <- contigs.other[grepl('Arthropoda', contigs.other$phylum_hits),]
+	contigs.animals.no.hit.other.arthropoda.2nd <- rbind(contigs.animals.no.hit,contigs.other.arthropoda.2nd)
+	contigs.keep <- contigs.animals.no.hit.other.arthropoda.2nd[(contigs.animals.no.hit.other.arthropoda.2nd$len > 1000) & (contigs.animals.no.hit.other.arthropoda.2nd$cov > 2),]
 
-## 10. A detour: the endosymbionts
+### A detour: the endosymbionts
 
 We have 20 proteobacterial contigs adding up to ~5.6Mb. What do we know about endosymbionts in *P. viburni*?
  * Primary endosymbiont: beta Candidatus *Tremblaya princeps* (Gatehouse et al. 2012), genome size ~150kb in *longispinus* (Husnik & McCutcheon 2016)
@@ -285,9 +290,5 @@ According to coverage and GC content differences, these contigs look like promis
 	- ctg300, *Wolbachia* (~700kb)
 	- ctg436, *Dickeya* (pathogens from herbaceous plants) (~300Mb)
 
-Repeat with the raw assembly
 
-	blastn -task megablast -query ../raw/pseudococcus_viburni.redbean.raw.fa -db /ceph/software/databases/ncbi_2020_02/nt -outfmt '6 qseqid staxids bitscore std' -max_target_seqs 10 -max_hsps 1 -num_threads 30 -evalue 1e-25 -out /scratch/afilia/p.viburni.raw.blast.out && rsync /scratch/afilia/p.viburni.raw.blast.out .
-	diamond blastx --query ../raw/pseudococcus_viburni.redbean.raw.fa --max-target-seqs 1 --sensitive --threads 32 --db /ceph/software/databases/uniprot_2019_08/full/reference_proteomes.dmnd --evalue 1e-25 --tmpdir /scratch/afilia/ --outfmt 6 --out /scratch/afilia/p.viburni.raw.diamond.out && rsync /scratch/afilia/p.viburni.raw.diamond.out .
-	/ceph/software/blobtools/blobtools taxify -f p.viburni.decon.diamond.out -m reference_proteomes.taxid_map -s 0 -t 1
-	minimap2 -ax map-pb -t 16 ../raw/pseudococcus_viburni.redbean.raw.fa /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz | samtools view -hF 256 - | samtools sort -@32 -O BAM -o /scratch/afilia/p.viburni.raw.sorted.bam -
+
