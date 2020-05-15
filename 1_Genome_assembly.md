@@ -183,7 +183,7 @@ Homology searches
 
 Mapping reads to reference
 
-	minimap2 -ax map-pb -t 32 ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz | samtools view -hF 256 - | samtools sort -@32 -O BAM -o /scratch/afilia/p.viburni.decon.to.cns3.srp1.sorted.bam -
+	minimap2 -ax map-pb -t 32 ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz | samtools view -hF 256 - | samtools sort -@32 -O BAM -o /scratch/afilia/p.viburni.decon.to.cns3.srp1.sorted.bam - && rsync -av /scratch/afilia/p.viburni.decon.to.cns3.srp1.sorted.bam .
 
 Mapping stats:
   - raw total sequences:	1696469
@@ -251,9 +251,28 @@ I can now filter out contaminant contigs. Let's see what we have:
 	contigs.animals.no.hit.other.arthropoda.2nd <- rbind(contigs.animals.no.hit,contigs.other.arthropoda.2nd)
 	p.viburni.decon.contigs.keep <- contigs.animals.no.hit.other.arthropoda.2nd[(contigs.animals.no.hit.other.arthropoda.2nd$len > 1000) & (contigs.animals.no.hit.other.arthropoda.2nd$cov > 2),]
 
-Extract contigs
+Extract contigs and remap reads
 
 	/ceph/software/assemblage/fastaqual_select.pl -f ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa -i p.viburni.decon.contigs.keep.txt > ../polished/pseudococcus_viburni.redbean.cns3.srp1.blobtools.fa
+	minimap2 -ax map-pb -t 32 ../polished/pseudococcus_viburni.redbean.cns3.srp1.blobtools.fa /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz | samtools view -hF 256 - | samtools sort -@32 -O BAM -o /scratch/afilia/p.viburni.decon.to.cns3.srp1.blobtools.sorted.bam - && rsync -av /scratch/afilia/p.viburni.decon.to.cns3.srp1.blobtools.sorted.bam .
+
+Mapping stats:
+  - raw total sequences:	1696469
+  - filtered sequences:	0
+  - sequences:	1696469
+  - is sorted:	1
+  - 1st fragments:	1696469
+  - last fragments:	0
+  - reads mapped:	1478615
+  - reads mapped and paired:	0	# paired-end technology bit set + both mates mapped
+  - reads unmapped:	217854
+  - reads properly paired:	0	# proper-pair bit set
+  - reads paired:	0	# paired-end technology bit set
+  - reads duplicated:	0	# PCR or optical duplicate bit set
+  - reads MQ0:	3508	# mapped and MQ=0
+  - reads QC failed:	0
+  - non-primary alignments:	0
+
 
 ### A detour: the endosymbionts
 
