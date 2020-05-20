@@ -5,8 +5,7 @@ Start date: 08.10.2019, restarted 21.04.2020
 
 	# Working directory	
 	/data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly
-	/ceph/software/utilities/sge/qlogin -pe smp64 1 -N blobtools -l h=bigfoot
-    qlogin -pe smp 1 -N busco 
+    qlogin -pe smp 4 -N samtools 
 
 ## 1. Raw reads
 
@@ -241,37 +240,15 @@ I can now filter out contaminant contigs. Let's see what we have:
  - Thermodesulfobacteria    1
  - Viruses-undef    2
 
- I will extract all metazoan contigs + contigs with good secondary hits to Arthopoda, and filter our too short/ low coverage contigs as well (contigs with very high coverage *might* be B-chromosome related, let's keep these)
+ I will extract all metazoan contigs + contigs with good secondary hits to Arthopoda, and filter our too short/low coverage contigs as well (contigs with very high coverage *might* be B-chromosome related, let's keep these).
 
-	contigs.animals <- contigs.bestsum[(contigs.bestsum$phylum == "Arthropoda" | contigs.bestsum$phylum == "Brachiopoda" | contigs.bestsum$phylum == "Chordata" | contigs.bestsum$phylum == "Cnidaria" | contigs.bestsum$phylum == "Echinodermata" | contigs.bestsum$phylum == "Mollusca" | contigs.bestsum$phylum == "Nematoda" | contigs.bestsum$phylum == "Porifera" | contigs.bestsum$phylum == "Rotifera"),]
+ 	contigs.animals <- contigs.bestsum[(contigs.bestsum$phylum == "Arthropoda" | contigs.bestsum$phylum == "Brachiopoda" | contigs.bestsum$phylum == "Chordata" | contigs.bestsum$phylum == "Cnidaria" | contigs.bestsum$phylum == "Echinodermata" | contigs.bestsum$phylum == "Mollusca" | contigs.bestsum$phylum == "Nematoda" | contigs.bestsum$phylum == "Porifera" | contigs.bestsum$phylum == "Rotifera"),]
 	contigs.no.hit <- contigs.bestsum[(contigs.bestsum$phylum == "no-hit"),]
 	contigs.animals.no.hit <- rbind(contigs.animals,contigs.no.hit)
 	contigs.other <- anti_join(contigs.bestsum,contigs.animals.no.hit,by="contig")
 	contigs.other.arthropoda.2nd <- contigs.other[grepl('Arthropoda', contigs.other$phylum_hits),]
 	contigs.animals.no.hit.other.arthropoda.2nd <- rbind(contigs.animals.no.hit,contigs.other.arthropoda.2nd)
 	p.viburni.decon.contigs.keep <- contigs.animals.no.hit.other.arthropoda.2nd[(contigs.animals.no.hit.other.arthropoda.2nd$len > 1000) & (contigs.animals.no.hit.other.arthropoda.2nd$cov > 2),]
-
-Extract contigs and remap reads
-
-	/ceph/software/assemblage/fastaqual_select.pl -f ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa -i p.viburni.decon.contigs.keep.txt > ../polished/pseudococcus_viburni.redbean.cns3.srp1.blobtools.fa
-	minimap2 -ax map-pb -t 32 ../polished/pseudococcus_viburni.redbean.cns3.srp1.blobtools.fa /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz | samtools view -hF 256 - | samtools sort -@32 -O BAM -o /scratch/afilia/p.viburni.decon.to.cns3.srp1.blobtools.sorted.bam - && rsync -av /scratch/afilia/p.viburni.decon.to.cns3.srp1.blobtools.sorted.bam .
-
-Mapping stats:
-  - raw total sequences:	1696469
-  - filtered sequences:	0
-  - sequences:	1696469
-  - is sorted:	1
-  - 1st fragments:	1696469
-  - last fragments:	0
-  - reads mapped:	1478615
-  - reads mapped and paired:	0	# paired-end technology bit set + both mates mapped
-  - reads unmapped:	217854
-  - reads properly paired:	0	# proper-pair bit set
-  - reads paired:	0	# paired-end technology bit set
-  - reads duplicated:	0	# PCR or optical duplicate bit set
-  - reads MQ0:	3508	# mapped and MQ=0
-  - reads QC failed:	0
-  - non-primary alignments:	0
 
 
 ### A detour: the endosymbionts
@@ -314,4 +291,33 @@ According to coverage and GC content differences, these contigs look like promis
 	- ctg436, *Dickeya* (pathogens from herbaceous plants, related to PLON gamma 2) (~300Mb)
 
 
+## 10. Reassemble
 
+Extract contigs
+
+	/ceph/software/assemblage/fastaqual_select.pl -f ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa -i p.viburni.decon.contigs.keep.txt > ../polished/pseudococcus_viburni.redbean.cns3.srp1.blobtools.fa
+
+Remap reads
+
+	minimap2 -ax map-pb -t 32 ../polished/pseudococcus_viburni.redbean.cns3.srp1.blobtools.fa /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz | samtools view -hF 256 - | samtools sort -@32 -O BAM -o /scratch/afilia/p.viburni.decon.to.cns3.srp1.blobtools.sorted.bam - && rsync -av /scratch/afilia/p.viburni.decon.to.cns3.srp1.blobtools.sorted.bam .
+
+Keep mapped reads only, excluding unmapped and supplementary alignments
+	
+	samtools view -bhF 0x904 p.viburni.decon.to.cns3.srp1.blobtools.sorted.bam > /scratch/afilia/p.viburni.decon.to.cns3.srp1.blobtools.sorted.mapped.primary.bam && rsync -av /scratch/afilia/p.viburni.decon.to.cns3.srp1.blobtools.sorted.mapped.primary.bam .
+
+Extract reads
+
+	bamtools convert -format fasta -in p.viburni.decon.to.cns3.srp1.blobtools.sorted.mapped.primary.bam -out p.viburni.decon.subreads.fasta
+
+Reassemble with redbean reads
+
+#!/bin/bash
+
+#$ -V
+#$ -cwd
+#$ -j y
+#$ -o wtdbg2.$JOB_ID.log
+ 
+# Submit using:
+# qsub -pe smp 64
+wtdbg2 -x sq -g 400m -t 64 -i p.viburni.decon.subreads.fasta -o /scratch/afilia/pseudococcus_viburni.2nd.pass && wtpoa-cns -t 64 -i /scratch/afilia/pseudococcus_viburni.2nd.pass.ctg.lay.gz -fo /scratch/afilia/pseudococcus_viburni.2nd.pass.raw.fa
