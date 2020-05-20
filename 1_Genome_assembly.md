@@ -311,13 +311,8 @@ Extract reads
 
 Reassemble with redbean reads
 
-#!/bin/bash
+	wtdbg2 -x sq -g 400m -t 64 -i p.viburni.decon.subreads.fasta -o /scratch/afilia/pseudococcus_viburni.2nd.pass && wtpoa-cns -t 64 -i /scratch/afilia/pseudococcus_viburni.2nd.pass.ctg.lay.gz -fo /scratch/afilia/pseudococcus_viburni.2nd.pass.raw.fa
 
-#$ -V
-#$ -cwd
-#$ -j y
-#$ -o wtdbg2.$JOB_ID.log
- 
-# Submit using:
-# qsub -pe smp 64
-wtdbg2 -x sq -g 400m -t 64 -i p.viburni.decon.subreads.fasta -o /scratch/afilia/pseudococcus_viburni.2nd.pass && wtpoa-cns -t 64 -i /scratch/afilia/pseudococcus_viburni.2nd.pass.ctg.lay.gz -fo /scratch/afilia/pseudococcus_viburni.2nd.pass.raw.fa
+Polish with pacbio reads (3x)
+
+	minimap2 -t 40 -c -x map-pb ../pseudococcus_viburni.2nd.pass.raw.fa ../p.viburni.decon.subreads.fasta -o /scratch/afilia/pseudococcus_viburni.2nd.pass.raw.paf && racon -u -t 40 ../p.viburni.decon.subreads.fasta /scratch/afilia/pseudococcus_viburni.2nd.pass.raw.paf ../pseudococcus_viburni.2nd.pass.raw.fa > /scratch/afilia/pseudococcus_viburni.2nd.pass.racon1.fa && rsync /scratch/afilia/pseudococcus_viburni.2nd.pass.racon1.fa .
