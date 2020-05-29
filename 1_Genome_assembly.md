@@ -5,7 +5,7 @@ Start date: 08.10.2019, restarted 21.04.2020
 
 	# Working directory	
 	/data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly
-    qlogin -pe smp 4 -N samtools 
+    qlogin -pe smp 24 -N busco 
 
 ## 1. Raw reads
 
@@ -80,7 +80,7 @@ Stats for raw:
   	- NumN50 164
   	- GC 0.336
   * Busco (insecta) C:83.1%[S:82.0%,D:1.1%],F:6.7%,M:10.2%,n:1367
-  * Busco (hemiptera) C:85.7%[S:83.4%,D:2.3%],F:2.2%,M:12.1%,n:2510   
+  * Busco (hemiptera) C:85.7%[S:83.4%,D:2.3%],F:2.2%,M:12.1%,n:2510  
 
 ## 7. Preliminary polishing of the genome
 
@@ -250,7 +250,6 @@ I can now filter out contaminant contigs. Let's see what we have:
 	contigs.animals.no.hit.other.arthropoda.2nd <- rbind(contigs.animals.no.hit,contigs.other.arthropoda.2nd)
 	p.viburni.decon.contigs.keep <- contigs.animals.no.hit.other.arthropoda.2nd[(contigs.animals.no.hit.other.arthropoda.2nd$len > 1000) & (contigs.animals.no.hit.other.arthropoda.2nd$cov > 2),]
 
-
 ### A detour: the endosymbionts
 
 We have 20 proteobacterial contigs adding up to ~5.6Mb. What do we know about endosymbionts in *P. viburni*?
@@ -288,8 +287,7 @@ According to coverage and GC content differences, these contigs look like promis
 	- ctg182, ctg1645: Candidatus *Sodalis*, gamma proteobacterium endosymbiont of *P. viburni* isolate Vib 1-1 p505BB11 (~750kb) (PLON gamma 1)
 	- ctg376, *Morganella/Buchnera/Gullanella* (*Sodalis?*) (~300kb)
 	- ctg300, *Wolbachia* (~700kb)
-	- ctg436, *Dickeya* (pathogens from herbaceous plants, related to PLON gamma 2) (~300Mb)
-
+	- ctg436, *Dickeya* (pathogens from herbaceous plants, related to PLON gamma 2) (~300Mb
 
 ## 10. Reassemble
 
@@ -312,7 +310,120 @@ Extract reads
 Reassemble with redbean reads
 
 	wtdbg2 -x sq -g 400m -t 64 -i p.viburni.decon.subreads.fasta -o /scratch/afilia/pseudococcus_viburni.2nd.pass && wtpoa-cns -t 64 -i /scratch/afilia/pseudococcus_viburni.2nd.pass.ctg.lay.gz -fo /scratch/afilia/pseudococcus_viburni.2nd.pass.raw.fa
+	export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 24 -i pseudococcus_viburni.2nd.pass.raw.fa -o pseudococcus_viburni.2nd.pass.raw.busco.hemiptera -f -l hemiptera_odb10
 
-Polish with pacbio reads (3x)
+  * For scaffolds longer than 1000 bp:
+	-	Num 3180
+	-	Span 441022965
+	-	Min 1089
+	-	Mean 138686
+	-	N50 791604
+	-	NumN50 159
+	-	GC 0.336
+  * Busco (hemiptera) C:86.8%[S:84.8%,D:2.0%],F:1.2%,M:12.0%,n:2510 
 
-	minimap2 -t 40 -c -x map-pb ../pseudococcus_viburni.2nd.pass.raw.fa ../p.viburni.decon.subreads.fasta -o /scratch/afilia/pseudococcus_viburni.2nd.pass.raw.paf && racon -u -t 40 ../p.viburni.decon.subreads.fasta /scratch/afilia/pseudococcus_viburni.2nd.pass.raw.paf ../pseudococcus_viburni.2nd.pass.raw.fa > /scratch/afilia/pseudococcus_viburni.2nd.pass.racon1.fa && rsync /scratch/afilia/pseudococcus_viburni.2nd.pass.racon1.fa .
+### 10.1 Polish with wtpoa-cns
+
+Polish with pacbio reads (3x) (better results than racon)
+
+	minimap2 -t32 -ax map-pb -r2k ../pseudococcus_viburni.2nd.pass.raw.fa ../p.viburni.decon.subreads.fasta | samtools sort -@32 > /scratch/afilia/pseudococcus_viburni.2nd.pass.raw0.int
+	samtools view -F0x900 /scratch/afilia/pseudococcus_viburni.2nd.pass.raw0.int | wtpoa-cns -t 32 -d ../pseudococcus_viburni.2nd.pass.raw.fa -i - -fo pseudococcus_viburni.2nd.pass.cns1.fa
+	minimap2 -t 16 -c -x map-pb pseudococcus_viburni.2nd.pass.cns1.fa ../p.viburni.decon.subreads.fasta | samtools sort -@16 > /scratch/afilia/pseudococcus_viburni.2nd.pass.cns1.int
+	samtools view -F0x900 /scratch/afilia/pseudococcus_viburni.2nd.pass.cns1.int | wtpoa-cns -t 16 -d pseudococcus_viburni.2nd.pass.cns1.fa -i - -fo pseudococcus_viburni.2nd.pass.cns2.fa
+	minimap2 -t 16 -c -x map-pb pseudococcus_viburni.2nd.pass.cns2.fa ../p.viburni.decon.subreads.fasta | samtools sort -@16 > /scratch/afilia/pseudococcus_viburni.2nd.pass.cns2.int
+	samtools view -F0x900 /scratch/afilia/pseudococcus_viburni.2nd.pass.cns2.int.bam | wtpoa-cns -t 16 -d pseudococcus_viburni.2nd.pass.cns2.fa -i - -fo pseudococcus_viburni.2nd.pass.cns3.fa
+
+* For scaffolds longer than 1000 bp:
+	-	Num 3038
+	-	Span 433526075
+	-	Min 1010
+	-	Mean 142701
+	-	N50 797858
+	-	NumN50 155
+	-	GC 0.336
+* C:89.5%[S:86.8%,D:2.7%],F:1.4%,M:9.1%,n:2510 (cns3)
+
+Polish with Illumina reads and wtpoa-cns (2x)
+
+	bwa index pseudococcus_viburni.2nd.pass.cns3.fa
+	bwa mem -t 20 pseudococcus_viburni.2nd.pass.cns3.fa /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz | samtools sort -O SAM -o /scratch/afilia/PV_18-13.Illumina.2nd.pass.350.alignedtocns3.sorted.sam
+	bwa mem -t 20 pseudococcus_viburni.2nd.pass.cns3.fa /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz | samtools sort -O SAM -o /scratch/afilia/PV_18-13.Illumina.2nd.pass.550.alignedtocns3.sorted.sam
+	samtools merge /scratch/afilia/PV_18-13.Illumina.2nd.pass.alignedtocns3.sorted.sam /scratch/afilia/PV_18-13.Illumina.2nd.pass.350.alignedtocns3.sorted.sam /scratch/afilia/PV_18-13.Illumina.2nd.pass.550.alignedtocns3.sorted.sam
+	wtpoa-cns -t 24 -x sam-sr -d pseudococcus_viburni.2nd.pass.cns3.fa -i /scratch/afilia/PV_18-13.Illumina.2nd.pass.alignedtocns3.sorted.sam -fo pseudococcus_viburni.2nd.pass.cns3.srp1.fa
+
+	bwa index pseudococcus_viburni.2nd.pass.cns3.srp1.fa
+	bwa mem -t 32 pseudococcus_viburni.2nd.pass.cns3.srp1.fa /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz | samtools sort -O SAM -o /scratch/afilia/PV_18-13.Illumina.2nd.pass.350.alignedtocns3srp1.sorted.sam
+	bwa mem -t 32 pseudococcus_viburni.2nd.pass.cns3.srp1.fa /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz | samtools sort -O SAM -o /scratch/afilia/PV_18-13.Illumina.2nd.pass.550.alignedtocns3srp1.sorted.sam
+	samtools merge /scratch/afilia/PV_18-13.Illumina.2nd.pass.alignedtocns3srp1.sorted.sam /scratch/afilia/PV_18-13.Illumina.2nd.pass.350.alignedtocns3srp1.sorted.sam /scratch/afilia/PV_18-13.Illumina.2nd.pass.550.alignedtocns3srp1.sorted.sam
+	wtpoa-cns -t 24 -x sam-sr -d pseudococcus_viburni.2nd.pass.cns3.srp1.fa -i /scratch/afilia/PV_18-13.Illumina.2nd.pass.alignedtocns3srp1.sorted.sam -fo pseudococcus_viburni.2nd.pass.cns3.srp2.fa
+
+* For scaffolds longer than 1000 bp:
+	-	Num 3013
+	-	Span 410661387
+	-	Min 1017
+	-	Mean 136296
+	-	N50 747388
+	-	NumN50 155
+	-	GC 0.337
+* C:90.6%[S:87.7%,D:2.9%],F:1.3%,M:8.1%,n:2510 (cns3.srp2)
+
+### 10.2 Try sr polishing with hypo
+
+	minimap2 --secondary=no --MD -ax sr -t 32 ../../wtpoa_cns/pseudococcus_viburni.2nd.pass.cns3.fa ../PV_18-13.Illumina.merged.trimmed_1.fq.gz ../PV_18-13.Illumina.merged.trimmed_2.fq.gz | samtools view -Sb - > /scratch/afilia/hypo1.cns3-mapped-sr.bam
+	samtools sort -@32 -o /scratch/afilia/hypo1.cns3-mapped-sr.sorted.bam /scratch/afilia/hypo1.cns3-mapped-sr.bam && rsync -av /scratch/afilia/hypo1.cns3-mapped-sr.sorted.bam .
+	samtools index hypo1.cns3-mapped-sr.sorted.bam
+	hypo -d ../../wtpoa_cns/pseudococcus_viburni.2nd.pass.cns3.fa -i -r ../@il_names.txt -s 400m -c 100 -b hypo1.cns3-mapped-sr.sorted.bam -p 96 -t 32 -o pseudococcus_viburni.2nd.pass.cns3.h1.fa
+
+C:91.7%[S:88.0%,D:3.7%],F:1.0%,M:7.3%,n:2510
+
+### 10.2 Polish with hypo: https://www.biorxiv.org/content/biorxiv/early/2019/12/20/2019.12.19.882506.full.pdf
+
+conda activate afilia_hypo  
+conda install -c bioconda hypo
+
+Mapping the short reads to contigs
+
+	cat /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz > PV_18-13.Illumina.merged.trimmed_1.fq.gz
+	cat /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz > PV_18-13.Illumina.merged.trimmed_2.fq.gz
+
+	minimap2 --secondary=no --MD -ax sr -t 32 ../pseudococcus_viburni.2nd.pass.raw.fa PV_18-13.Illumina.merged.trimmed_1.fq.gz PV_18-13.Illumina.merged.trimmed_2.fq.gz | samtools view -Sb - > /scratch/afilia/hypo1-mapped-sr.bam
+	samtools sort -@32 -o hypo1-mapped-sr.sorted.bam /scratch/afilia/hypo1-mapped-sr.bam
+	samtools index hypo1-mapped-sr.sorted.bam
+	rm /scratch/afilia/mapped-sr.bam
+
+Mapping the long reads to contigs
+
+	minimap2 --secondary=no --MD -ax map-pb -t 32 ../pseudococcus_viburni.2nd.pass.raw.fa ../p.viburni.decon.subreads.fasta | samtools view -Sb - > /scratch/afilia/hypo1-mapped-lg.bam
+	samtools sort -@32 -o /scratch/afilia/hypo1-mapped-lg.sorted.bam /scratch/afilia/hypo1-mapped-lg.bam && rsync -av /scratch/afilia/hypo1-mapped-lg.sorted.bam
+	samtools index hypo1-mapped-lg.sorted.bam
+
+Run hypo
+
+	hypo -d pseudococcus_viburni.2nd.pass.raw.fasta -i -r @il_names.txt -s 400m -c 100 -b hypo1-mapped-sr.sorted.bam -B hypo1-mapped-lg.sorted.bam -p 96 -t 48 -o pseudococcus_viburni.2nd.pass.h2.fa
+
+* For scaffolds longer than 1000 bp:
+	-	Num 3180
+	-	Span 442083649
+	-	Min 1089
+	-	Mean 139020
+	-	N50 792839
+	-	NumN50 159
+	-	GC 0.336
+* C:91.6%[S:88.4%,D:3.2%],F:0.9%,M:7.5%,n:2510  
+
+Run a second round
+
+	minimap2 --secondary=no --MD -ax sr -t 32 pseudococcus_viburni.2nd.pass.h2.fa PV_18-13.Illumina.merged.trimmed_1.fq.gz PV_18-13.Illumina.merged.trimmed_2.fq.gz | samtools view -Sb - > /scratch/afilia/hypo2-mapped-sr.bam
+	samtools sort -@32 -o /scratch/afilia/hypo2-mapped-sr.sorted.bam /scratch/afilia/hypo2-mapped-sr.bam && rsync -av /scratch/afilia/hypo2-mapped-sr.sorted.bam .
+	samtools index hypo2-mapped-sr.sorted.bam
+	rm /scratch/afilia/hypo2-mapped-sr.bam
+	minimap2 --secondary=no --MD -ax map-pb -t 32 pseudococcus_viburni.2nd.pass.h2.fa ../p.viburni.decon.subreads.fasta | samtools view -Sb - > /scratch/afilia/hypo2-mapped-lg.bam
+	samtools sort -@32 -o /scratch/afilia/hypo2-mapped-lg.sorted.bam /scratch/afilia/hypo2-mapped-lg.bam && rsync -av /scratch/afilia/hypo1-mapped-lg.sorted.bam .
+	samtools index hypo1-mapped-lg.sorted.bam
+	rm /scratch/afilia/hypo2-mapped-lg.bam
+	hypo -d pseudococcus_viburni.2nd.pass.h2.fa -i -r @il_names.txt -s 400m -c 100 -b hypo2-mapped-sr.sorted.bam -B hypo2-mapped-lg.sorted.bam -p 96 -t 48 -o pseudococcus_viburni.2nd.pass.h2h2.fa
+	hypo -d ppseudococcus_viburni.2nd.pass.h2.fa -i -r @il_names.txt -s 400m -c 100 -b hypo2-mapped-sr.sorted.bam -p 96 -t 48 -o pseudococcus_viburni.2nd.pass.h2h1.fa
+
+	export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 16 -i pseudococcus_viburni.2nd.pass.h2h1.fa -o pseudococcus_viburni.2nd.pass.h2h1.hemiptera -f -l hemiptera_odb10
+
+export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 16 -i pseudococcus_viburni.2nd.pass.h2h2.fa -o pseudococcus_viburni.2nd.pass.h2h2.hemiptera -f -l hemiptera_odb10
