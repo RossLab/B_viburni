@@ -369,6 +369,8 @@ Polish with Illumina reads and wtpoa-cns (2x)
 
 ### 10.2 Try sr polishing with hypo
 
+HyPo lools very promising: https://www.biorxiv.org/content/biorxiv/early/2019/12/20/2019.12.19.882506.full.pdf
+
 	minimap2 --secondary=no --MD -ax sr -t 32 ../../wtpoa_cns/pseudococcus_viburni.2nd.pass.cns3.fa ../PV_18-13.Illumina.merged.trimmed_1.fq.gz ../PV_18-13.Illumina.merged.trimmed_2.fq.gz | samtools view -Sb - > /scratch/afilia/hypo1.cns3-mapped-sr.bam
 	samtools sort -@32 -o /scratch/afilia/hypo1.cns3-mapped-sr.sorted.bam /scratch/afilia/hypo1.cns3-mapped-sr.bam && rsync -av /scratch/afilia/hypo1.cns3-mapped-sr.sorted.bam .
 	samtools index hypo1.cns3-mapped-sr.sorted.bam
@@ -376,7 +378,7 @@ Polish with Illumina reads and wtpoa-cns (2x)
 
 C:91.7%[S:88.0%,D:3.7%],F:1.0%,M:7.3%,n:2510
 
-### 10.2 Polish with hypo: https://www.biorxiv.org/content/biorxiv/early/2019/12/20/2019.12.19.882506.full.pdf
+### 10.3 Polish the rae genome with hypo
 
 conda activate afilia_hypo  
 conda install -c bioconda hypo
@@ -423,7 +425,3 @@ Run a second round
 	rm /scratch/afilia/hypo2-mapped-lg.bam
 	hypo -d pseudococcus_viburni.2nd.pass.h2.fa -i -r @il_names.txt -s 400m -c 100 -b hypo2-mapped-sr.sorted.bam -B hypo2-mapped-lg.sorted.bam -p 96 -t 48 -o pseudococcus_viburni.2nd.pass.h2h2.fa
 	hypo -d ppseudococcus_viburni.2nd.pass.h2.fa -i -r @il_names.txt -s 400m -c 100 -b hypo2-mapped-sr.sorted.bam -p 96 -t 48 -o pseudococcus_viburni.2nd.pass.h2h1.fa
-
-	export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 16 -i pseudococcus_viburni.2nd.pass.h2h1.fa -o pseudococcus_viburni.2nd.pass.h2h1.hemiptera -f -l hemiptera_odb10
-
-export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 16 -i pseudococcus_viburni.2nd.pass.h2h2.fa -o pseudococcus_viburni.2nd.pass.h2h2.hemiptera -f -l hemiptera_odb10
