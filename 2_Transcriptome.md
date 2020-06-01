@@ -129,3 +129,17 @@
 	# Generate report and extract GO terms
 	Trinotate Trinotate.sqlite report -E 1e-3 > trinotate_annotation_report.xls
 	extract_GO_assignments_from_Trinotate_xls.pl --Trinotate_xls trinotate_annotation_report.xls --trans --include_ancestral_terms > go_annotations_viburni_with_ancestral.txt
+
+## 5. Explore the data
+
+We know from Scott's miniproject that the males cluster nicely according to B+/B-. Let's check that the samples cluster primarily by sex.
+
+	/ceph/users/afilia/.conda/envs/afilia_trinity/bin/align_and_estimate_abundance.pl --transcripts ../1_trinity/viburni.trinity.fasta --seqType fq --samples_file trinity_sample_file.txt --est_method kallisto --SS_lib_type RF --thread_count 16 --trinity_mode --prep_reference --kallisto_add_opts "-b 100"
+	# import tpm values to R, explore correlation
+	tpm.cor.plot <- cor(tpm.merge[c(-1)], method="spearman", use = "complete.obs")
+	corrplot(tpm.cor.plot, method = "number",number.cex = .7, cl.lim = c(0.3, 1),order = "hclust", addrect = 2)
+	heatmap(tpm.cor.plot, scale = "row")
+
+![](misc/rnaseq_heatmap.jpeg)
+
+They cluster as expected (sex -> B status -> line/)
