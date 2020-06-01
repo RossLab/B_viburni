@@ -142,4 +142,4 @@ We know from Scott's miniproject that the males cluster nicely according to B+/B
 
 ![](misc/rnaseq_heatmap.jpeg)
 
-They cluster as expected (sex -> B status -> line/)
+They cluster as expected (sex -> B status -> line)
