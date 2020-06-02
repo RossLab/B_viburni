@@ -378,7 +378,7 @@ HyPo lools very promising: https://www.biorxiv.org/content/biorxiv/early/2019/12
 
 C:91.7%[S:88.0%,D:3.7%],F:1.0%,M:7.3%,n:2510
 
-### 10.3 Polish the rae genome with hypo
+### 10.3 Polish the raw genome with hypo
 
 conda activate afilia_hypo  
 conda install -c bioconda hypo
@@ -425,3 +425,25 @@ Run a second round
 	rm /scratch/afilia/hypo2-mapped-lg.bam
 	hypo -d pseudococcus_viburni.2nd.pass.h2.fa -i -r @il_names.txt -s 400m -c 100 -b hypo2-mapped-sr.sorted.bam -B hypo2-mapped-lg.sorted.bam -p 96 -t 48 -o pseudococcus_viburni.2nd.pass.h2h2.fa
 	hypo -d ppseudococcus_viburni.2nd.pass.h2.fa -i -r @il_names.txt -s 400m -c 100 -b hypo2-mapped-sr.sorted.bam -p 96 -t 48 -o pseudococcus_viburni.2nd.pass.h2h1.fa
+
+h2h2 is better:
+
+* For scaffolds longer than 1000 bp:
+	-	Num 3180
+	-	Span 441700490
+	-	Min 1089
+	-	Mean 138899
+	-	N50 792214
+	-	NumN50 159
+	-	GC 0.336
+* C:91.8%[S:88.4%,D:3.4%],F:1.0%,M:7.2%,n:2510 
+
+Further rounds decrease BUSCOs -- seems we are hitting dimishing returns.
+
+### 10.4 Blobtools
+
+Homology searches
+
+	blastn -task megablast -query ../pseudococcus_viburni.2nd.pass.h2h2.fa -db  /ceph/software/databases/ncbi_2020_02/nt -outfmt '6 qseqid staxids bitscore std' -max_target_seqs 10 -max_hsps 1 -num_threads 30 -evalue 1e-25 -out /scratch/afilia/pseudococcus_viburni.2nd.pass.h2h2.blast.out && rsync /scratch/afilia/pseudococcus_viburni.2nd.pass.h2h2.blast.out .
+	diamond blastx --query ../pseudococcus_viburni.2nd.pass.h2h2.fa --max-target-seqs 1 --sensitive --threads 32 --db /ceph/software/databases/uniprot_2019_08/full/reference_proteomes.dmnd --evalue 1e-25 --tmpdir /scratch/afilia/ --outfmt 6 --out /scratch/afilia/pseudococcus_viburni.2nd.pass.h2h2.diamond.out && rsync /scratch/afilia/pseudococcus_viburni.2nd.pass.h2h2.diamond.out .
+	/ceph/software/blobtools/blobtools taxify -f pseudococcus_viburni.2nd.pass.h2h2.diamond.out -m reference_proteomes.taxid_map -s 0 -t 1
