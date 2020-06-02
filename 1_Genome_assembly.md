@@ -436,7 +436,9 @@ h2h2 is better:
 	-	N50 792214
 	-	NumN50 159
 	-	GC 0.336
-* C:91.8%[S:88.4%,D:3.4%],F:1.0%,M:7.2%,n:2510 
+* C:91.8%[S:88.4%,D:3.4%],F:1.0%,M:7.2%,n:2510 (hemiptera)
+* C:94.3%[S:90.7%,D:3.6%],F:0.9%,M:4.8%,n:1367 (insecta)
+* C:95.2%[S:92.0%,D:3.2%],F:0.6%,M:4.2%,n:1013 (arthropoda)
 
 Further rounds decrease BUSCOs -- seems we are hitting dimishing returns.
 
@@ -444,6 +446,10 @@ Further rounds decrease BUSCOs -- seems we are hitting dimishing returns.
 
 Homology searches
 
-	blastn -task megablast -query ../pseudococcus_viburni.2nd.pass.h2h2.fa -db  /ceph/software/databases/ncbi_2020_02/nt -outfmt '6 qseqid staxids bitscore std' -max_target_seqs 10 -max_hsps 1 -num_threads 30 -evalue 1e-25 -out /scratch/afilia/pseudococcus_viburni.2nd.pass.h2h2.blast.out && rsync /scratch/afilia/pseudococcus_viburni.2nd.pass.h2h2.blast.out .
+	blastn -task megablast -query ../pseudococcus_viburni.2nd.pass.h2h2.fa -db /ceph/software/databases/ncbi_2020_02/nt -outfmt '6 qseqid staxids bitscore std' -max_target_seqs 10 -max_hsps 1 -num_threads 30 -evalue 1e-25 -out /scratch/afilia/pseudococcus_viburni.2nd.pass.h2h2.blast.out && rsync /scratch/afilia/pseudococcus_viburni.2nd.pass.h2h2.blast.out .
 	diamond blastx --query ../pseudococcus_viburni.2nd.pass.h2h2.fa --max-target-seqs 1 --sensitive --threads 32 --db /ceph/software/databases/uniprot_2019_08/full/reference_proteomes.dmnd --evalue 1e-25 --tmpdir /scratch/afilia/ --outfmt 6 --out /scratch/afilia/pseudococcus_viburni.2nd.pass.h2h2.diamond.out && rsync /scratch/afilia/pseudococcus_viburni.2nd.pass.h2h2.diamond.out .
 	/ceph/software/blobtools/blobtools taxify -f pseudococcus_viburni.2nd.pass.h2h2.diamond.out -m reference_proteomes.taxid_map -s 0 -t 1
+
+Mapping (without secondary and supplemetary alignments)
+
+	minimap2 --secondary=no -ax map-pb -t 32 ../pseudococcus_viburni.2nd.pass.h2h2.fa ../../p.viburni.decon.subreads.fasta | samtools view -hF 0x900 - | samtools sort -@32 -O BAM -o /scratch/afilia/p.viburni.decon.to.2nd.pass.h2h2.sorted.bam - && rsync -av /scratch/afilia/p.viburni.decon.to.2nd.pass.h2h2.sorted.bam .
