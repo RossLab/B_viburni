@@ -145,3 +145,7 @@ We know from Scott's miniproject that the males cluster nicely according to B+/B
 They cluster as expected (sex -> B status -> line). We see a clear clustering by sex in the PCA of estimated counts running sleuth, but no clear clustering by B status (note that the default threshold to filter out transcripts in sleuth has been lowered to at least 5 counts in 20% of samples)
 
 ![](misc/pca_sleuth.jpeg)
+
+We see a similar thing when we look at the density plot of estimated counts.
+
+![](misc/density_plot_kallisto.jpeg)
