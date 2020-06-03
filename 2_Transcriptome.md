@@ -132,6 +132,10 @@
 
 ## 5. Explore the data
 
+First, the distribution of samples looks okay -- no clear outlier
+
+![](misc/tpm_distribution.jpeg)
+
 We know from Scott's miniproject that the males cluster nicely according to B+/B-. Let's check that the samples cluster primarily by sex.
 
 	/ceph/users/afilia/.conda/envs/afilia_trinity/bin/align_and_estimate_abundance.pl --transcripts ../1_trinity/viburni.trinity.fasta --seqType fq --samples_file trinity_sample_file.txt --est_method kallisto --SS_lib_type RF --thread_count 16 --trinity_mode --prep_reference --kallisto_add_opts "-b 100"
