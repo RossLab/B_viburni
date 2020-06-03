@@ -153,3 +153,7 @@ They cluster as expected (sex -> B status -> line). We see a clear clustering by
 We see a similar thing when we look at the density plot of estimated counts.
 
 ![](misc/density_plot_kallisto.jpeg)
+
+Let's inspect SPM distribition, which looks less extreme than in *P. citri* adults.
+
+![](misc/spm_transcripts.jpeg)
