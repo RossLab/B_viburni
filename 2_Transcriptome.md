@@ -157,3 +157,17 @@ We see a similar thing when we look at the density plot of estimated counts.
 Let's inspect SPM distribition, which looks less extreme than in *P. citri* adults.
 
 ![](misc/spm_transcripts.jpeg)
+
+Sleuth has estimated differential expression for 41,372 annotated transcripts (out of ca. 150,000 transcripts that passed the filter). Let's focus on annotated transcripts only for the time being. Estimating expression FC as log2((female TPM + 0.01)/(male TPM + 0.01)), the data looks like this:
+
+![](misc/volcano_plot_sex.jpeg)
+
+where NB are non-biased transcripts (q>0.05 and/or abs(FC) <= 1.5), FB and MB are sex-biased transcripts (q<0.05 and abs(FC) > 1.5) and FS and MS are sex-specific transcripts (sex-biased transcripts with FC > 2.5 and TPM in the other sex < 1).
+
+- NB 35172
+- FB  2644
+- FS   747
+- MB  1735
+- MS  1074
+- NB 35172
+
