@@ -5,7 +5,7 @@ Start date: 08.10.2019, restarted 21.04.2020
 
 	# Working directory	
 	/data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly
-    qlogin -pe smp 24 -N busco 
+    qlogin -pe smp 1 -N blobtools 
 
 ## 1. Raw reads
 
@@ -169,6 +169,91 @@ Stats for cns-srp:
 	-	GC 0.336
 * Busco (hemiptera) C:92.0%[S:89.0%,D:3.0%],F:1.0%,M:7.0%,n:2510 
 * Busco (insecta) C:92.7%[S:89.8%,D:2.9%],F:2.1%,M:5.2%,n:1367 
+
+## 9. Alternative polishing: use HyPo
+
+conda activate afilia_hypo  
+conda install -c bioconda hypo
+
+Mapping short and long reads to contigs
+
+	cat /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz > PV_18-13.Illumina.merged.trimmed_1.fq.gz
+	cat /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz > PV_18-13.Illumina.merged.trimmed_2.fq.gz
+
+	minimap2 --secondary=no --MD -ax sr -t 32 ../raw/pseudococcus_viburni.redbean.raw.fa PV_18-13.Illumina.merged.trimmed_1.fq.gz PV_18-13.Illumina.merged.trimmed_2.fq.gz | samtools view -Sb - > /scratch/afilia/hypo1-mapped-sr.bam
+	samtools sort -@32 -o /scratch/afilia/hypo1-mapped-sr.sorted.bam /scratch/afilia/hypo1-mapped-sr.bam && rsync -av /scratch/afilia/hypo1-mapped-sr.sorted.bam .
+	samtools index hypo1-mapped-sr.sorted.bam
+	
+
+	minimap2 --secondary=no --MD -ax map-pb -t 32 ../raw/pseudococcus_viburni.redbean.raw.fa ../../0_reads/PV_18-13.1.subreads.fasta.gz ../../0_reads/PV_18-13.2.subreads.fasta.gz ../../0_reads/PV_18-13.3.subreads.fasta.gz | samtools view -Sb - > /scratch/afilia/hypo1-mapped-lg.bam
+	samtools sort -@32 -o /scratch/afilia/hypo1-mapped-lg.sorted.bam /scratch/afilia/hypo1-mapped-lg.bam && rsync -av /scratch/afilia/hypo1-mapped-lg.sorted.bam .
+	samtools index hypo1-mapped-lg.sorted.bam
+
+Run hypo
+
+	hypo -d ../raw/pseudococcus_viburni.redbean.raw.fa -i -r @il_names.txt -s 440m -c 100 -b hypo1-mapped-sr.sorted.bam -B hypo1-mapped-lg.sorted.bam -p 96 -t 48 -o pseudococcus_viburni.hypo1.fa
+
+* For scaffolds longer than 1000 bp:
+	-	Num 3180
+	-	Span 442083649
+	-	Min 1089
+	-	Mean 139020
+	-	N50 792839
+	-	NumN50 159
+	-	GC 0.336
+* C:91.6%[S:88.4%,D:3.2%],F:0.9%,M:7.5%,n:2510  
+
+Run a second round
+
+	minimap2 --secondary=no --MD -ax sr -t 32 pseudococcus_viburni.2nd.pass.h2.fa PV_18-13.Illumina.merged.trimmed_1.fq.gz PV_18-13.Illumina.merged.trimmed_2.fq.gz | samtools view -Sb - > /scratch/afilia/hypo2-mapped-sr.bam
+	samtools sort -@32 -o /scratch/afilia/hypo2-mapped-sr.sorted.bam /scratch/afilia/hypo2-mapped-sr.bam && rsync -av /scratch/afilia/hypo2-mapped-sr.sorted.bam .
+	samtools index hypo2-mapped-sr.sorted.bam
+	rm /scratch/afilia/hypo2-mapped-sr.bam
+	minimap2 --secondary=no --MD -ax map-pb -t 32 pseudococcus_viburni.2nd.pass.h2.fa ../p.viburni.decon.subreads.fasta | samtools view -Sb - > /scratch/afilia/hypo2-mapped-lg.bam
+	samtools sort -@32 -o /scratch/afilia/hypo2-mapped-lg.sorted.bam /scratch/afilia/hypo2-mapped-lg.bam && rsync -av /scratch/afilia/hypo1-mapped-lg.sorted.bam .
+	samtools index hypo1-mapped-lg.sorted.bam
+	rm /scratch/afilia/hypo2-mapped-lg.bam
+	hypo -d pseudococcus_viburni.2nd.pass.h2.fa -i -r @il_names.txt -s 400m -c 100 -b hypo2-mapped-sr.sorted.bam -B hypo2-mapped-lg.sorted.bam -p 96 -t 48 -o pseudococcus_viburni.2nd.pass.h2h2.fa
+	hypo -d ppseudococcus_viburni.2nd.pass.h2.fa -i -r @il_names.txt -s 400m -c 100 -b hypo2-mapped-sr.sorted.bam -p 96 -t 48 -o pseudococcus_viburni.2nd.pass.h2h1.fa
+
+#!/bin/bash
+
+#$ -V
+#$ -cwd
+#$ -j y
+#$ -o minimap.$JOB_ID.log
+ 
+# Submit using:
+# qsub -pe smp64 32
+
+h2h2 is better:
+
+* For scaffolds longer than 1000 bp:
+	-	Num 3180
+	-	Span 441700490
+	-	Min 1089
+	-	Mean 138899
+	-	N50 792214
+	-	NumN50 159
+	-	GC 0.336
+* C:91.8%[S:88.4%,D:3.4%],F:1.0%,M:7.2%,n:2510 (hemiptera)
+* C:94.3%[S:90.7%,D:3.6%],F:0.9%,M:4.8%,n:1367 (insecta)
+* C:95.2%[S:92.0%,D:3.2%],F:0.6%,M:4.2%,n:1013 (arthropoda)
+
+Further rounds decrease BUSCOs -- seems we are hitting dimishing returns.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## 9. Blobtools
 
@@ -453,3 +538,20 @@ Homology searches
 Mapping (without secondary and supplemetary alignments)
 
 	minimap2 --secondary=no -ax map-pb -t 32 ../pseudococcus_viburni.2nd.pass.h2h2.fa ../../p.viburni.decon.subreads.fasta | samtools view -hF 0x900 - | samtools sort -@32 -O BAM -o /scratch/afilia/p.viburni.decon.to.2nd.pass.h2h2.sorted.bam - && rsync -av /scratch/afilia/p.viburni.decon.to.2nd.pass.h2h2.sorted.bam .
+
+* 1478615 + 0 in total (QC-passed reads + QC-failed reads)
+	-	0 + 0 secondary
+	-	0 + 0 supplementary
+	-	0 + 0 duplicates
+	-	1468970 + 0 mapped (99.35% : N/A)
+
+Run
+
+	/ceph/software/blobtools/blobtools create -i ../pseudococcus_viburni.2nd.pass.h2h2.fa -b p.viburni.decon.to.2nd.pass.h2h2.sorted.bam -t pseudococcus_viburni.2nd.pass.h2h2.blast.out -t pseudococcus_viburni.2nd.pass.h2h2.diamond.taxified.out -o p.viburni.2nd.pass
+	/ceph/software/blobtools/blobtools view -i p.viburni.2nd.pass.blobDB.json -b
+	/ceph/software/blobtools/blobtools plot -i p.viburni.2nd.pass.blobDB.json
+
+
+Interesting contigs
+	- 	ctg596: Candidatus *Tremblaya* tax0=Proteobacteria:323319.0;tax1=Arthropoda:1349.0 (139,262bp, 109x). The arthropod hit is Ef-Tu in the mountain pine beetle. Remove.
+	- 
