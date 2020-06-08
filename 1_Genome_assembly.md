@@ -5,7 +5,7 @@ Start date: 08.10.2019, restarted 21.04.2020
 
 	# Working directory	
 	/data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly
-    qlogin -pe smp 1 -N blobtools 
+    qlogin -pe smp64 24 -N busco 
 
 ## 1. Raw reads
 
@@ -183,118 +183,50 @@ Mapping short and long reads to contigs
 	minimap2 --secondary=no --MD -ax sr -t 32 ../raw/pseudococcus_viburni.redbean.raw.fa PV_18-13.Illumina.merged.trimmed_1.fq.gz PV_18-13.Illumina.merged.trimmed_2.fq.gz | samtools view -Sb - > /scratch/afilia/hypo1-mapped-sr.bam
 	samtools sort -@32 -o /scratch/afilia/hypo1-mapped-sr.sorted.bam /scratch/afilia/hypo1-mapped-sr.bam && rsync -av /scratch/afilia/hypo1-mapped-sr.sorted.bam .
 	samtools index hypo1-mapped-sr.sorted.bam
-	
-
 	minimap2 --secondary=no --MD -ax map-pb -t 32 ../raw/pseudococcus_viburni.redbean.raw.fa ../../0_reads/PV_18-13.1.subreads.fasta.gz ../../0_reads/PV_18-13.2.subreads.fasta.gz ../../0_reads/PV_18-13.3.subreads.fasta.gz | samtools view -Sb - > /scratch/afilia/hypo1-mapped-lg.bam
 	samtools sort -@32 -o /scratch/afilia/hypo1-mapped-lg.sorted.bam /scratch/afilia/hypo1-mapped-lg.bam && rsync -av /scratch/afilia/hypo1-mapped-lg.sorted.bam .
 	samtools index hypo1-mapped-lg.sorted.bam
 
-Run hypo
+Run hypo (three rounds)
 
 	hypo -d ../raw/pseudococcus_viburni.redbean.raw.fa -i -r @il_names.txt -s 440m -c 100 -b hypo1-mapped-sr.sorted.bam -B hypo1-mapped-lg.sorted.bam -p 96 -t 48 -o pseudococcus_viburni.hypo1.fa
 
 * For scaffolds longer than 1000 bp:
-	-	Num 3180
-	-	Span 442083649
-	-	Min 1089
-	-	Mean 139020
-	-	N50 792839
-	-	NumN50 159
+	-	Num 2861
+	-	Span 440705122
+	-	Min 1356
+	-	Mean 154038
+	-	N50 818128
+	-	NumN50 164
 	-	GC 0.336
-* C:91.6%[S:88.4%,D:3.2%],F:0.9%,M:7.5%,n:2510  
 
-Run a second round
-
-	minimap2 --secondary=no --MD -ax sr -t 32 pseudococcus_viburni.2nd.pass.h2.fa PV_18-13.Illumina.merged.trimmed_1.fq.gz PV_18-13.Illumina.merged.trimmed_2.fq.gz | samtools view -Sb - > /scratch/afilia/hypo2-mapped-sr.bam
-	samtools sort -@32 -o /scratch/afilia/hypo2-mapped-sr.sorted.bam /scratch/afilia/hypo2-mapped-sr.bam && rsync -av /scratch/afilia/hypo2-mapped-sr.sorted.bam .
-	samtools index hypo2-mapped-sr.sorted.bam
-	rm /scratch/afilia/hypo2-mapped-sr.bam
-	minimap2 --secondary=no --MD -ax map-pb -t 32 pseudococcus_viburni.2nd.pass.h2.fa ../p.viburni.decon.subreads.fasta | samtools view -Sb - > /scratch/afilia/hypo2-mapped-lg.bam
-	samtools sort -@32 -o /scratch/afilia/hypo2-mapped-lg.sorted.bam /scratch/afilia/hypo2-mapped-lg.bam && rsync -av /scratch/afilia/hypo1-mapped-lg.sorted.bam .
-	samtools index hypo1-mapped-lg.sorted.bam
-	rm /scratch/afilia/hypo2-mapped-lg.bam
-	hypo -d pseudococcus_viburni.2nd.pass.h2.fa -i -r @il_names.txt -s 400m -c 100 -b hypo2-mapped-sr.sorted.bam -B hypo2-mapped-lg.sorted.bam -p 96 -t 48 -o pseudococcus_viburni.2nd.pass.h2h2.fa
-	hypo -d ppseudococcus_viburni.2nd.pass.h2.fa -i -r @il_names.txt -s 400m -c 100 -b hypo2-mapped-sr.sorted.bam -p 96 -t 48 -o pseudococcus_viburni.2nd.pass.h2h1.fa
-
-#!/bin/bash
-
-#$ -V
-#$ -cwd
-#$ -j y
-#$ -o minimap.$JOB_ID.log
- 
-# Submit using:
-# qsub -pe smp64 32
-
-h2h2 is better:
-
-* For scaffolds longer than 1000 bp:
-	-	Num 3180
-	-	Span 441700490
-	-	Min 1089
-	-	Mean 138899
-	-	N50 792214
-	-	NumN50 159
-	-	GC 0.336
-* C:91.8%[S:88.4%,D:3.4%],F:1.0%,M:7.2%,n:2510 (hemiptera)
-* C:94.3%[S:90.7%,D:3.6%],F:0.9%,M:4.8%,n:1367 (insecta)
-* C:95.2%[S:92.0%,D:3.2%],F:0.6%,M:4.2%,n:1013 (arthropoda)
-
-Further rounds decrease BUSCOs -- seems we are hitting dimishing returns.
-
-
-
-
-
-
-
-
-
-
-
-
-
+* C:92.2%[S:89.1%,D:3.1%],F:0.9%,M:6.9%,n:2510  
+* C:92.5%[S:89.2%,D:3.3%],F:0.8%,M:6.7%,n:2510 
+* C:92.5%[S:89.2%,D:3.3%],F:0.9%,M:6.6%,n:2510	
 
 ## 9. Blobtools
 
 Homology searches
 
-	blastn -task megablast -query ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa -db  /ceph/software/databases/ncbi_2020_02/nt -outfmt '6 qseqid staxids bitscore std' -max_target_seqs 10 -max_hsps 1 -num_threads 32 -evalue 1e-25 -out /scratch/afilia/p.viburni.decon.blast.out && rsync /scratch/afilia/p.viburni.decon.blast.out .
-	diamond blastx --query ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa --max-target-seqs 1 --sensitive --threads 32 --db /ceph/software/databases/uniprot_2019_08/full/reference_proteomes.dmnd --evalue 1e-25 --tmpdir /scratch/afilia/ --outfmt 6 --out /scratch/afilia/p.viburni.decon.diamond.out && rsync /scratch/afilia/p.viburni.decon.diamond.out .
-	# add taxIDs to diamond 
+	blastn -task megablast -query pseudococcus_viburni.hypo3.fa -db /ceph/software/databases/ncbi_2020_02/nt -outfmt '6 qseqid staxids bitscore std' -max_target_seqs 10 -max_hsps 1 -num_threads 32 -evalue 1e-25 -out /scratch/afilia/pseudococcus_viburni.hypo3.blast.out && rsync /scratch/afilia/pseudococcus_viburni.hypo3.blast.out .
+	diamond blastx --query pseudococcus_viburni.hypo3.fa --max-target-seqs 1 --sensitive --threads 32 --db /ceph/software/databases/uniprot_2019_08/full/reference_proteomes.dmnd --evalue 1e-25 --tmpdir /scratch/afilia/ --outfmt 6 --out /scratch/afilia/pseudococcus_viburni.hypo3.diamond.out && rsync /scratch/afilia/pseudococcus_viburni.hypo3.diamond.out .
 	cp /ceph/software/databases/uniprot_2019_08/full/reference_proteomes.taxid_map.gz .
-	/ceph/software/blobtools/blobtools taxify -f p.viburni.decon.diamond.out -m reference_proteomes.taxid_map -s 0 -t 1
+	/ceph/software/blobtools/blobtools taxify -f pseudococcus_viburni.hypo3.diamond.out -m reference_proteomes.taxid_map -s 0 -t 1
 
-Mapping reads to reference
+Mapping reads to reference (without secondary and supplemetary alignments)
 
-	minimap2 -ax map-pb -t 32 ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz | samtools view -hF 256 - | samtools sort -@32 -O BAM -o /scratch/afilia/p.viburni.decon.to.cns3.srp1.sorted.bam - && rsync -av /scratch/afilia/p.viburni.decon.to.cns3.srp1.sorted.bam .
-
-Mapping stats:
-  - raw total sequences:	1696469
-  -	filtered sequences:	0
-  -	sequences:	1696469
-  -	is sorted:	1
-  -	last fragments:	0
-  -	reads mapped:	1495328
-  -	reads mapped and paired:	0	# paired-end technology bit set + both mates mapped
-  -	reads unmapped:	201141
-  -	reads properly paired:	0	# proper-pair bit set
-  -	reads paired:	0	# paired-end technology bit set
-  -	reads duplicated:	0	# PCR or optical duplicate bit set
-  -	reads MQ0:	3523	# mapped and MQ=0
-  -	reads QC failed:	0
-  -	non-primary alignments:	0
+	minimap2 --secondary=no -ax map-pb -t 32 pseudococcus_viburni.hypo3.fa ../../0_reads/PV_18-13.1.subreads.fasta.gz ../../0_reads/PV_18-13.2.subreads.fasta.gz ../../0_reads/PV_18-13.3.subreads.fasta.gz | samtools view -hF 0x900 - | samtools sort -@32 -O BAM -o /scratch/afilia/pseudococcus_viburni.hypo3.sorted.bam - && rsync -av /scratch/afilia/pseudococcus_viburni.hypo3.sorted.bam .
 	
 Running blobtools (v1.1.1)
 
-	/ceph/software/blobtools/blobtools create -i ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa -b p.viburni.decon.to.cns3.srp1.sorted.bam -t p.viburni.decon.blast.out -t p.viburni.decon.diamond.taxified.out -o p.viburni.decon
-	/ceph/software/blobtools/blobtools view -i p.viburni.decon.blobDB.json -b
-	/ceph/software/blobtools/blobtools plot -i p.viburni.decon.blobDB.json
+	/ceph/software/blobtools/blobtools create -i ../pseudococcus_viburni.hypo3.fa -b ../pseudococcus_viburni.hypo3.sorted.bam -t ../pseudococcus_viburni.hypo3.blast.out -t ../pseudococcus_viburni.hypo3.diamond.out -o pseudococcus_viburni.hypo3
+	/ceph/software/blobtools/blobtools view -i pseudococcus_viburni.hypo3.blobDB.json -b
+	/ceph/software/blobtools/blobtools plot -i pseudococcus_viburni.hypo3.blobDB.json
 	
-The blobplots look good. However, note the low propotion of mapping reads in the ReadCovPlot.
+The blobplots look good.
 
-![](misc/p.viburni.decon.blobDB.json.bestsum.phylum.p8.span.100.blobplot.read_cov.bam0.png)
-![](misc/p.viburni.decon.blobDB.json.bestsum.phylum.p8.span.100.blobplot.bam0.png)
+![](misc/pseudococcus_viburni.hypo3.blobDB.json.bestsum.phylum.p8.span.100.blobplot.bam0.png)
+![](misc/pseudococcus_viburni.hypo3.blobDB.json.bestsum.phylum.p8.span.100.blobplot.read_cov.bam0.png)
 	
 This is not a concern: blobtools v1.1 plots mapped reads/the total number of alignments estimate with pysam (which is misleading). With v1.0, I obtain something much more reasonable:
 
