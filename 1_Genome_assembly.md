@@ -227,39 +227,38 @@ The blobplots look good.
 
 ![](misc/pseudococcus_viburni.hypo3.blobDB.json.bestsum.phylum.p8.span.100.blobplot.bam0.png)
 ![](misc/pseudococcus_viburni.hypo3.blobDB.json.bestsum.phylum.p8.span.100.blobplot.read_cov.bam0.png)
-	
-This is not a concern: blobtools v1.1 plots mapped reads/the total number of alignments estimate with pysam (which is misleading). With v1.0, I obtain something much more reasonable:
 
-	/ceph/users/afilia/.conda/envs/afilia_blobtools/bin/blobtools create -i ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa -b p.viburni.decon.to.cns3.srp1.sorted.bam -t p.viburni.decon.blast.out -t p.viburni.decon.diamond.taxified.out -o p.viburni.decon2
-	
-![](misc/p.viburni.decon2.blobDB.json.bestsum.phylum.p7.span.100.blobplot.read_cov.bam0.png)
+### 9.1. Decontamination  
 
 I can now filter out contaminant contigs. Let's see what we have:
 
- - Arthropoda  970
- - Ascomycota    2
- - Bacteroidetes    1
- - Brachiopoda    1
- - Candidatus Tectomicrobia    1
- - Chlamydiae    1
- - Chordata   21
- - Cnidaria    5
- - Echinodermata    1
- - Euryarchaeota    1
- - Mollusca    9
- - Nematoda   45
- - no-hit 1773
- - Porifera    3
- - Proteobacteria   20
- - Rotifera    1
- - Spirochaetes    1
- - Streptophyta    3
- - Thermodesulfobacteria    1
- - Viruses-undef    2
+ -       Annelida    1
+ -     Arthropoda  994
+ -    Brachiopoda    2
+ -     Chlamydiae    5
+ -       Chordata   19
+ -       Cnidaria    2
+ -  Echinodermata    2
+ -  Euryarchaeota    1
+ -       Mollusca    8
+ -   Mucoromycota    1
+ -       Nematoda   45
+ -         no-hit 1748
+ -       Porifera    5
+ - Proteobacteria   16
+ -       Rotifera    3
+ -   Spirochaetes    2
+ -   Streptophyta    4
+ -    Thermotogae    1
+ -  Viruses-undef    3
 
- I will extract all metazoan contigs + contigs with good secondary hits to Arthopoda, and filter our too short/low coverage contigs as well (contigs with very high coverage *might* be B-chromosome related, let's keep these).
+Which contigs to keep?
 
- 	contigs.animals <- contigs.bestsum[(contigs.bestsum$phylum == "Arthropoda" | contigs.bestsum$phylum == "Brachiopoda" | contigs.bestsum$phylum == "Chordata" | contigs.bestsum$phylum == "Cnidaria" | contigs.bestsum$phylum == "Echinodermata" | contigs.bestsum$phylum == "Mollusca" | contigs.bestsum$phylum == "Nematoda" | contigs.bestsum$phylum == "Porifera" | contigs.bestsum$phylum == "Rotifera"),]
+ * Metazoan contigs
+
+	contigs.animals <- contigs.bestsum[(contigs.bestsum$phylum == "Arthropoda" | contigs.bestsum$phylum == "Brachiopoda" | contigs.bestsum$phylum == "Chordata" | contigs.bestsum$phylum == "Cnidaria" | contigs.bestsum$phylum == "Echinodermata" | contigs.bestsum$phylum == "Mollusca" | contigs.bestsum$phylum == "Nematoda" | contigs.bestsum$phylum == "Porifera" | contigs.bestsum$phylum == "Rotifera"),]
+
+
 	contigs.no.hit <- contigs.bestsum[(contigs.bestsum$phylum == "no-hit"),]
 	contigs.animals.no.hit <- rbind(contigs.animals,contigs.no.hit)
 	contigs.other <- anti_join(contigs.bestsum,contigs.animals.no.hit,by="contig")
