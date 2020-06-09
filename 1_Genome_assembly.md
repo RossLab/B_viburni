@@ -198,7 +198,7 @@ Run hypo (three rounds)
 	-	N50 818128
 	-	NumN50 164
 	-	GC 0.336
-	
+
 * Busco scores (round 1 to 3)
  - C:92.2%[S:89.1%,D:3.1%],F:0.9%,M:6.9%,n:2510  
  - C:92.5%[S:89.2%,D:3.3%],F:0.8%,M:6.7%,n:2510 
@@ -356,5 +356,4 @@ Try the whole thing (scaffolding, reducing and gap closing with paired-end and l
 Conservative: no reduction and no reduction/sr scaffolding
 
 	/ceph/software/redundans/redundans_v0.13c/redundans/redundans.py -v -f ../1_first_pass/hypo_polished/pseudococcus_viburni.hypo3.fa -i ../1_first_pass/hypo_polished/PV_18-13.Illumina.merged.trimmed_1.fq.gz ../1_first_pass/hypo_polished/PV_18-13.Illumina.merged.trimmed_2.fq.gz -l /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz -i /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz -i /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz -t 24 -o redundans_1/pseudococcus_viburni.hypo3.nr --limit 1.0 --log redundans.nr.log --tmp /scratch/afilia/nr --noreduction
-
 	/ceph/software/redundans/redundans_v0.13c/redundans/redundans.py -v -f ../1_first_pass/hypo_polished/pseudococcus_viburni.hypo3.fa -i ../1_first_pass/hypo_polished/PV_18-13.Illumina.merged.trimmed_1.fq.gz ../1_first_pass/hypo_polished/PV_18-13.Illumina.merged.trimmed_2.fq.gz -l /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz -i /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz -i /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz -t 16 -o redundans_1/pseudococcus_viburni.hypo3.nrns --limit 1.0 --log redundans.nrns.log --tmp /scratch/afilia --noreduction --noscaffolding
