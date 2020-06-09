@@ -1,11 +1,10 @@
-
 # Generating a *P. viburni* assembly
 
 Start date: 08.10.2019, restarted 21.04.2020
 
 	# Working directory	
 	/data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly
-    qlogin -pe smp64 24 -N busco 
+    qlogin -pe smp 1 -N samtools 
 
 ## 1. Raw reads
 
@@ -219,8 +218,8 @@ Mapping reads to reference (without secondary and supplemetary alignments)
 	
 Running blobtools (v1.1.1)
 
-	/ceph/software/blobtools/blobtools create -i ../pseudococcus_viburni.hypo3.fa -b ../pseudococcus_viburni.hypo3.sorted.bam -t ../pseudococcus_viburni.hypo3.blast.out -t ../pseudococcus_viburni.hypo3.diamond.out -o pseudococcus_viburni.hypo3
-	/ceph/software/blobtools/blobtools view -i pseudococcus_viburni.hypo3.blobDB.json -b
+	/ceph/software/blobtools/blobtools create -i ../pseudococcus_viburni.hypo3.fa -b ../pseudococcus_viburni.hypo3.sorted.bam -t ../pseudococcus_viburni.hypo3.blast.out -t ../pseudococcus_viburni.hypo3.diamond.taxified.out -o pseudococcus_viburni.hypo3
+	/ceph/software/blobtools/blobtools view -i pseudococcus_viburni.hypo3.blobDB.json -b -f genus
 	/ceph/software/blobtools/blobtools plot -i pseudococcus_viburni.hypo3.blobDB.json
 	
 The blobplots look good.
@@ -252,237 +251,109 @@ I can now filter out contaminant contigs. Let's see what we have:
  -    Thermotogae    1
  -  Viruses-undef    3
 
-Which contigs to keep?
+Let's keep all metazoan contigs, except those with extremely low coverage (>2)
 
- * Metazoan contigs
+	contigs.animals <- contigs.bestsum[(contigs.bestsum$phylum == "Annelida" | contigs.bestsum$phylum == "Arthropoda" | contigs.bestsum$phylum == "Brachiopoda" | contigs.bestsum$phylum == "Chordata" | contigs.bestsum$phylum == "Cnidaria" | contigs.bestsum$phylum == "Echinodermata" | contigs.bestsum$phylum == "Mollusca" | contigs.bestsum$phylum == "Nematoda" | contigs.bestsum$phylum == "Porifera" | contigs.bestsum$phylum == "Rotifera"),]
+	contigs.animals.remove <- contigs.animals[contigs.animals$cov < 2,]
 
-	contigs.animals <- contigs.bestsum[(contigs.bestsum$phylum == "Arthropoda" | contigs.bestsum$phylum == "Brachiopoda" | contigs.bestsum$phylum == "Chordata" | contigs.bestsum$phylum == "Cnidaria" | contigs.bestsum$phylum == "Echinodermata" | contigs.bestsum$phylum == "Mollusca" | contigs.bestsum$phylum == "Nematoda" | contigs.bestsum$phylum == "Porifera" | contigs.bestsum$phylum == "Rotifera"),]
+There are three contigs with best hit to viruses, but genome-like coverage and secondary hits to arthropods. Keeping those too.
 
+	contigs.virus <- contigs.bestsum[(contigs.bestsum$phylum == "Viruses-undef"),]
 
-	contigs.no.hit <- contigs.bestsum[(contigs.bestsum$phylum == "no-hit"),]
-	contigs.animals.no.hit <- rbind(contigs.animals,contigs.no.hit)
-	contigs.other <- anti_join(contigs.bestsum,contigs.animals.no.hit,by="contig")
-	contigs.other.arthropoda.2nd <- contigs.other[grepl('Arthropoda', contigs.other$phylum_hits),]
-	contigs.animals.no.hit.other.arthropoda.2nd <- rbind(contigs.animals.no.hit,contigs.other.arthropoda.2nd)
-	p.viburni.decon.contigs.keep <- contigs.animals.no.hit.other.arthropoda.2nd[(contigs.animals.no.hit.other.arthropoda.2nd$len > 1000) & (contigs.animals.no.hit.other.arthropoda.2nd$cov > 2),]
+There are a lot of contigs with best hits to prokaryotes. Let's be careful with these -- some will belong to the endosymbionts, and we want to remove these, but others might be HGT events.
 
-### A detour: the endosymbionts
+	contigs.other <- contigs.bestsum[(contigs.bestsum$phylum == "Chlamydiae" | contigs.bestsum$phylum == "Euryarchaeota" | contigs.bestsum$phylum == "Spirochaetes" | contigs.bestsum$phylum == "Thermotogae" | contigs.bestsum$phylum == "Proteobacteria" | contigs.bestsum$phylum == "Streptophyta" | contigs.bestsum$phylum == "Mucoromycota"),]
 
-We have 20 proteobacterial contigs adding up to ~5.6Mb. What do we know about endosymbionts in *P. viburni*?
- * Primary endosymbiont: beta Candidatus *Tremblaya princeps* (Gatehouse et al. 2012), genome size ~150kb in *longispinus* (Husnik & McCutcheon 2016)
- * Secondary embosymbionts: two massive gamma endosymbionts in *longispinus* (>4 Mbp each) (one of them belonging to the *Sodalis* clade; the other one more related to *Dickeya*) (Husnik & McCutcheon 2016)
+There are four contigs with high coverage, all Proteobacteria.
 
-|contig  | length | GC    | cov   | hits                                                                                                     |
-|--------|--------|-------|-------|----------------------------------------------------------------------------------------------------------|
-|ctg82   | 654212 | 0.339 | 18.4  | tax0=Arthropoda:305.0;tax1=Proteobacteria:676.0;                                                         |
-|ctg88   | 644353 | 0.342 | 22.9  | tax0=Arthropoda:444.0;tax1=Proteobacteria:587.4;                                                         |
-|ctg182  | 751204 | 0.434 | 94.2  | tax0=Proteobacteria:67094.0;tax1=Proteobacteria:2548.9;                                                  |
-|ctg300  | 688257 | 0.323 | 23.0  | tax0=Proteobacteria:2839.0\|Viruses-undef:2412.0\|Arthropoda:1388.0\|undef:850.0;tax1=Arthropoda:1146.3; |
-|ctg332  | 897554 | 0.34  | 18.2  | tax0=Arthropoda:207.0;tax1=Proteobacteria:489.6;                                                         |
-|ctg376  | 268281 | 0.278 | 93.7  | tax0=Proteobacteria:43296.0;tax1=Nematoda:4144.8;                                                        |
-|ctg390  | 253583 | 0.328 | 21.3  | tax0=Arthropoda:603.0;tax1=Proteobacteria:686.8;                                                         |
-|ctg436  | 311299 | 0.332 | 21.5  | tax0=Proteobacteria:265.0;tax1=Proteobacteria:505.8;                                                     |
-|ctg455  | 217774 | 0.335 | 19.7  | tax0=Arthropoda:337.0;tax1=Proteobacteria:465.6;                                                         |
-|ctg497  | 260073 | 0.336 | 19.9  | tax0=Arthropoda:560.0;tax1=Proteobacteria:592.4;                                                         |
-|ctg500  | 189316 | 0.342 | 17.4  | tax0=no-hit:0.0;tax1=Proteobacteria:211.1;                                                               |
-|ctg513  | 177649 | 0.336 | 19.5  | tax0=no-hit:0.0;tax1=Proteobacteria:639.7;                                                               |
-|ctg571  | 151401 | 0.322 | 19.1  | tax0=no-hit:0.0;tax1=Proteobacteria:168.7;                                                               |
-|ctg1140 | 33216  | 0.339 | 7.13  | tax0=no-hit:0.0;tax1=Proteobacteria:163.7;                                                               |
-|ctg1458 | 14519  | 0.338 | 4.53  | tax0=no-hit:0.0;tax1=Proteobacteria:512.3;                                                               |
-|ctg1645 | 12289  | 0.397 | 469.  | tax0=Proteobacteria:31102.0;tax1=Proteobacteria:877.9;                                                   |
-|ctg1772 | 10591  | 0.316 | 9.31  | tax0=no-hit:0.0;tax1=Proteobacteria:324.3;                                                               |
-|ctg2111 | 8641   | 0.359 | 7.61  | tax0=no-hit:0.0;tax1=Proteobacteria:204.9;                                                               |
-|ctg2236 | 6947   | 0.34  | 49.2  | tax0=no-hit:0.0;tax1=Proteobacteria:654.8;                                                               |
-|ctg2741 | 4803   | 0.601 | 1386. | tax0=Proteobacteria:34512.0;tax1=Proteobacteria:241.5;                                                   |
-
-According to coverage and GC content differences, these contigs look like promising candidates:
+ - ctg2741	4807	0.6012	0	2255.7811	Proteobacteria	34803.5	0	tax0=Proteobacteria:34562.0;tax1=Proteobacteria:241.5;
+ - ctg182	754563	0.4338	0	167.0993	Proteobacteria	70356.9	0	tax0=Proteobacteria:67808.0;tax1=Proteobacteria:2548.9;
+ - ctg376	281389	0.2748	0	134.9322	Proteobacteria	48935.1	0	tax0=Proteobacteria:46533.0;tax1=Proteobacteria:2402.1;
+ - ctg1645	13152	0.3933	0	78.1342		Proteobacteria	39194.9	0	tax0=Proteobacteria:38317.0;tax1=Proteobacteria:877.9;
 
  * Primary endosymbiont:
-	- ctg2741: Candidatus *Tremblaya princeps* (however too short); another hit to *Tremblaya* in ctg64 might be HGT (tax0=Arthropoda:1101.0|Proteobacteria:633.0|Streptophyta:185.0;tax1=Chordata:1565.3)
+	- ctg2741: Candidatus *Tremblaya princeps* (however too short); another hit to *Tremblaya* in ctg64 might be HGT (tax0=Proteobacteria:1198.0|Arthropoda:557.0|Streptophyta:185.0;tax1=Brachiopoda:1218.33)
  * Secondary endosymbionts:
-	- ctg182, ctg1645: Candidatus *Sodalis*, gamma proteobacterium endosymbiont of *P. viburni* isolate Vib 1-1 p505BB11 (~750kb) (PLON gamma 1)
-	- ctg376, *Morganella/Buchnera/Gullanella* (*Sodalis?*) (~300kb)
-	- ctg300, *Wolbachia* (~700kb)
-	- ctg436, *Dickeya* (pathogens from herbaceous plants, related to PLON gamma 2) (~300Mb
+	- ctg182, ctg1645: Candidatus *Sodalis*, gamma proteobacterium endosymbiont of *P. viburni* isolate (PLON gamma 1)
+	- ctg376, *Morganella/Buchnera/Gullanella* (*Sodalis?*)
 
-## 10. Reassemble
+These four contigs will be removed from the assembly. No contigs with cov < 2 here, so keeping all the rest.
 
-Extract contigs
+	contigs.other.remove <- contigs.other[contigs.other$contig == 'ctg2741' | contigs.other$contig == 'ctg182' | contigs.other$contig == 'ctg376' | contigs.other$contig == 'ctg1645',]
 
-	/ceph/software/assemblage/fastaqual_select.pl -f ../polished/pseudococcus_viburni.redbean.cns3.srp1.fa -i p.viburni.decon.contigs.keep.txt > ../polished/pseudococcus_viburni.redbean.cns3.srp1.blobtools.fa
+It would be interesting to take a look at proteobacteria contigs with genome-like coverage and see if we can find HGT genes from Husnik et al. 2013.
 
-Remap reads
+ - ctg436: *cysK* (*Dickeya*, related to PLON gamma 2)
+ - ctg571: N-acetylmuramoyl-L-alanine amidase
+ - ctg662: AAA-type ATPase
+ - ctg716: AAA-ATPase_like domain-containing protein
+ - ctg936: Putative AAA-ATPase
+ - ctg1140: AAA family ATPase
+ - ctg1568: *murF* (UDP-N-acetylmuramoyl-tripeptide--D-alanyl-D-alanine ligase)
+ - ctg2111: AAA-ATPase_like domain-containing protein
+ - ctg2265: ATPase AAA
+
+Finally, let's look at the contigs without hits. We have quite a lot (1,748), with very variable coverages. There are ca. 230 contigs with very high coverage (>100, up to >10,000). These are probably highly repetitive sequences that should be kept (they might be B-linked). For now, let's just filter low coverage (<2) no-hit contigs 
+
+	contigs.nohit <- contigs.bestsum[(contigs.bestsum$phylum == "no-hit"),]
+	contigs.nohit.remove <- contigs.nohit[contigs.nohit$cov < 2,]
+
+In total, 401 contigs will be removed.
+
+### 9.2. Blobtools with the Illumina data
+
+We can also use the Illumina data to create a blobplot. Nothing really changes, which is reassuring.
+
+	/ceph/software/blobtools/blobtools create -i ../pseudococcus_viburni.hypo3.fa -b ../pseudococcus_viburni.hypo3.sr.sorted.bam -t ../pseudococcus_viburni.hypo3.blast.out -t ../pseudococcus_viburni.hypo3.diamond.taxified.out -o pseudococcus_viburni.hypo3.sr
+	/ceph/software/blobtools/blobtools view -i pseudococcus_viburni.hypo3.sr.blobDB.json -b
+	/ceph/software/blobtools/blobtools plot -i pseudococcus_viburni.hypo3.sr.blobDB.json
+
+## 10. Filtered assembly
+
+Extract contigs and reads
+
+	/ceph/software/assemblage/fastaqual_select.pl -f pseudococcus_viburni.hypo3.fa -i blobtools/contigs.to.keep.txt > pseudococcus_viburni.hypo3.filtered.fa
+	bamtools convert -format fasta -in pseudococcus_viburni.hypo3.sorted.bam -out pseudococcus_viburni.lr.hypo3.decon.fasta
+
+We could try to extract the reads and reassemble the genome, as below, but this results in a more fragmented and less complete assembly. Since there was no contamination and we haven't removed much, let's just work with the filtered assembly.
 
 	minimap2 -ax map-pb -t 32 ../polished/pseudococcus_viburni.redbean.cns3.srp1.blobtools.fa /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz | samtools view -hF 256 - | samtools sort -@32 -O BAM -o /scratch/afilia/p.viburni.decon.to.cns3.srp1.blobtools.sorted.bam - && rsync -av /scratch/afilia/p.viburni.decon.to.cns3.srp1.blobtools.sorted.bam .
-
-Keep mapped reads only, excluding unmapped and supplementary alignments
-	
+	# Keep mapped reads only, excluding unmapped and supplementary alignments
 	samtools view -bhF 0x904 p.viburni.decon.to.cns3.srp1.blobtools.sorted.bam > /scratch/afilia/p.viburni.decon.to.cns3.srp1.blobtools.sorted.mapped.primary.bam && rsync -av /scratch/afilia/p.viburni.decon.to.cns3.srp1.blobtools.sorted.mapped.primary.bam .
-
-Extract reads
-
+	# Extract reads
 	bamtools convert -format fasta -in p.viburni.decon.to.cns3.srp1.blobtools.sorted.mapped.primary.bam -out p.viburni.decon.subreads.fasta
-
-Reassemble with redbean reads
-
+	# Reassemble with redbean reads
 	wtdbg2 -x sq -g 400m -t 64 -i p.viburni.decon.subreads.fasta -o /scratch/afilia/pseudococcus_viburni.2nd.pass && wtpoa-cns -t 64 -i /scratch/afilia/pseudococcus_viburni.2nd.pass.ctg.lay.gz -fo /scratch/afilia/pseudococcus_viburni.2nd.pass.raw.fa
 	export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 24 -i pseudococcus_viburni.2nd.pass.raw.fa -o pseudococcus_viburni.2nd.pass.raw.busco.hemiptera -f -l hemiptera_odb10
 
-  * For scaffolds longer than 1000 bp:
-	-	Num 3180
-	-	Span 441022965
-	-	Min 1089
-	-	Mean 138686
-	-	N50 791604
-	-	NumN50 159
-	-	GC 0.336
-  * Busco (hemiptera) C:86.8%[S:84.8%,D:2.0%],F:1.2%,M:12.0%,n:2510 
-
-### 10.1 Polish with wtpoa-cns
-
-Polish with pacbio reads (3x) (better results than racon)
-
-	minimap2 -t32 -ax map-pb -r2k ../pseudococcus_viburni.2nd.pass.raw.fa ../p.viburni.decon.subreads.fasta | samtools sort -@32 > /scratch/afilia/pseudococcus_viburni.2nd.pass.raw0.int
-	samtools view -F0x900 /scratch/afilia/pseudococcus_viburni.2nd.pass.raw0.int | wtpoa-cns -t 32 -d ../pseudococcus_viburni.2nd.pass.raw.fa -i - -fo pseudococcus_viburni.2nd.pass.cns1.fa
-	minimap2 -t 16 -c -x map-pb pseudococcus_viburni.2nd.pass.cns1.fa ../p.viburni.decon.subreads.fasta | samtools sort -@16 > /scratch/afilia/pseudococcus_viburni.2nd.pass.cns1.int
-	samtools view -F0x900 /scratch/afilia/pseudococcus_viburni.2nd.pass.cns1.int | wtpoa-cns -t 16 -d pseudococcus_viburni.2nd.pass.cns1.fa -i - -fo pseudococcus_viburni.2nd.pass.cns2.fa
-	minimap2 -t 16 -c -x map-pb pseudococcus_viburni.2nd.pass.cns2.fa ../p.viburni.decon.subreads.fasta | samtools sort -@16 > /scratch/afilia/pseudococcus_viburni.2nd.pass.cns2.int
-	samtools view -F0x900 /scratch/afilia/pseudococcus_viburni.2nd.pass.cns2.int.bam | wtpoa-cns -t 16 -d pseudococcus_viburni.2nd.pass.cns2.fa -i - -fo pseudococcus_viburni.2nd.pass.cns3.fa
+Stats for the filtered assembly
 
 * For scaffolds longer than 1000 bp:
-	-	Num 3038
-	-	Span 433526075
-	-	Min 1010
-	-	Mean 142701
-	-	N50 797858
-	-	NumN50 155
-	-	GC 0.336
-* C:89.5%[S:86.8%,D:2.7%],F:1.4%,M:9.1%,n:2510 (cns3)
+	- Num 2461
+	- Span 435312763
+	- Min 1350
+	- Mean 176884
+	- N50 826556
+	- NumN50 161
+	- GC 0.337
+* C:92.6%[S:89.4%,D:3.2%],F:0.8%,M:6.6%,n:2510 (hemiptera)
+* C:95.7%[S:92.6%,D:3.1%],F:1.1%,M:3.2%,n:1013 (arthropoda)
+* C:95.2%[S:91.8%,D:3.4%],F:0.9%,M:3.9%,n:1367 (insecta)
 
-Polish with Illumina reads and wtpoa-cns (2x)
+## 11. Scaffolding
 
-	bwa index pseudococcus_viburni.2nd.pass.cns3.fa
-	bwa mem -t 20 pseudococcus_viburni.2nd.pass.cns3.fa /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz | samtools sort -O SAM -o /scratch/afilia/PV_18-13.Illumina.2nd.pass.350.alignedtocns3.sorted.sam
-	bwa mem -t 20 pseudococcus_viburni.2nd.pass.cns3.fa /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz | samtools sort -O SAM -o /scratch/afilia/PV_18-13.Illumina.2nd.pass.550.alignedtocns3.sorted.sam
-	samtools merge /scratch/afilia/PV_18-13.Illumina.2nd.pass.alignedtocns3.sorted.sam /scratch/afilia/PV_18-13.Illumina.2nd.pass.350.alignedtocns3.sorted.sam /scratch/afilia/PV_18-13.Illumina.2nd.pass.550.alignedtocns3.sorted.sam
-	wtpoa-cns -t 24 -x sam-sr -d pseudococcus_viburni.2nd.pass.cns3.fa -i /scratch/afilia/PV_18-13.Illumina.2nd.pass.alignedtocns3.sorted.sam -fo pseudococcus_viburni.2nd.pass.cns3.srp1.fa
+Try redundans to scaffold the genome and remove duplication: https://github.com/Gabaldonlab/redundans. It makes more sense to start with the non-decontaminated assembly for now.
 
-	bwa index pseudococcus_viburni.2nd.pass.cns3.srp1.fa
-	bwa mem -t 32 pseudococcus_viburni.2nd.pass.cns3.srp1.fa /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz | samtools sort -O SAM -o /scratch/afilia/PV_18-13.Illumina.2nd.pass.350.alignedtocns3srp1.sorted.sam
-	bwa mem -t 32 pseudococcus_viburni.2nd.pass.cns3.srp1.fa /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz | samtools sort -O SAM -o /scratch/afilia/PV_18-13.Illumina.2nd.pass.550.alignedtocns3srp1.sorted.sam
-	samtools merge /scratch/afilia/PV_18-13.Illumina.2nd.pass.alignedtocns3srp1.sorted.sam /scratch/afilia/PV_18-13.Illumina.2nd.pass.350.alignedtocns3srp1.sorted.sam /scratch/afilia/PV_18-13.Illumina.2nd.pass.550.alignedtocns3srp1.sorted.sam
-	wtpoa-cns -t 24 -x sam-sr -d pseudococcus_viburni.2nd.pass.cns3.srp1.fa -i /scratch/afilia/PV_18-13.Illumina.2nd.pass.alignedtocns3srp1.sorted.sam -fo pseudococcus_viburni.2nd.pass.cns3.srp2.fa
+conda create -n afilia_scaffold python=2.7 anaconda
+conda install -c numpy matplotlib
+conda install -c forge docopt numpy seaborn tqdm parallel 
 
-* For scaffolds longer than 1000 bp:
-	-	Num 3013
-	-	Span 410661387
-	-	Min 1017
-	-	Mean 136296
-	-	N50 747388
-	-	NumN50 155
-	-	GC 0.337
-* C:90.6%[S:87.7%,D:2.9%],F:1.3%,M:8.1%,n:2510 (cns3.srp2)
+Try the whole thing (scaffolding, reducing and gap closing with paired-end and long reads)
 
-### 10.2 Try sr polishing with hypo
+	/ceph/software/redundans/redundans_v0.13c/redundans/redundans.py -v -f ../1_first_pass/hypo_polished/pseudococcus_viburni.hypo3.fa -i ../1_first_pass/hypo_polished/PV_18-13.Illumina.merged.trimmed_1.fq.gz ../1_first_pass/hypo_polished/PV_18-13.Illumina.merged.trimmed_2.fq.gz -l /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz -i /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz -i /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz -t 64 -o redundans_1/pseudococcus_viburni.hypo3.redundans --limit 1.0 --log redundans.log --tmp /scratch/afilia/
 
-HyPo lools very promising: https://www.biorxiv.org/content/biorxiv/early/2019/12/20/2019.12.19.882506.full.pdf
+Conservative: no reduction and no reduction/sr scaffolding
 
-	minimap2 --secondary=no --MD -ax sr -t 32 ../../wtpoa_cns/pseudococcus_viburni.2nd.pass.cns3.fa ../PV_18-13.Illumina.merged.trimmed_1.fq.gz ../PV_18-13.Illumina.merged.trimmed_2.fq.gz | samtools view -Sb - > /scratch/afilia/hypo1.cns3-mapped-sr.bam
-	samtools sort -@32 -o /scratch/afilia/hypo1.cns3-mapped-sr.sorted.bam /scratch/afilia/hypo1.cns3-mapped-sr.bam && rsync -av /scratch/afilia/hypo1.cns3-mapped-sr.sorted.bam .
-	samtools index hypo1.cns3-mapped-sr.sorted.bam
-	hypo -d ../../wtpoa_cns/pseudococcus_viburni.2nd.pass.cns3.fa -i -r ../@il_names.txt -s 400m -c 100 -b hypo1.cns3-mapped-sr.sorted.bam -p 96 -t 32 -o pseudococcus_viburni.2nd.pass.cns3.h1.fa
-
-C:91.7%[S:88.0%,D:3.7%],F:1.0%,M:7.3%,n:2510
-
-### 10.3 Polish the raw genome with hypo
-
-conda activate afilia_hypo  
-conda install -c bioconda hypo
-
-Mapping the short reads to contigs
-
-	cat /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz > PV_18-13.Illumina.merged.trimmed_1.fq.gz
-	cat /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz > PV_18-13.Illumina.merged.trimmed_2.fq.gz
-
-	minimap2 --secondary=no --MD -ax sr -t 32 ../pseudococcus_viburni.2nd.pass.raw.fa PV_18-13.Illumina.merged.trimmed_1.fq.gz PV_18-13.Illumina.merged.trimmed_2.fq.gz | samtools view -Sb - > /scratch/afilia/hypo1-mapped-sr.bam
-	samtools sort -@32 -o hypo1-mapped-sr.sorted.bam /scratch/afilia/hypo1-mapped-sr.bam
-	samtools index hypo1-mapped-sr.sorted.bam
-	rm /scratch/afilia/mapped-sr.bam
-
-Mapping the long reads to contigs
-
-	minimap2 --secondary=no --MD -ax map-pb -t 32 ../pseudococcus_viburni.2nd.pass.raw.fa ../p.viburni.decon.subreads.fasta | samtools view -Sb - > /scratch/afilia/hypo1-mapped-lg.bam
-	samtools sort -@32 -o /scratch/afilia/hypo1-mapped-lg.sorted.bam /scratch/afilia/hypo1-mapped-lg.bam && rsync -av /scratch/afilia/hypo1-mapped-lg.sorted.bam
-	samtools index hypo1-mapped-lg.sorted.bam
-
-Run hypo
-
-	hypo -d pseudococcus_viburni.2nd.pass.raw.fasta -i -r @il_names.txt -s 400m -c 100 -b hypo1-mapped-sr.sorted.bam -B hypo1-mapped-lg.sorted.bam -p 96 -t 48 -o pseudococcus_viburni.2nd.pass.h2.fa
-
-* For scaffolds longer than 1000 bp:
-	-	Num 3180
-	-	Span 442083649
-	-	Min 1089
-	-	Mean 139020
-	-	N50 792839
-	-	NumN50 159
-	-	GC 0.336
-* C:91.6%[S:88.4%,D:3.2%],F:0.9%,M:7.5%,n:2510  
-
-Run a second round
-
-	minimap2 --secondary=no --MD -ax sr -t 32 pseudococcus_viburni.2nd.pass.h2.fa PV_18-13.Illumina.merged.trimmed_1.fq.gz PV_18-13.Illumina.merged.trimmed_2.fq.gz | samtools view -Sb - > /scratch/afilia/hypo2-mapped-sr.bam
-	samtools sort -@32 -o /scratch/afilia/hypo2-mapped-sr.sorted.bam /scratch/afilia/hypo2-mapped-sr.bam && rsync -av /scratch/afilia/hypo2-mapped-sr.sorted.bam .
-	samtools index hypo2-mapped-sr.sorted.bam
-	rm /scratch/afilia/hypo2-mapped-sr.bam
-	minimap2 --secondary=no --MD -ax map-pb -t 32 pseudococcus_viburni.2nd.pass.h2.fa ../p.viburni.decon.subreads.fasta | samtools view -Sb - > /scratch/afilia/hypo2-mapped-lg.bam
-	samtools sort -@32 -o /scratch/afilia/hypo2-mapped-lg.sorted.bam /scratch/afilia/hypo2-mapped-lg.bam && rsync -av /scratch/afilia/hypo1-mapped-lg.sorted.bam .
-	samtools index hypo1-mapped-lg.sorted.bam
-	rm /scratch/afilia/hypo2-mapped-lg.bam
-	hypo -d pseudococcus_viburni.2nd.pass.h2.fa -i -r @il_names.txt -s 400m -c 100 -b hypo2-mapped-sr.sorted.bam -B hypo2-mapped-lg.sorted.bam -p 96 -t 48 -o pseudococcus_viburni.2nd.pass.h2h2.fa
-	hypo -d ppseudococcus_viburni.2nd.pass.h2.fa -i -r @il_names.txt -s 400m -c 100 -b hypo2-mapped-sr.sorted.bam -p 96 -t 48 -o pseudococcus_viburni.2nd.pass.h2h1.fa
-
-h2h2 is better:
-
-* For scaffolds longer than 1000 bp:
-	-	Num 3180
-	-	Span 441700490
-	-	Min 1089
-	-	Mean 138899
-	-	N50 792214
-	-	NumN50 159
-	-	GC 0.336
-* C:91.8%[S:88.4%,D:3.4%],F:1.0%,M:7.2%,n:2510 (hemiptera)
-* C:94.3%[S:90.7%,D:3.6%],F:0.9%,M:4.8%,n:1367 (insecta)
-* C:95.2%[S:92.0%,D:3.2%],F:0.6%,M:4.2%,n:1013 (arthropoda)
-
-Further rounds decrease BUSCOs -- seems we are hitting dimishing returns.
-
-### 10.4 Blobtools
-
-Homology searches
-
-	blastn -task megablast -query ../pseudococcus_viburni.2nd.pass.h2h2.fa -db /ceph/software/databases/ncbi_2020_02/nt -outfmt '6 qseqid staxids bitscore std' -max_target_seqs 10 -max_hsps 1 -num_threads 30 -evalue 1e-25 -out /scratch/afilia/pseudococcus_viburni.2nd.pass.h2h2.blast.out && rsync /scratch/afilia/pseudococcus_viburni.2nd.pass.h2h2.blast.out .
-	diamond blastx --query ../pseudococcus_viburni.2nd.pass.h2h2.fa --max-target-seqs 1 --sensitive --threads 32 --db /ceph/software/databases/uniprot_2019_08/full/reference_proteomes.dmnd --evalue 1e-25 --tmpdir /scratch/afilia/ --outfmt 6 --out /scratch/afilia/pseudococcus_viburni.2nd.pass.h2h2.diamond.out && rsync /scratch/afilia/pseudococcus_viburni.2nd.pass.h2h2.diamond.out .
-	/ceph/software/blobtools/blobtools taxify -f pseudococcus_viburni.2nd.pass.h2h2.diamond.out -m reference_proteomes.taxid_map -s 0 -t 1
-
-Mapping (without secondary and supplemetary alignments)
-
-	minimap2 --secondary=no -ax map-pb -t 32 ../pseudococcus_viburni.2nd.pass.h2h2.fa ../../p.viburni.decon.subreads.fasta | samtools view -hF 0x900 - | samtools sort -@32 -O BAM -o /scratch/afilia/p.viburni.decon.to.2nd.pass.h2h2.sorted.bam - && rsync -av /scratch/afilia/p.viburni.decon.to.2nd.pass.h2h2.sorted.bam .
-
-* 1478615 + 0 in total (QC-passed reads + QC-failed reads)
-	-	0 + 0 secondary
-	-	0 + 0 supplementary
-	-	0 + 0 duplicates
-	-	1468970 + 0 mapped (99.35% : N/A)
-
-Run
-
-	/ceph/software/blobtools/blobtools create -i ../pseudococcus_viburni.2nd.pass.h2h2.fa -b p.viburni.decon.to.2nd.pass.h2h2.sorted.bam -t pseudococcus_viburni.2nd.pass.h2h2.blast.out -t pseudococcus_viburni.2nd.pass.h2h2.diamond.taxified.out -o p.viburni.2nd.pass
-	/ceph/software/blobtools/blobtools view -i p.viburni.2nd.pass.blobDB.json -b
-	/ceph/software/blobtools/blobtools plot -i p.viburni.2nd.pass.blobDB.json
-
-
-Interesting contigs
-	- 	ctg596: Candidatus *Tremblaya* tax0=Proteobacteria:323319.0;tax1=Arthropoda:1349.0 (139,262bp, 109x). The arthropod hit is Ef-Tu in the mountain pine beetle. Remove.
-	- 
+	/ceph/software/redundans/redundans_v0.13c/redundans/redundans.py -v -f ../1_first_pass/hypo_polished/pseudococcus_viburni.hypo3.fa -i ../1_first_pass/hypo_polished/PV_18-13.Illumina.merged.trimmed_1.fq.gz ../1_first_pass/hypo_polished/PV_18-13.Illumina.merged.trimmed_2.fq.gz -l /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz -i /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz -i /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz -t 24 -o redundans_1/pseudococcus_viburni.hypo3.nr --limit 1.0 --log redundans.nr.log --tmp /scratch/afilia/nr --noreduction
+	
+	/ceph/software/redundans/redundans_v0.13c/redundans/redundans.py -v -f ../1_first_pass/hypo_polished/pseudococcus_viburni.hypo3.fa -i ../1_first_pass/hypo_polished/PV_18-13.Illumina.merged.trimmed_1.fq.gz ../1_first_pass/hypo_polished/PV_18-13.Illumina.merged.trimmed_2.fq.gz -l /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz -i /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz -i /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz -t 16 -o redundans_1/pseudococcus_viburni.hypo3.nrns --limit 1.0 --log redundans.nrns.log --tmp /scratch/afilia --noreduction --noscaffolding
