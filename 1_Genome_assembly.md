@@ -276,7 +276,7 @@ There are four contigs with high coverage, all Proteobacteria.
 	- ctg2741: Candidatus *Tremblaya princeps* (however too short); another hit to *Tremblaya* in ctg64 might be HGT (tax0=Proteobacteria:1198.0|Arthropoda:557.0|Streptophyta:185.0;tax1=Brachiopoda:1218.33)
  * Secondary endosymbionts:
 	- ctg182, ctg1645: Candidatus *Sodalis*, gamma proteobacterium endosymbiont of *P. viburni* isolate (PLON gamma 1)
-	- ctg376, *Morganella/Buchnera/Gullanella* (*Sodalis?*)
+	- ctg376, *Morganella/Buchnera/Gullanella/Sodalis* (PLON gamma 1)
 
 These four contigs will be removed from the assembly. No contigs with cov < 2 here, so keeping all the rest.
 
