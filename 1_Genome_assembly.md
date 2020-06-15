@@ -4,7 +4,7 @@ Start date: 08.10.2019, restarted 21.04.2020
 
 	# Working directory	
 	/data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly
-    qlogin -pe smp 1 -N samtools 
+    qlogin -pe smp 32 -N samtools 
 
 ## 1. Raw reads
 
@@ -351,39 +351,39 @@ conda install -c forge docopt numpy seaborn tqdm parallel
 
 Try the whole thing (scaffolding, reducing and gap closing with paired-end and long reads)
 
-	/ceph/software/redundans/redundans_v0.13c/redundans/redundans.py -v -f ../1_first_pass/pseudococcus_viburni.redbean.raw.fa -i /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz -l /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz -t 64 -o pseudococcus_viburni.hypo3.redundans --log redundans.full.log --tmp /scratch/afilia/
+	/ceph/software/redundans/redundans_v0.13c/redundans/redundans.py -v -f ../1_first_pass/hypo_polished/pseudococcus_viburni.hypo3.fa -i /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz -l /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz  -t 64 -o redundans_1/pseudococcus_viburni.hypo3.redundans --log redundans.hypo.log --tmp /scratch/afilia/
 
+It takes a extremely long time
 
-What has redundans done? These are the stats for the first whole run. A concern with this approach is that it might be too aggresive and collapse A and B chromosomes.
+/ceph/software/redundans/redundans_v0.13c/redundans/redundans.py -f pseudococcus_viburni.redbean.raw.fa -i /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz -l lr.subreads.fasta.gz -t 60 -o pseudococcus_viburni.raw.redundans --log redundans.raw.log --tmp /scratch/afilia --verbose -m 400
 
-| ﻿filename                                                      | contigs | bases     | GC [%] | contigs >1kb | bases in contigs >1kb | N50     | N90    | Ns      | longest  |
-|---------------------------------------------------------------|---------|-----------|--------|--------------|-----------------------|---------|--------|---------|----------|
-| hypo_polished/pseudococcus_viburni.hypo3.fa                   | 2862    | 440158428 | 33.616 | 2861         | 440158066             | 818128  | 134743 | 0       | 4205925  |
-| pseudococcus_viburni.hypo3.redundans/contigs.fa               | 2862    | 440158428 | 33.616 | 2861         | 440158066             | 818128  | 134743 | 0       | 4205925  |
-| pseudococcus_viburni.hypo3.redundans/contigs.reduced.fa       | 2012    | 430067313 | 33.661 | 2011         | 430066951             | 839433  | 171845 | 0       | 4205925  |
-| pseudococcus_viburni.hypo3.redundans/scaffolds.fa             | 2012    | 430067313 | 33.661 | 2011         | 430066951             | 839433  | 171845 | 0       | 4205925  |
-| pseudococcus_viburni.hypo3.redundans/scaffolds.longreads.1.fa | 1390    | 366464480 | 33.64  | 1389         | 366464118             | 1611949 | 226033 | 1978058 | 13658032 |
-| pseudococcus_viburni.hypo3.redundans/scaffolds.longreads.fa   | 1390    | 366464480 | 33.64  | 1389         | 366464118             | 1611949 | 226033 | 1978058 | 13658032 |
-| pseudococcus_viburni.hypo3.redundans/scaffolds.filled.fa      | 1390    | 366464480 | 33.64  | 1389         | 366464118             | 1611949 | 226033 | 1978058 | 13658032 |
-| pseudococcus_viburni.hypo3.redundans/scaffolds.reduced.fa     | 1179    | 361230558 | 33.64  | 1178         | 361230196             | 1626777 | 249128 | 1977901 | 13658032 |
+## 12. Alternative scaffolding using SCUHAT2 (transcript based)
 
-What do we know about the expected genome size? Our *P. longispinus* assembly (v1) is 317Mb long. There are flow cytometry estimates of genome sizes available: https://atrium.lib.uoguelph.ca/xmlui/bitstream/handle/10214/12989/Kelly_Darren_201805_Msc.pdf?sequence=5&isAllowed=y (0.394 for *longispinus*, 0.638 for *viburni*). Therefore we could expect a haploid genome size of ca. 500Mb; out scaffolded assembly seems to be way too small. We can still do some BUSCO and blobtools and see where we stand.
+This will use the assembled transcriptome (see assembly and transcript quantification in 2_Transcriptome.md). Let's try scaffolding with two set of transcripts: all those with average tpm > 2 in either males or females (scaffold.keep.r, 54,377 transcripts) and all those with average tpm > 5 in either males or females (scaffold.keep.s, 32,821 transcripts).
 
- -	contigs.reduced.fa   	C:92.4%[S:89.2%,D:3.2%],F:0.8%,M:6.8%,n:2510 (basically the same)
- -	scaffolds.filled.fa 	C:81.2%[S:78.7%,D:2.5%],F:1.0%,M:17.8%,n:2510
- -  scaffolds.reduced.fa 	C:80.3%[S:77.8%,D:2.5%],F:1.0%,M:18.7%,n:2510
+To filter out transcripts that don't meet this criteria, I need to modify the header of the assembled transcriptome first.
 
- This is rather disappointing -- scaffolding with long reads dramatically impacts the BUSCO scores.
+	awk '/^>/ {$0=$1} 1' viburni.trinity.fasta > viburni.trinity.header.mod.fasta
+	/ceph/software/assemblage/fastaqual_select.pl -f viburni.trinity.header.mod.fasta -i scaffold.keep.r.txt > viburni.trinity.header.r.fasta
+	/ceph/software/assemblage/fastaqual_select.pl -f viburni.trinity.header.mod.fasta -i scaffold.keep.s.txt > viburni.trinity.header.s.fasta
+	makeblastdb -in pseudococcus_viburni.hypo3.fa -dbtype nucl
+	blastn -query viburni.trinity.header.s.fasta -db pseudococcus_viburni.hypo3.fa -evalue 1e-25 -outfmt 5 -out strict.transcripts.blast.xml -num_threads 32
+	blastn -query viburni.trinity.header.r.fasta -db pseudococcus_viburni.hypo3.fa -evalue 1e-25 -outfmt 5 -out relaxed.transcripts.blast.xml -num_threads 32
 
-/ceph/software/redundans/redundans_v0.13c/redundans/redundans.py -v -f ../1_first_pass/pseudococcus_viburni.redbean.raw.fa -i /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz -l /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz  /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz -t 64 -o pseudococcus_viburni.hypo3.redundans --log redundans.full.log --tmp /scratch/afilia/
+Run in afilia_scaffold after installing biopython and numpy
 
-#!/bin/bash
- 
-#$ -V
-#$ -cwd
-#$ -j y
-#$ -o redundans.$JOB_ID.log
- 
-# Submit using:
-# qsub -pe smp32
-/ceph/software/redundans/redundans_v0.13c/redundans/redundans.py -v -f ../1_first_pass/pseudococcus_viburni.redbean.raw.fa -i /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz -l /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz -t 64 -o redundans_1/pseudococcus_viburni.raw.redundans --log redundans.hypo.log --tmp /scratch/afilia/
+	python2 /data/ross/mealybugs/analyses/B_viburni_2020/scripts/SCUBAT_v2.py -b strict.transcripts.blast.xml -f pseudococcus_viburni.hypo3.fa --intron_size_run --maximum_intron_size 50000
+	python2 /data/ross/mealybugs/analyses/B_viburni_2020/scripts/SCUBAT_v2.py -b relaxed.transcripts.blast.xml -f pseudococcus_viburni.hypo3.fa --intron_size_run --maximum_intron_size 50000
+	
+Inspecting the intron size file, we have a minority of extremely large introns (>100,000-1,500,000bp). However, only 1-1.6% introns are bigger than 50,000bp and 2.5-3% are bigger than 20,000. Let's use 30,000 as the maximum permitted intron size.
+
+	python2 /data/ross/mealybugs/analyses/B_viburni_2020/scripts/SCUBAT_v2.py -b strict.transcripts.blast.xml -f pseudococcus_viburni.hypo3.fa --maximum_intron_size 50000
+	python2 /data/ross/mealybugs/analyses/B_viburni_2020/scripts/SCUBAT_v2.py -b strict.transcripts.blast.xml -f pseudococcus_viburni.hypo3.fa --maximum_intron_size 50000
+
+Remove backslashes from the fasta headers to run BUSCO
+
+	sed -i 's/\//_/g' strict/SCUBAT_scaffolds.fasta
+	sed -i 's/\//_/g' relaxed/SCUBAT_scaffolds.fasta
+	export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 32 -i strict/SCUBAT_scaffolds.fasta -o SCUBAT_scaffolds.strict.busco.hemiptera -l hemiptera_odb10
+	export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 32 -i relaxed/SCUBAT_scaffolds.fasta -o SCUBAT_scaffolds.relaxed.busco.hemiptera -l hemiptera_odb10
+
