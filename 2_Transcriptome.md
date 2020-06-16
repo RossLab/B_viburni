@@ -202,15 +202,15 @@ Let's categorise the transcripts according to the following criteria:
 
 	sleuth.tpm.annotated$info <- "Equal expression"
 	sleuth.tpm.annotated$info <- ifelse(sleuth.tpm.annotated$qval < 0.05 & sleuth.tpm.annotated$FC > 1.5,"Overexpressed in B+",sleuth.tpm.annotated$info)
-	sleuth.tpm.annotated$info <- ifelse(sleuth.tpm.annotated$qval < 0.05 & sleuth.tpm.annotated$FC > 1.5 & sleuth.tpm.annotated$Bminus_F < 0.1 & 	sleuth.tpm.annotated$Bminus_M < 0.1,"Unique in B",sleuth.tpm.annotated$info)
-	sleuth.tpm.annotated$info <- ifelse(sleuth.tpm.annotated$qval < 0.05 & sleuth.tpm.annotated$FC > 1.5 & sleuth.tpm.annotated$Bminus_F < 0.1 & 	sleuth.tpm.annotated$Bminus_M < 0.1 & sleuth.tpm.annotated$Bplus_F < 0.1 & sleuth.tpm.annotated$Bplus_M >= 0.5,"Unique in B males",sleuth.tpm.annotated$info)
+	sleuth.tpm.annotated$info <- ifelse(sleuth.tpm.annotated$qval < 0.05 & sleuth.tpm.annotated$FC > 1.5 & sleuth.tpm.annotated$Bminus_F < 0.5 & sleuth.tpm.annotated$Bminus_M < 0.5,"Unique in B",sleuth.tpm.annotated$info)
+	sleuth.tpm.annotated$info <- ifelse(sleuth.tpm.annotated$qval < 0.05 & sleuth.tpm.annotated$FC > 1.5 & sleuth.tpm.annotated$Bminus_F < 0.5 & sleuth.tpm.annotated$Bminus_M < 0.5 & sleuth.tpm.annotated$Bplus_F < 0.5 & sleuth.tpm.annotated$Bplus_M >= 0.5,"Unique in B males",sleuth.tpm.annotated$info)
 	sleuth.tpm.annotated$info <- ifelse(sleuth.tpm.annotated$qval < 0.05 & sleuth.tpm.annotated$FC < -1.5,"Overexpressed in 0B",sleuth.tpm.annotated$info)
 
-- Equal expression 		36192
-- Overexpressed in 0B  	2113
-- Overexpressed in B+   1909
-- Unique in B  			1142
-- Unique in B males  	16
+ - Equal expression 36192
+ - Overexpressed in 0B  2113
+ - Overexpressed in B+  1964
+ - Unique in B  1026
+ - Unique in B males    77
 
 ![](misc/volcano_plot_B.jpeg)
 
