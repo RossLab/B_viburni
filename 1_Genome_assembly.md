@@ -4,7 +4,7 @@ Start date: 08.10.2019, restarted 21.04.2020
 
 	# Working directory	
 	/data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly
-    qlogin -pe smp 32 -N samtools 
+    qlogin -pe smp 1 -N samtools 
 
 ## 1. Raw reads
 
@@ -375,15 +375,56 @@ Run in afilia_scaffold after installing biopython and numpy
 	python2 /data/ross/mealybugs/analyses/B_viburni_2020/scripts/SCUBAT_v2.py -b strict.transcripts.blast.xml -f pseudococcus_viburni.hypo3.fa --intron_size_run --maximum_intron_size 50000
 	python2 /data/ross/mealybugs/analyses/B_viburni_2020/scripts/SCUBAT_v2.py -b relaxed.transcripts.blast.xml -f pseudococcus_viburni.hypo3.fa --intron_size_run --maximum_intron_size 50000
 	
-Inspecting the intron size file, we have a minority of extremely large introns (>100,000-1,500,000bp). However, only 1-1.6% introns are bigger than 50,000bp and 2.5-3% are bigger than 20,000. Let's use 30,000 as the maximum permitted intron size.
+Inspecting the intron size file, we have a minority of extremely large introns (>100,000-1,500,000bp). However, only 1-1.6% introns are bigger than 50,000bp and 2.5-3% are bigger than 20,000. Let's use 50,000 and 20,000 as the maximum permitted intron size.
 
-	python2 /data/ross/mealybugs/analyses/B_viburni_2020/scripts/SCUBAT_v2.py -b strict.transcripts.blast.xml -f pseudococcus_viburni.hypo3.fa --maximum_intron_size 50000
-	python2 /data/ross/mealybugs/analyses/B_viburni_2020/scripts/SCUBAT_v2.py -b strict.transcripts.blast.xml -f pseudococcus_viburni.hypo3.fa --maximum_intron_size 50000
+	python2 /data/ross/mealybugs/analyses/B_viburni_2020/scripts/SCUBAT_v2.py -b ../strict.transcripts.blast.xml -f ../pseudococcus_viburni.hypo3.fa --maximum_intron_size 50000
+	python2 /data/ross/mealybugs/analyses/B_viburni_2020/scripts/SCUBAT_v2.py -b ../relaxed.transcripts.blast.xml -f pseudococcus_viburni.hypo3.fa --maximum_intron_size 50000
+	python2 /data/ross/mealybugs/analyses/B_viburni_2020/scripts/SCUBAT_v2.py -b ../strict.transcripts.blast.xml -f ../pseudococcus_viburni.hypo3.fa --maximum_intron_size 20000
+	python2 /data/ross/mealybugs/analyses/B_viburni_2020/scripts/SCUBAT_v2.py -b ../relaxed.transcripts.blast.xml -f ../pseudococcus_viburni.hypo3.fa --maximum_intron_size 20000
 
 Remove backslashes from the fasta headers to run BUSCO
 
 	sed -i 's/\//_/g' strict/SCUBAT_scaffolds.fasta
 	sed -i 's/\//_/g' relaxed/SCUBAT_scaffolds.fasta
-	export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 32 -i strict/SCUBAT_scaffolds.fasta -o SCUBAT_scaffolds.strict.busco.hemiptera -l hemiptera_odb10
-	export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 32 -i relaxed/SCUBAT_scaffolds.fasta -o SCUBAT_scaffolds.relaxed.busco.hemiptera -l hemiptera_odb10
+	export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 32 -i strict/SCUBAT_scaffolds.fasta -o SCUBAT_scaffolds.strict.busco.hemiptera -l hemiptera_odb10 #C:92.5%[S:89.2%,D:3.3%],F:0.8%,M:6.7%,n:2510
+	export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 32 -i relaxed/SCUBAT_scaffolds.fasta -o SCUBAT_scaffolds.relaxed.busco.hemiptera -l hemiptera_odb10 -f C:92.6%[S:89.3%,D:3.3%],F:0.8%,M:6.6%,n:2510  
+	export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 32 -i strict_20000/SCUBAT_scaffolds.fasta -o SCUBAT_scaffolds.strict_20000.busco.hemiptera -l hemiptera_odb10 -f C:92.6%[S:89.3%,D:3.3%],F:0.8%,M:6.6%,n:2510
+	export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 32 -i relaxed_20000/SCUBAT_scaffolds.fasta -o SCUBAT_scaffolds.relaxed_20000.busco.hemiptera -l hemiptera_odb10 -f :92.6%[S:89.3%,D:3.3%],F:0.8%,M:6.6%,n:2510   
 
+Let's go with the relaxed scaffolded assembly
+
+For contigs longer than 100 bp (scaffolds split at >= 10 Ns):
+LongestContig 4205925
+Num 2862
+Span 440158428
+Min 362
+Mean 153794
+N50 818128
+NumN50 164
+GC 0.336
+
+For scaffolds longer than 200 bp:
+Num 2789
+Span 440165728
+Min 362
+Mean 157822
+N50 863585
+NumN50 155
+GC 0.336
+
+## 13. Benchmarking with RNAseq
+
+Let's use STAR (v2.7.4a) to map the RNAseq reads to the assemblies and see which one is best.
+
+	STAR runThreadN 32 --runMode genomeGenerate --genomeDir genomes/raw --genomeFastaFiles genomes/raw/raw.fa
+	STAR runThreadN 32 --runMode genomeGenerate --genomeDir genomes/hypo1 --genomeFastaFiles genomes/hypo1/hypo1.fa
+	STAR runThreadN 32 --runMode genomeGenerate --genomeDir genomes/hypo2 --genomeFastaFiles genomes/hypo2/hypo2.fa --sjdbOverhang 49
+	STAR runThreadN 32 --runMode genomeGenerate --genomeDir genomes/hypo3 --genomeFastaFiles genomes/hypo3/hypo3.fa --sjdbOverhang 49
+	STAR runThreadN 32 --runMode genomeGenerate --genomeDir genomes/relaxed --genomeFastaFiles genomes/relaxed/relaxed.fa --sjdbOverhang 49
+	STAR runThreadN 32 --runMode genomeGenerate --genomeDir genomes/relaxed20 --genomeFastaFiles genomes/relaxed20/relaxed20.fa --sjdbOverhang 49
+	STAR runThreadN 32 --runMode genomeGenerate --genomeDir genomes/strict20 --genomeFastaFiles genomes/strict20/strict20.fa --sjdbOverhang 49
+
+	STAR --runThreadN 32 --readFilesIn reads/13F_1.trimmed_1.fastq.gz,reads/13F_2.trimmed_1.fastq.gz,reads/13F_3.trimmed_1.fastq.gz,reads/13M_1.trimmed_1.fastq.gz,reads/13M_2.trimmed_1.fastq.gz,reads/13M_3.trimmed_1.fastq.gz,reads/13M_4.trimmed_1.fastq.gz reads/13F_1.trimmed_2.fastq.gz,reads/13F_2.trimmed_2.fastq.gz,reads/13F_3.trimmed_2.fastq.gz,reads/13M_1.trimmed_2.fastq.gz,reads/13M_2.trimmed_2.fastq.gz,reads/13M_3.trimmed_2.fastq.gz,reads/13M_4.trimmed_2.fastq.gz --readFilesCommand zcat --twopassMode Basic --outSAMtype None --outFileNamePrefix /scratch/afilia/hypo3 --genomeDir genomes/hypo3 && rsync -av /scratch/afilia/hypo3* .
+	STAR --runThreadN 32 --readFilesIn reads/13F_1.trimmed_1.fastq.gz,reads/13F_2.trimmed_1.fastq.gz,reads/13F_3.trimmed_1.fastq.gz,reads/13M_1.trimmed_1.fastq.gz,reads/13M_2.trimmed_1.fastq.gz,reads/13M_3.trimmed_1.fastq.gz,reads/13M_4.trimmed_1.fastq.gz reads/13F_1.trimmed_2.fastq.gz,reads/13F_2.trimmed_2.fastq.gz,reads/13F_3.trimmed_2.fastq.gz,reads/13M_1.trimmed_2.fastq.gz,reads/13M_2.trimmed_2.fastq.gz,reads/13M_3.trimmed_2.fastq.gz,reads/13M_4.trimmed_2.fastq.gz --readFilesCommand zcat --twopassMode Basic --outSAMtype None --outFileNamePrefix /scratch/afilia/relaxed --genomeDir genomes/relaxed && rsync -av /scratch/afilia/relaxed* .
+	STAR --runThreadN 32 --readFilesIn reads/13F_1.trimmed_1.fastq.gz,reads/13F_2.trimmed_1.fastq.gz,reads/13F_3.trimmed_1.fastq.gz,reads/13M_1.trimmed_1.fastq.gz,reads/13M_2.trimmed_1.fastq.gz,reads/13M_3.trimmed_1.fastq.gz,reads/13M_4.trimmed_1.fastq.gz reads/13F_1.trimmed_2.fastq.gz,reads/13F_2.trimmed_2.fastq.gz,reads/13F_3.trimmed_2.fastq.gz,reads/13M_1.trimmed_2.fastq.gz,reads/13M_2.trimmed_2.fastq.gz,reads/13M_3.trimmed_2.fastq.gz,reads/13M_4.trimmed_2.fastq.gz --readFilesCommand zcat --twopassMode Basic --outSAMtype None --outFileNamePrefix /scratch/afilia/relaxed20 --genomeDir genomes/relaxed20 && rsync -av /scratch/afilia/relaxed20* .
+	STAR --runThreadN 32 --readFilesIn reads/13F_1.trimmed_1.fastq.gz,reads/13F_2.trimmed_1.fastq.gz,reads/13F_3.trimmed_1.fastq.gz,reads/13M_1.trimmed_1.fastq.gz,reads/13M_2.trimmed_1.fastq.gz,reads/13M_3.trimmed_1.fastq.gz,reads/13M_4.trimmed_1.fastq.gz reads/13F_1.trimmed_2.fastq.gz,reads/13F_2.trimmed_2.fastq.gz,reads/13F_3.trimmed_2.fastq.gz,reads/13M_1.trimmed_2.fastq.gz,reads/13M_2.trimmed_2.fastq.gz,reads/13M_3.trimmed_2.fastq.gz,reads/13M_4.trimmed_2.fastq.gz --readFilesCommand zcat --twopassMode Basic --outSAMtype None --outFileNamePrefix /scratch/afilia/strict20 --genomeDir genomes/strict20 && rsync -av /scratch/afilia/strict20* .
