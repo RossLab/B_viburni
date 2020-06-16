@@ -208,13 +208,13 @@ Let's categorise the transcripts according to the following criteria:
 
  - Equal expression 36192
  - Overexpressed in 0B  2113
- - Overexpressed in B+  1964
- - Unique in B  1026
+ - Overexpressed in B+  1862
+ - Unique in B  1128
  - Unique in B males    77
 
 ![](misc/volcano_plot_B.jpeg)
 
-Let's examine the 16 transcripts unique to B males
+Let's examine the 77 transcripts unique to B males
 
 | transcript_id            | qval       | Bminus_F | Bminus_M | Bplus_F | Bplus_M | sprot_Top_BLASTX_hit | sprot_Top_BLASTP_hit                                                                  | FC    | info              |
 |--------------------------|------------|----------|----------|---------|---------|----------------------|---------------------------------------------------------------------------------------|-------|-------------------|
