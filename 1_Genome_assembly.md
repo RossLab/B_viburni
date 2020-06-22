@@ -3,18 +3,18 @@
 Start date: 08.10.2019, restarted 21.04.2020
 
 	# Working directory	
-	/data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly
-    qlogin -pe smp 1 -N samtools 
+	/data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly
+    qlogin -pe smp 1 -N blobtools 
 
 ## 1. Raw reads
 
-PacBio (/data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/)
+PacBio (/data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/)
 
 	ln -s /data/ross/mealybugs/raw/11718_Ross_Laura/raw_data/20190530/PV_18-13/m54041_190522_233005.subreads.bam
 	ln -s /data/ross/mealybugs/raw/11718_Ross_Laura/raw_data/20190530/PV_18-13/m54041_190524_131016.subreads.bam
 	ln -s /data/ross/mealybugs/raw/11718_Ross_Laura/raw_data/20190530/PV_18-13/m54041_190524_233023.subreads.bam
 
-Illumina (/data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads)
+Illumina (/data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads)
 	
 	ln -s /data/ross/mealybugs/raw/transfer.genomics.ed.ac.uk/11372_Ross_Laura/raw_data/all_reads/18_13_1B_350/180608_A00291_0042_BH3CC3DRXX_2_11372RL0002L01_1.fastq.gz
 	ln -s /data/ross/mealybugs/raw/transfer.genomics.ed.ac.uk/11372_Ross_Laura/raw_data/all_reads/18_13_1B_350/180608_A00291_0042_BH3CC3DRXX_2_11372RL0002L01_2.fastq.gz
@@ -43,16 +43,16 @@ Convert fasta to bam (conda env pacbio)
 
 ## 4. Plot lengths
 
-Use plrl.py (D. Laetsch, copied in /data/ross/mealybugs/analyses/B_viburni_andres/scripts)
+Use plrl.py (D. Laetsch, copied in /data/ross/mealybugs/analyses/B_viburni_2020/scripts)
 	
 	# conda install tqdm seaborn matplotlib numpy docopt
-	python /data/ross/mealybugs/analyses/B_viburni_andres/scripts/plrl.py -d . -f 2 -m 40000
+	python /data/ross/mealybugs/analyses/B_viburni_2020/scripts/plrl.py -d . -f 2 -m 40000
 
 ## 5. Raw assembly with wtdbg2 
 
 Initial assembly with wtdbg2 (redbean) v2.5 (conda env afilia)
 	
-	wtdbg2 -x sq -g 327m -t 64 -i /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz -i /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz -i /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz -o /scratch/afilia/pseudococcus_viburni.redbean && wtpoa-cns -t 64 -i /scratch/afilia/pseudococcus_viburni.redbean.ctg.lay.gz -fo /scratch/afilia/pseudococcus_viburni.redbean.raw.fa 
+	wtdbg2 -x sq -g 327m -t 64 -i /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz -i /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz -i /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz -o /scratch/afilia/pseudococcus_viburni.redbean && wtpoa-cns -t 64 -i /scratch/afilia/pseudococcus_viburni.redbean.ctg.lay.gz -fo /scratch/afilia/pseudococcus_viburni.redbean.raw.fa 
 
 ## 6. Assembly assessment
 
@@ -85,7 +85,7 @@ Stats for raw:
 
 Polish with minimap2 v2.17-r941 (conda env afilia)
 	
-	minimap2 -t16 -ax map-pb -r2k ../raw/pseudococcus_viburni.redbean.raw.fa /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz | samtools sort -@4 > pseudococcus_viburni.redbean.int.fa
+	minimap2 -t16 -ax map-pb -r2k ../raw/pseudococcus_viburni.redbean.raw.fa /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz | samtools sort -@4 > pseudococcus_viburni.redbean.int.fa
 	samtools view -F0x900 pseudococcus_viburni.redbean.int.fa | wtpoa-cns -t 15 -d ../raw/pseudococcus_viburni.redbean.raw.fa -i - -fo pseudococcus_viburni.redbean.cns.fa
 
 	export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 16 -i pseudococcus_viburni.redbean.cns.fa -o pseudococcus_viburni.redbean.cns.busco.hemiptera -f -l hemiptera_odb10
@@ -104,8 +104,8 @@ Stats for cns:
 Additional polishment using short reads
 
 	bwa index pseudococcus_viburni.redbean.cns.fa
-	bwa mem -t 32 pseudococcus_viburni.redbean.cns.fa /data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz | samtools sort -O SAM -o /scratch/afilia/PV_18-13.Illumina.350.alignedtocns.sorted.sam
-	bwa mem -t 32 pseudococcus_viburni.redbean.cns.fa /data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz | samtools sort -O SAM -o /scratch/afilia/PV_18-13.Illumina.550.alignedtocns.sorted.sam
+	bwa mem -t 32 pseudococcus_viburni.redbean.cns.fa /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz | samtools sort -O SAM -o /scratch/afilia/PV_18-13.Illumina.350.alignedtocns.sorted.sam
+	bwa mem -t 32 pseudococcus_viburni.redbean.cns.fa /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz | samtools sort -O SAM -o /scratch/afilia/PV_18-13.Illumina.550.alignedtocns.sorted.sam
 	samtools merge /scratch/afilia/PV_18-13.Illumina.alignedtocns.sorted.sam /scratch/afilia/PV_18-13.Illumina.350.alignedtocns.sorted.sam /scratch/afilia/PV_18-13.Illumina.alignedtocns.550.sorted.sam
 	
 	wtpoa-cns -t 32 -x sam-sr -d pseudococcus_viburni.redbean.cns.fa -i /scratch/afilia/PV_18-13.Illumina.alignedtocns.sorted.sam -fo pseudococcus_viburni.redbean.cns.srp.fa
@@ -132,9 +132,9 @@ Stats for cns-srp:
 
 Polish cns assembly 2 more times with minimap2
 
-	minimap2 -t32 -ax map-pb -r2k pseudococcus_viburni.redbean.cns.fa /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz | samtools sort -@4 > pseudococcus_viburni.redbean.cns2.int.fa
+	minimap2 -t32 -ax map-pb -r2k pseudococcus_viburni.redbean.cns.fa /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz | samtools sort -@4 > pseudococcus_viburni.redbean.cns2.int.fa
 	samtools view -F0x900 pseudococcus_viburni.redbean.cns2.int.fa | wtpoa-cns -t 32 -d pseudococcus_viburni.redbean.cns.fa -i - -fo pseudococcus_viburni.redbean.cns2.fa
-	minimap2 -t32 -ax map-pb -r2k pseudococcus_viburni.redbean.cns2.fa /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz | samtools sort -@32 > /scratch/afilia/pseudococcus_viburni.redbean.cns3.int.fa
+	minimap2 -t32 -ax map-pb -r2k pseudococcus_viburni.redbean.cns2.fa /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz | samtools sort -@32 > /scratch/afilia/pseudococcus_viburni.redbean.cns3.int.fa
 	samtools view -F0x900 /scratch/afilia/pseudococcus_viburni.redbean.cns3.int.fa | wtpoa-cns -t 32 -d pseudococcus_viburni.redbean.cns2.fa -i - -fo pseudococcus_viburni.redbean.cns3.fa
 
 BUSCO for cns2 and 3:
@@ -148,8 +148,8 @@ BUSCO for cns2 and 3:
 Polishing with short reads
 
 	bwa index pseudococcus_viburni.redbean.cns3.fa
-	bwa mem -t 32 pseudococcus_viburni.redbean.cns3.fa /data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz | samtools sort -O SAM -o /scratch/afilia/PV_18-13.Illumina.350.alignedtocns3.sorted.sam
-	bwa mem -t 32 pseudococcus_viburni.redbean.cns3.fa /data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz | samtools sort -O SAM -o /scratch/afilia/PV_18-13.Illumina.550.alignedtocns3.sorted.sam
+	bwa mem -t 32 pseudococcus_viburni.redbean.cns3.fa /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz | samtools sort -O SAM -o /scratch/afilia/PV_18-13.Illumina.350.alignedtocns3.sorted.sam
+	bwa mem -t 32 pseudococcus_viburni.redbean.cns3.fa /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz | samtools sort -O SAM -o /scratch/afilia/PV_18-13.Illumina.550.alignedtocns3.sorted.sam
 	samtools merge /scratch/afilia/PV_18-13.Illumina.alignedtocns3.sorted.sam /scratch/afilia/PV_18-13.Illumina.350.alignedtocns3.sorted.sam /scratch/afilia/PV_18-13.Illumina.550.alignedtocns3.sorted.sam
 	wtpoa-cns -t 32 -x sam-sr -d pseudococcus_viburni.redbean.cns3.fa -i /scratch/afilia/PV_18-13.Illumina.alignedtocns3.sorted.sam -fo pseudococcus_viburni.redbean.cns3.srp1.fa
 	
@@ -220,7 +220,7 @@ Mapping reads to reference (without secondary and supplemetary alignments)
 Running blobtools (v1.1.1)
 
 	/ceph/software/blobtools/blobtools create -i ../pseudococcus_viburni.hypo3.fa -b ../pseudococcus_viburni.hypo3.sorted.bam -t ../pseudococcus_viburni.hypo3.blast.out -t ../pseudococcus_viburni.hypo3.diamond.taxified.out -o pseudococcus_viburni.hypo3
-	/ceph/software/blobtools/blobtools view -i pseudococcus_viburni.hypo3.blobDB.json -b -f genus
+	/ceph/software/blobtools/blobtools view -i pseudococcus_viburni.hypo3.blobDB.json -b -r all
 	/ceph/software/blobtools/blobtools plot -i pseudococcus_viburni.hypo3.blobDB.json
 	
 The blobplots look good.
@@ -318,7 +318,7 @@ Extract contigs and reads
 
 We could try to extract the reads and reassemble the genome, as below, but this results in a more fragmented and less complete assembly. Since there was no contamination and we haven't removed much, let's just work with the filtered assembly.
 
-	minimap2 -ax map-pb -t 32 ../polished/pseudococcus_viburni.redbean.cns3.srp1.blobtools.fa /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_andres/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz | samtools view -hF 256 - | samtools sort -@32 -O BAM -o /scratch/afilia/p.viburni.decon.to.cns3.srp1.blobtools.sorted.bam - && rsync -av /scratch/afilia/p.viburni.decon.to.cns3.srp1.blobtools.sorted.bam .
+	minimap2 -ax map-pb -t 32 ../polished/pseudococcus_viburni.redbean.cns3.srp1.blobtools.fa /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz | samtools view -hF 256 - | samtools sort -@32 -O BAM -o /scratch/afilia/p.viburni.decon.to.cns3.srp1.blobtools.sorted.bam - && rsync -av /scratch/afilia/p.viburni.decon.to.cns3.srp1.blobtools.sorted.bam .
 	# Keep mapped reads only, excluding unmapped and supplementary alignments
 	samtools view -bhF 0x904 p.viburni.decon.to.cns3.srp1.blobtools.sorted.bam > /scratch/afilia/p.viburni.decon.to.cns3.srp1.blobtools.sorted.mapped.primary.bam && rsync -av /scratch/afilia/p.viburni.decon.to.cns3.srp1.blobtools.sorted.mapped.primary.bam .
 	# Extract reads
@@ -343,6 +343,8 @@ Stats for the filtered assembly
 
 ## 11. Scaffolding
 
+### 11.1 With redundans
+
 Try redundans to scaffold the genome and remove duplication: https://github.com/Gabaldonlab/redundans. It makes more sense to start with the non-decontaminated assembly for now.
 
 conda create -n afilia_scaffold python=2.7 anaconda
@@ -353,11 +355,17 @@ Try the whole thing (scaffolding, reducing and gap closing with paired-end and l
 
 	/ceph/software/redundans/redundans_v0.13c/redundans/redundans.py -v -f ../1_first_pass/hypo_polished/pseudococcus_viburni.hypo3.fa -i /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz -l /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz  -t 64 -o redundans_1/pseudococcus_viburni.hypo3.redundans --log redundans.hypo.log --tmp /scratch/afilia/
 
-It takes a extremely long time
+It has taken an awful amount of time (>5 days) and the results are not really encouraging. The scaffolding with short reads failed ("No pairs were aligned!"; why?) and the scaffolding with long reads destroyed the BUSCO score.
 
-/ceph/software/redundans/redundans_v0.13c/redundans/redundans.py -f pseudococcus_viburni.redbean.raw.fa -i /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz -l lr.subreads.fasta.gz -t 60 -o pseudococcus_viburni.raw.redundans --log redundans.raw.log --tmp /scratch/afilia --verbose -m 400
+fname  	contigs bases   GC [%]  contigs >1kb    bases in contigs >1kb   N50     N90     Ns      longest
+contigs.fa     2862    440158428       33.616  2861    440158066       818128  134743  0       4205925
+contigs.reduced.fa     2012    430067313       33.661  2011    430066951       839433  171845  0       4205925
+scaffolds.fa   2012    430067313       33.661  2011    430066951       839433  171845  0       4205925 # C:92.4%[S:89.1%,D:3.3%],F:0.8%,M:6.8%,n:2510 
+scaffolds.longreads.fa 1424    358798159       33.652  1423    358797797       1419267 213831  1733564 13627736 # C:77.2%[S:74.8%,D:2.4%],F:0.8%,M:22.0%,n:2510 
+scaffolds.filled.fa    1424    358800001       33.652  1423    358799639       1419269 213831  1599319 13627760
+scaffolds.reduced.fa   1230    355697034       33.651  1229    355696672       1435353 237609  1599316 13627760
 
-## 12. Alternative scaffolding using SCUHAT2 (transcript based)
+### 11.2 Alternative scaffolding using SCUHAT2 (transcript based)
 
 This will use the assembled transcriptome (see assembly and transcript quantification in 2_Transcriptome.md). Let's try scaffolding with two set of transcripts: all those with average tpm > 2 in either males or females (scaffold.keep.r, 54,377 transcripts) and all those with average tpm > 5 in either males or females (scaffold.keep.s, 32,821 transcripts).
 
@@ -391,26 +399,90 @@ Remove backslashes from the fasta headers to run BUSCO
 	export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 32 -i strict_20000/SCUBAT_scaffolds.fasta -o SCUBAT_scaffolds.strict_20000.busco.hemiptera -l hemiptera_odb10 -f C:92.6%[S:89.3%,D:3.3%],F:0.8%,M:6.6%,n:2510
 	export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 32 -i relaxed_20000/SCUBAT_scaffolds.fasta -o SCUBAT_scaffolds.relaxed_20000.busco.hemiptera -l hemiptera_odb10 -f :92.6%[S:89.3%,D:3.3%],F:0.8%,M:6.6%,n:2510   
 
-Let's go with the relaxed scaffolded assembly
+The "relaxed" scaffolded assembly with 50,000 insert size is the best of the bunch.
 
-For contigs longer than 100 bp (scaffolds split at >= 10 Ns):
-LongestContig 4205925
-Num 2862
-Span 440158428
-Min 362
-Mean 153794
-N50 818128
-NumN50 164
-GC 0.336
+* For contigs longer than 100 bp (scaffolds split at >= 10 Ns):
+	- LongestContig 4205925
+	- Num 2862
+	- Span 440158428
+	- Min 362f
+	- Mean 153794
+	- N50 818128
+	- NumN50 164
+	- GC 0.336
 
-For scaffolds longer than 200 bp:
-Num 2789
-Span 440165728
-Min 362
-Mean 157822
-N50 863585
-NumN50 155
-GC 0.336
+* For scaffolds longer than 200 bp:
+	- Num 2789
+	- Span 440165728
+	- Min 362
+	- Mean 157822
+	- N50 863585
+	- NumN50 155
+	- GC 0.336
+
+### 11.3 BESST
+
+We can also try sr scaffolding with https://github.com/ksahlin/BESST
+
+	bwa index pseudococcus_viburni.hypo3.fa
+	bwa mem -t 16 -w 0 -O 99 pseudococcus_viburni.hypo3.fa /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz | samtools view -bS - | samtools sort - > /scratch/afilia/mapping.350.bam
+	bwa mem -t 16 -w 0 -O 99 pseudococcus_viburni.hypo3.fa /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz | samtools view -bS - | samtools sort - > /scratch/afilia/mapping.550.bam
+	samtools index mapping.350.bam
+	samtools index mapping.550.bam
+	/data/ross/mealybugs/analyses/B_viburni_2020/scripts/BESST/runBESST -c pseudococcus_viburni.hypo3.fa -f mapping.350.bam mapping.550.bam -orientation fr fr
+
+* First pass:
+	- For scaffolds longer than 200 bp: Num 2805, Span 440148723, Min 362, Mean 156915, N50 848934
+	- C:92.6%[S:89.3%,D:3.3%],F:0.8%,M:6.6%,n:2510
+* Second pass:
+	- For scaffolds longer than 200 bp: Num 2748, Span 440151317, Min 362, Mean 160171, N50 874986
+	- C:92.5%[S:89.2%,D:3.3%],F:0.8%,M:6.7%,n:2510 
+
+BUSCO is slightly worse for the second pass, although it's a more contiguous assembly.
+
+### 11.4 SCUBAT + BESST
+
+Can we get better scaffolded assemblies if we do both?
+
+Run BESST with the relaxed/SCUBAT_scaffolds.fasta assembly
+
+	bwa index hypo3.scubat.fa
+	bwa mem -t 16 -w 0 -O 99 hypo3.scubat.fa /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_	1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz | samtools view -bS - | 	samtools sort - > /scratch/afilia/mapping.350.bam && rsync -av /scratch/afilia/mapping.350.bam .
+	bwa mem -t 16 -w 0 -O 99 hypo3.scubat.fa /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_	1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz | samtools view -bS - | 	samtools sort - > /scratch/afilia/mapping.550.bam && rsync -av /scratch/afilia/mapping.550.bam .
+	samtools index mapping.350.bam
+	samtools index mapping.550.bam
+	/data/ross/mealybugs/analyses/B_viburni_2020/scripts/BESST/runBESST -c hypo3.scubat.fa -f mapping.350.bam mapping.550.bam -orientation fr fr
+
+Run SCUBAT with the pass1 and pass2 BESST assemblies
+
+	bwa index hypo3.scubat.fa
+	bwa mem -t 16 -w 0 -O 99 hypo3.scubat.fa /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_	1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz | samtools view -bS - | 	samtools sort - > /scratch/afilia/mapping.350.bam && rsync -av /scratch/afilia/mapping.350.bam .
+	bwa mem -t 16 -w 0 -O 99 hypo3.scubat.fa /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_	1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz | samtools view -bS - | 	samtools sort - > /scratch/afilia/mapping.550.bam && rsync -av /scratch/afilia/mapping.550.bam .
+	samtools index mapping.350.bam
+	samtools index mapping.550.bam
+	/data/ross/mealybugs/analyses/B_viburni_2020/scripts/BESST/runBESST -c hypo3.scubat.fa -f mapping.350.bam mapping.550.bam -orientation fr fr
+
+We have 4 assemblies to compare
+
+hypo3.scubat.besst1.fa: 2746 scaffolds, N50 894209
+hypo3.scubat.besst2.fa: 2696 scaffolds, N50 916731
+hypo3.besst1.scubat.fa: 2787 scaffolds, N50 863585
+hypo3.besst2.scubat.fa: 2787 scaffolds, N50 863585
+
+#!/bin/bash
+ 
+#$ -V
+#$ -cwd
+#$ -j y
+#$ -o busco.$JOB_ID.log
+ 
+# Submit using:
+# qsub -pe smp 30
+export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 30 -i hypo3.besst1.scubat.fa -o hypo3.besst1.scubat.busco.hemiptera -l hemiptera_odb10
+export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 30 -i hypo3.besst2.scubat.fa -o hypo3.besst2.scubat.busco.hemiptera -l hemiptera_odb10
+export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 30 -i hypo3.scubat.besst1.fa -o hypo3.scubat.besst1.busco.hemiptera -l hemiptera_odb10
+export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 30 -i hypo3.scubat.besst2.fa -o hypo3.scubat.besst2.busco.hemiptera -l hemiptera_odb10
+
 
 ## 13. Benchmarking with RNAseq
 
@@ -418,13 +490,23 @@ Let's use STAR (v2.7.4a) to map the RNAseq reads to the assemblies and see which
 
 	STAR runThreadN 32 --runMode genomeGenerate --genomeDir genomes/raw --genomeFastaFiles genomes/raw/raw.fa
 	STAR runThreadN 32 --runMode genomeGenerate --genomeDir genomes/hypo1 --genomeFastaFiles genomes/hypo1/hypo1.fa
-	STAR runThreadN 32 --runMode genomeGenerate --genomeDir genomes/hypo2 --genomeFastaFiles genomes/hypo2/hypo2.fa --sjdbOverhang 49
-	STAR runThreadN 32 --runMode genomeGenerate --genomeDir genomes/hypo3 --genomeFastaFiles genomes/hypo3/hypo3.fa --sjdbOverhang 49
-	STAR runThreadN 32 --runMode genomeGenerate --genomeDir genomes/relaxed --genomeFastaFiles genomes/relaxed/relaxed.fa --sjdbOverhang 49
-	STAR runThreadN 32 --runMode genomeGenerate --genomeDir genomes/relaxed20 --genomeFastaFiles genomes/relaxed20/relaxed20.fa --sjdbOverhang 49
-	STAR runThreadN 32 --runMode genomeGenerate --genomeDir genomes/strict20 --genomeFastaFiles genomes/strict20/strict20.fa --sjdbOverhang 49
+	STAR runThreadN 32 --runMode genomeGenerate --genomeDir genomes/hypo2 --genomeFastaFiles genomes/hypo2/hypo2.fa
+	STAR runThreadN 32 --runMode genomeGenerate --genomeDir genomes/hypo3 --genomeFastaFiles genomes/hypo3/hypo3.fa
+	STAR runThreadN 32 --runMode genomeGenerate --genomeDir genomes/relaxed --genomeFastaFiles genomes/relaxed/relaxed.fa
+	STAR runThreadN 32 --runMode genomeGenerate --genomeDir genomes/relaxed20 --genomeFastaFiles genomes/relaxed20/relaxed20.fa
+	STAR runThreadN 32 --runMode genomeGenerate --genomeDir genomes/strict20 --genomeFastaFiles genomes/strict20/strict20.fa
+	STAR runThreadN 32 --runMode genomeGenerate --genomeDir genomes/besst_1 --genomeFastaFiles genomes/besst_1/hypo3.bess.pass1.fa
+	STAR runThreadN 32 --runMode genomeGenerate --genomeDir genomes/besst_2 --genomeFastaFiles genomes/besst_2/hypo3.bess.pass2.fa
 
 	STAR --runThreadN 32 --readFilesIn reads/13F_1.trimmed_1.fastq.gz,reads/13F_2.trimmed_1.fastq.gz,reads/13F_3.trimmed_1.fastq.gz,reads/13M_1.trimmed_1.fastq.gz,reads/13M_2.trimmed_1.fastq.gz,reads/13M_3.trimmed_1.fastq.gz,reads/13M_4.trimmed_1.fastq.gz reads/13F_1.trimmed_2.fastq.gz,reads/13F_2.trimmed_2.fastq.gz,reads/13F_3.trimmed_2.fastq.gz,reads/13M_1.trimmed_2.fastq.gz,reads/13M_2.trimmed_2.fastq.gz,reads/13M_3.trimmed_2.fastq.gz,reads/13M_4.trimmed_2.fastq.gz --readFilesCommand zcat --twopassMode Basic --outSAMtype None --outFileNamePrefix /scratch/afilia/hypo3 --genomeDir genomes/hypo3 && rsync -av /scratch/afilia/hypo3* .
 	STAR --runThreadN 32 --readFilesIn reads/13F_1.trimmed_1.fastq.gz,reads/13F_2.trimmed_1.fastq.gz,reads/13F_3.trimmed_1.fastq.gz,reads/13M_1.trimmed_1.fastq.gz,reads/13M_2.trimmed_1.fastq.gz,reads/13M_3.trimmed_1.fastq.gz,reads/13M_4.trimmed_1.fastq.gz reads/13F_1.trimmed_2.fastq.gz,reads/13F_2.trimmed_2.fastq.gz,reads/13F_3.trimmed_2.fastq.gz,reads/13M_1.trimmed_2.fastq.gz,reads/13M_2.trimmed_2.fastq.gz,reads/13M_3.trimmed_2.fastq.gz,reads/13M_4.trimmed_2.fastq.gz --readFilesCommand zcat --twopassMode Basic --outSAMtype None --outFileNamePrefix /scratch/afilia/relaxed --genomeDir genomes/relaxed && rsync -av /scratch/afilia/relaxed* .
 	STAR --runThreadN 32 --readFilesIn reads/13F_1.trimmed_1.fastq.gz,reads/13F_2.trimmed_1.fastq.gz,reads/13F_3.trimmed_1.fastq.gz,reads/13M_1.trimmed_1.fastq.gz,reads/13M_2.trimmed_1.fastq.gz,reads/13M_3.trimmed_1.fastq.gz,reads/13M_4.trimmed_1.fastq.gz reads/13F_1.trimmed_2.fastq.gz,reads/13F_2.trimmed_2.fastq.gz,reads/13F_3.trimmed_2.fastq.gz,reads/13M_1.trimmed_2.fastq.gz,reads/13M_2.trimmed_2.fastq.gz,reads/13M_3.trimmed_2.fastq.gz,reads/13M_4.trimmed_2.fastq.gz --readFilesCommand zcat --twopassMode Basic --outSAMtype None --outFileNamePrefix /scratch/afilia/relaxed20 --genomeDir genomes/relaxed20 && rsync -av /scratch/afilia/relaxed20* .
 	STAR --runThreadN 32 --readFilesIn reads/13F_1.trimmed_1.fastq.gz,reads/13F_2.trimmed_1.fastq.gz,reads/13F_3.trimmed_1.fastq.gz,reads/13M_1.trimmed_1.fastq.gz,reads/13M_2.trimmed_1.fastq.gz,reads/13M_3.trimmed_1.fastq.gz,reads/13M_4.trimmed_1.fastq.gz reads/13F_1.trimmed_2.fastq.gz,reads/13F_2.trimmed_2.fastq.gz,reads/13F_3.trimmed_2.fastq.gz,reads/13M_1.trimmed_2.fastq.gz,reads/13M_2.trimmed_2.fastq.gz,reads/13M_3.trimmed_2.fastq.gz,reads/13M_4.trimmed_2.fastq.gz --readFilesCommand zcat --twopassMode Basic --outSAMtype None --outFileNamePrefix /scratch/afilia/strict20 --genomeDir genomes/strict20 && rsync -av /scratch/afilia/strict20* .
+	STAR --runThreadN 32 --readFilesIn reads/13F_1.trimmed_1.fastq.gz,reads/13F_2.trimmed_1.fastq.gz,reads/13F_3.trimmed_1.fastq.gz,reads/13M_1.trimmed_1.fastq.gz,reads/13M_2.trimmed_1.fastq.gz,reads/13M_3.trimmed_1.fastq.gz,reads/13M_4.trimmed_1.fastq.gz reads/13F_1.trimmed_2.fastq.gz,reads/13F_2.trimmed_2.fastq.gz,reads/13F_3.trimmed_2.fastq.gz,reads/13M_1.trimmed_2.fastq.gz,reads/13M_2.trimmed_2.fastq.gz,reads/13M_3.trimmed_2.fastq.gz,reads/13M_4.trimmed_2.fastq.gz --readFilesCommand zcat --twopassMode Basic --outSAMtype None --outFileNamePrefix /scratch/afilia/hypo3.bess.pass1 --genomeDir genomes/besst_1 && rsync -av /scratch/afilia/hypo3.bess.pass1* .
+	STAR --runThreadN 32 --readFilesIn reads/13F_1.trimmed_1.fastq.gz,reads/13F_2.trimmed_1.fastq.gz,reads/13F_3.trimmed_1.fastq.gz,reads/13M_1.trimmed_1.fastq.gz,reads/13M_2.trimmed_1.fastq.gz,reads/13M_3.trimmed_1.fastq.gz,reads/13M_4.trimmed_1.fastq.gz reads/13F_1.trimmed_2.fastq.gz,reads/13F_2.trimmed_2.fastq.gz,reads/13F_3.trimmed_2.fastq.gz,reads/13M_1.trimmed_2.fastq.gz,reads/13M_2.trimmed_2.fastq.gz,reads/13M_3.trimmed_2.fastq.gz,reads/13M_4.trimmed_2.fastq.gz --readFilesCommand zcat --twopassMode Basic --outSAMtype None --outFileNamePrefix /scratch/afilia/hypo3.bess.pass2 --genomeDir genomes/besst_2 && rsync -av /scratch/afilia/hypo3.bess.pass2* .
+
+
+## 13. Blobtools
+
+![](misc/hypo3.scubat.besst1.blobDB.json.bestsum.phylum.p8.span.100.blobplot.bam0.png)
+![](misc/hypo3.scubat.besst1.blobDB.json.bestsum.phylum.p8.span.100.blobplot.read_cov.bam0.png)
