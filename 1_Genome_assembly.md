@@ -4,7 +4,8 @@ Start date: 08.10.2019, restarted 21.04.2020
 
 	# Working directory	
 	/data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly
-    qlogin -pe smp 1 -N blobtools 
+    qlogin -pe smp 24 -N busco
+
 
 ## 1. Raw reads
 
@@ -284,7 +285,7 @@ These four contigs will be removed from the assembly. No contigs with cov < 2 he
 
 It would be interesting to take a look at proteobacteria contigs with genome-like coverage and see if we can find HGT genes from Husnik et al. 2013.
 
- - ctg436: *cysK* (*Dickeya*, related to PLON gamma 2)
+ - ctg436: *cysK* (*Sodalis*/*Dickeya*, related to PLON gamma 2?)
  - ctg571: N-acetylmuramoyl-L-alanine amidase
  - ctg662: AAA-type ATPase
  - ctg716: AAA-ATPase_like domain-containing protein
@@ -365,7 +366,7 @@ scaffolds.longreads.fa 1424    358798159       33.652  1423    358797797       1
 scaffolds.filled.fa    1424    358800001       33.652  1423    358799639       1419269 213831  1599319 13627760
 scaffolds.reduced.fa   1230    355697034       33.651  1229    355696672       1435353 237609  1599316 13627760
 
-### 11.2 Alternative scaffolding using SCUHAT2 (transcript based)
+### 11.2 Alternative scaffolding using SCUBAT2 (transcript based)
 
 This will use the assembled transcriptome (see assembly and transcript quantification in 2_Transcriptome.md). Let's try scaffolding with two set of transcripts: all those with average tpm > 2 in either males or females (scaffold.keep.r, 54,377 transcripts) and all those with average tpm > 5 in either males or females (scaffold.keep.s, 32,821 transcripts).
 
@@ -456,33 +457,27 @@ Run BESST with the relaxed/SCUBAT_scaffolds.fasta assembly
 Run SCUBAT with the pass1 and pass2 BESST assemblies
 
 	bwa index hypo3.scubat.fa
-	bwa mem -t 16 -w 0 -O 99 hypo3.scubat.fa /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_	1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz | samtools view -bS - | 	samtools sort - > /scratch/afilia/mapping.350.bam && rsync -av /scratch/afilia/mapping.350.bam .
-	bwa mem -t 16 -w 0 -O 99 hypo3.scubat.fa /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_	1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz | samtools view -bS - | 	samtools sort - > /scratch/afilia/mapping.550.bam && rsync -av /scratch/afilia/mapping.550.bam .
+	bwa mem -t 16 -w 0 -O 99 hypo3.scubat.fa /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz | samtools view -bS - | 	samtools sort - > /scratch/afilia/mapping.350.bam && rsync -av /scratch/afilia/mapping.350.bam .
+	bwa mem -t 16 -w 0 -O 99 hypo3.scubat.fa /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz | samtools view -bS - | 	samtools sort - > /scratch/afilia/mapping.550.bam && rsync -av /scratch/afilia/mapping.550.bam .
 	samtools index mapping.350.bam
 	samtools index mapping.550.bam
 	/data/ross/mealybugs/analyses/B_viburni_2020/scripts/BESST/runBESST -c hypo3.scubat.fa -f mapping.350.bam mapping.550.bam -orientation fr fr
 
-We have 4 assemblies to compare
+We have 4 assemblies to compare. Let's rename the besst outputs -- otherwise BUSCO fails to include scaffolds and the scores drop.
 
-hypo3.scubat.besst1.fa: 2746 scaffolds, N50 894209
-hypo3.scubat.besst2.fa: 2696 scaffolds, N50 916731
-hypo3.besst1.scubat.fa: 2787 scaffolds, N50 863585
-hypo3.besst2.scubat.fa: 2787 scaffolds, N50 863585
+ - hypo3.besst1.scubat.fa: 2787 scaffolds, N50 863585
+ - hypo3.besst2.scubat.fa: 2787 scaffolds, N50 863585
+ - hypo3.scubat.besst1.fa: 2746 scaffolds, N50 894209
+ - hypo3.scubat.besst2.fa: 2696 scaffolds, N50 916731
 
-#!/bin/bash
- 
-#$ -V
-#$ -cwd
-#$ -j y
-#$ -o busco.$JOB_ID.log
- 
-# Submit using:
-# qsub -pe smp 30
-export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 30 -i hypo3.besst1.scubat.fa -o hypo3.besst1.scubat.busco.hemiptera -l hemiptera_odb10
-export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 30 -i hypo3.besst2.scubat.fa -o hypo3.besst2.scubat.busco.hemiptera -l hemiptera_odb10
-export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 30 -i hypo3.scubat.besst1.fa -o hypo3.scubat.besst1.busco.hemiptera -l hemiptera_odb10
-export AUGUSTUS_CONFIG_PATH="/ceph/software/busco_augustus_config_path/config/" && busco -m genome -c 30 -i hypo3.scubat.besst2.fa -o hypo3.scubat.besst2.busco.hemiptera -l hemiptera_odb10
+Let's rename the besst outputs -- otherwise BUSCO fails to include scaffolds and the scores drop.
 
+	bioawk -c fastx '{ print ">scaffold_" ++i"-"length($seq)"\n"$seq }' < hypo3.scubat.besst1.fa > hypo3.scubat.besst1.renamed.fa
+	paste <(grep ">" hypo3.scubat.besst1.fa) <(grep ">" hypo3.scubat.besst1.renamed.fa) | sed 's/>//g' > hypo3.scubat.besst1.renamed.assoc
+	bioawk -c fastx '{ print ">scaffold_" ++i"-"length($seq)"\n"$seq }' < hypo3.scubat.besst2.fa > hypo3.scubat.besst2.renamed.fa
+	paste <(grep ">" hypo3.scubat.besst2.fa) <(grep ">" hypo3.scubat.besst2.renamed.fa) | sed 's/>//g' > hypo3.scubat.besst2.renamed.assoc
+
+hypo3.scubat.besst1.fa is the best one, according to BUSCO scores.
 
 ## 13. Benchmarking with RNAseq
 
@@ -505,8 +500,50 @@ Let's use STAR (v2.7.4a) to map the RNAseq reads to the assemblies and see which
 	STAR --runThreadN 32 --readFilesIn reads/13F_1.trimmed_1.fastq.gz,reads/13F_2.trimmed_1.fastq.gz,reads/13F_3.trimmed_1.fastq.gz,reads/13M_1.trimmed_1.fastq.gz,reads/13M_2.trimmed_1.fastq.gz,reads/13M_3.trimmed_1.fastq.gz,reads/13M_4.trimmed_1.fastq.gz reads/13F_1.trimmed_2.fastq.gz,reads/13F_2.trimmed_2.fastq.gz,reads/13F_3.trimmed_2.fastq.gz,reads/13M_1.trimmed_2.fastq.gz,reads/13M_2.trimmed_2.fastq.gz,reads/13M_3.trimmed_2.fastq.gz,reads/13M_4.trimmed_2.fastq.gz --readFilesCommand zcat --twopassMode Basic --outSAMtype None --outFileNamePrefix /scratch/afilia/hypo3.bess.pass1 --genomeDir genomes/besst_1 && rsync -av /scratch/afilia/hypo3.bess.pass1* .
 	STAR --runThreadN 32 --readFilesIn reads/13F_1.trimmed_1.fastq.gz,reads/13F_2.trimmed_1.fastq.gz,reads/13F_3.trimmed_1.fastq.gz,reads/13M_1.trimmed_1.fastq.gz,reads/13M_2.trimmed_1.fastq.gz,reads/13M_3.trimmed_1.fastq.gz,reads/13M_4.trimmed_1.fastq.gz reads/13F_1.trimmed_2.fastq.gz,reads/13F_2.trimmed_2.fastq.gz,reads/13F_3.trimmed_2.fastq.gz,reads/13M_1.trimmed_2.fastq.gz,reads/13M_2.trimmed_2.fastq.gz,reads/13M_3.trimmed_2.fastq.gz,reads/13M_4.trimmed_2.fastq.gz --readFilesCommand zcat --twopassMode Basic --outSAMtype None --outFileNamePrefix /scratch/afilia/hypo3.bess.pass2 --genomeDir genomes/besst_2 && rsync -av /scratch/afilia/hypo3.bess.pass2* .
 
+hypo3.scubat.besst2.fa has slighly higher mapping rates than hypo3.scubat.besst1.fa -- but let's go with the BUSCO scores and keep hypo3.scubat.besst1.fa as our assembly.
 
 ## 13. Blobtools
 
 ![](misc/hypo3.scubat.besst1.blobDB.json.bestsum.phylum.p8.span.100.blobplot.bam0.png)
 ![](misc/hypo3.scubat.besst1.blobDB.json.bestsum.phylum.p8.span.100.blobplot.read_cov.bam0.png)
+
+We are keeping:
+ - all animal contigs (including low coverage ones)
+ - 3 "Viruses-undef" contigs (secondary hits to Arthropoda, genome-like cov)
+ - all no-hit contigs with coverage > 2
+ - all "other contigs" including Proteobacteria, except for the following (based on cov):
+
+The proteobacteria contigs (taxonomic assignation, coverage):
+
+ - ctg2741	4807	0.6012	2253.3872	Proteobacteria	tax0=Proteobacteria:34562.0;tax1=Proteobacteria:241.5;
+ - ctg182	754563	0.4338	167.0443	Proteobacteria	tax0=Proteobacteria:67802.0;tax1=Proteobacteria:2548.9;
+ - ctg376	281389	0.2748	134.8842	Proteobacteria	tax0=Proteobacteria:47741.0;tax1=Proteobacteria:2402.1;
+ - ctg1645	13152	0.3933	80.5699	Proteobacteria	tax0=Proteobacteria:38317.0;tax1=Proteobacteria:877.9;
+
+ * Primary endosymbiont:
+	- ctg2741: Candidatus *Tremblaya princeps* (however too short); another hit to *Tremblaya* in ctg64 might be HGT (tax0=Proteobacteria:1198.0|Arthropoda:557.0|Streptophyta:185.0;tax1=Brachiopoda:1218.33)
+ * Secondary endosymbionts (PLON gamma 2):
+	- ctg182: *Sodalis glossinidius*
+	- ctg1645: Candidatus *Sodalis pierantonius*
+	- ctg376, *Morganella/Buchnera/Gullanella/Sodalis* (secondary endosymbiont of *Dysmicoccus neobrevipes*)
+
+Other contigs to remove:
+
+ - ctg968	29449	0.3732	64.3328	Streptophyta	tax0=no-hit:0.0;tax1=Streptophyta:468.8;
+ - ctg2361	6689	0.3397	59.2066	Chlamydiae	tax0=no-hit:0.0;tax1=Chlamydiae:223.4;
+ - scaffold_81_uid_1592524719	5818	0.3109	40.4742	Mucoromycota	tax0=no-hit:0.0;tax1=Mucoromycota:280.8;
+
+## 14. Assembly v1: QC
+
+Stats for the filtered scaffolded assembly (let's call it p.viburni.freeze.v0.fa). It's sorted by decreasing length and renamed to something sensible. It is possible to keep track of which contigs have been scaffolded by SCUBAT and BESST and the renaming checking the following files: connections.dict.txt (SCUBAT), info-pass1.gff (BESST), rename.association
+
+ * Num 2392
+ * Span 435362022
+ * Min 1350
+ * Mean 182007
+ * N50 874986
+ * NumN50 152
+ * GC 0.337
+ * BUSCO hemiptera: C:92.6%[S:89.3%,D:3.3%],F:0.8%,M:6.6%,n:2510
+ * BUSCO insecta: C:95.2%[S:91.7%,D:3.5%],F:0.9%,M:3.9%,n:1367
+ * BUSCO arthropoda: C:95.9%[S:92.7%,D:3.2%],F:0.9%,M:3.2%,n:1013	 
