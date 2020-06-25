@@ -234,3 +234,8 @@ Let's examine the 77 transcripts unique to B males
 | TRINITY_DN12933_c0_g3_i3 | 0.00943168 | 0        | 0.08     | 0       | 0.97    | LRFN4_MOUSE          | Leucine-rich repeat and fibronectin type-III domain-containing protein                | 3.307 | Unique in B males |
 | TRINITY_DN6614_c0_g1_i14 | 0.02067184 | 0.01     | 0.04     | 0.03    | 0.61    | LAS1L_MOUSE          | Ribosomal biogenesis protein LAS1L                                                    | 3.237 | Unique in B males |
 | TRINITY_DN28663_c0_g1_i1 | 0.03459472 | 0.03     | 0.08     | 0.04    | 0.59    | POL_SIVG             | Gag-Pol polyprotein                                                                   | 2.322 | Unique in B males |
+
+## 7. BLASTing against the transcriptome
+
+	makeblastdb -in viburni.trinity.fasta -dbtype nucl
+	blastn -task megablast -query seqs.fa -db ../../1_trinity/viburni.trinity.fasta -outfmt '6 qseqid staxids bitscore std' -max_target_seqs 10 -max_hsps 1 -num_threads 1 -evalue 1e-10 -out maria.seqs.vs.viburni.fa
