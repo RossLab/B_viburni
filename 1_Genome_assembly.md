@@ -6,7 +6,7 @@ Start date: 08.10.2019, restarted 21.04.2020
 	/data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly
     qlogin -pe smp 24 -N busco
 
-## ASSEMBLY
+# Assembly
 
 ## 1. Raw reads
 
@@ -549,4 +549,4 @@ Stats for the filtered scaffolded assembly (let's call it p.viburni.freeze.v0.fa
  * BUSCO insecta: C:95.2%[S:91.7%,D:3.5%],F:0.9%,M:3.9%,n:1367
  * BUSCO arthropoda: C:95.9%[S:92.7%,D:3.2%],F:0.9%,M:3.2%,n:1013	 
 
-## ANNOTATION
+# Annotation
