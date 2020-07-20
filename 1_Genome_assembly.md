@@ -6,6 +6,7 @@ Start date: 08.10.2019, restarted 21.04.2020
 	/data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly
     qlogin -pe smp 24 -N busco
 
+## ASSEMBLY
 
 ## 1. Raw reads
 
@@ -170,7 +171,7 @@ Stats for cns-srp:
 * Busco (hemiptera) C:92.0%[S:89.0%,D:3.0%],F:1.0%,M:7.0%,n:2510 
 * Busco (insecta) C:92.7%[S:89.8%,D:2.9%],F:2.1%,M:5.2%,n:1367 
 
-## 9. Alternative polishing: use HyPo
+### 8.2. Alternative polishing: use HyPo
 
 conda activate afilia_hypo  
 conda install -c bioconda hypo
@@ -479,7 +480,7 @@ Let's rename the besst outputs -- otherwise BUSCO fails to include scaffolds and
 
 hypo3.scubat.besst1.fa is the best one, according to BUSCO scores.
 
-## 13. Benchmarking with RNAseq
+## 12. Benchmarking with RNAseq
 
 Let's use STAR (v2.7.4a) to map the RNAseq reads to the assemblies and see which one is best.
 
@@ -547,3 +548,5 @@ Stats for the filtered scaffolded assembly (let's call it p.viburni.freeze.v0.fa
  * BUSCO hemiptera: C:92.6%[S:89.3%,D:3.3%],F:0.8%,M:6.6%,n:2510
  * BUSCO insecta: C:95.2%[S:91.7%,D:3.5%],F:0.9%,M:3.9%,n:1367
  * BUSCO arthropoda: C:95.9%[S:92.7%,D:3.2%],F:0.9%,M:3.2%,n:1013	 
+
+## ANNOTATION
