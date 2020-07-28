@@ -5,6 +5,8 @@ Start date: 08.10.2019, restarted 21.04.2020
 	# Working directory	
 	/data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly
     qlogin -pe smp 24 -N busco
+    /ceph/software/utilities/sge/qlogin -pe smp 32 -N interproscan
+/ceph/software/utilities/sge/qlogin -pe smp 1 -N aa
 
 # I. ASSEMBLY
 
@@ -547,6 +549,119 @@ Stats for the filtered scaffolded assembly (let's call it p.viburni.freeze.v0.fa
  * GC 0.337
  * BUSCO hemiptera: C:92.6%[S:89.3%,D:3.3%],F:0.8%,M:6.6%,n:2510
  * BUSCO insecta: C:95.2%[S:91.7%,D:3.5%],F:0.9%,M:3.9%,n:1367
- * BUSCO arthropoda: C:95.9%[S:92.7%,D:3.2%],F:0.9%,M:3.2%,n:1013	 
+ * BUSCO arthropoda: C:95.9%[S:92.7%,D:3.2%],F:0.9%,M:3.2%,n:1013
+
 
 # II. ANNOTATION
+
+## 1. Repeat masking
+
+Run RepeatModeler (total time, 50h)
+
+	/data/ross/mealybugs/analyses/hollie/bin/RepeatModeler-2.0/BuildDatabase -name db_PV_repeatmodeler p.viburni.freeze.v0.fa && touch database.complete
+	/data/ross/mealybugs/analyses/hollie/bin/RepeatModeler-2.0/RepeatModeler -database db_PV_repeatmodeler p.viburni.freeze.v0.fa -pa 32
+
+Combine my repeat library with RepBase (see https://blaxter-lab-documentation.readthedocs.io/en/latest/index.html)
+
+	/ceph/software/repeatmasker/RepeatMasker-4.1.0/util/queryRepeatDatabase.pl -species Arthropoda > Arthropoda.Repbase.2020.lib
+	/ceph/software/repeatmasker/RepeatMasker-4.1.0/util/queryRepeatDatabase.pl -species Hemiptera > Hemiptera.Repbase.2020.lib
+	cat db_PV_repeatmodeler-families.fa Arthropoda.Repbase.2020.lib > db_PV_repeatmodeler-families_Arthropoda.Repbase.2020.combined.lib
+	cat db_PV_repeatmodeler-families.fa Hemiptera.Repbase.2020.lib > db_PV_repeatmodeler-families_Hemiptera.Repbase.2020.combined.lib
+
+Run RepeatMasker (-xsmall to soft-mask)
+
+	/data/ross/mealybugs/analyses/hollie/bin/RepeatMasker/RepeatMasker -pa 32 -dir softmasked_Arthropoda -no_is -gc 34 -lib db_PV_repeatmodeler-families_Arthropoda.Repbase.2020.combined.lib -html -norna -cutoff 250 -xsmall -gff -a p.viburni.freeze.v0.fa
+	/data/ross/mealybugs/analyses/hollie/bin/RepeatMasker/RepeatMasker -pa 32 -dir softmasked_Hemiptera -no_is -gc 34 -lib db_PV_repeatmodeler-families_Hemiptera.Repbase.2020.combined.lib -html -norna -cutoff 250 -xsmall -gff -a p.viburni.freeze.v0.fa
+
+With both Arthropoda and Hemiptera databases, 49.7% of the genome is masked (!). Is this believable? Seems high compared to *Phenacoccus solenopsis* (37.86%) and PLON (38.20 %) (but both have a smaller genome). Other hemipterans have similar amounts: e.g. *B. tabaci* (45%) v *A. pisum* (38%).
+
+## 2. BRAKER
+
+Let's use the conda *annotation* environment created by D. Laetsch and the softmasked_Hemiptera genome.
+
+Mapping all RNAseq data (STAR v2.7.4a)
+
+	STAR --runThreadN 40 --runMode genomeGenerate --outFileNamePrefix p.viburni.freeze.v0.softmasked.braker --genomeDir p.viburni.freeze.v0.softmasked.STAR --genomeFastaFiles p.viburni.freeze.v0.softmasked.fa
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/04F_1.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/04F_1.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/04F_1 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/04F_1 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/04F_1* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/04F_2.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/04F_2.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/04F_2 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/04F_2 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/04F_2* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/04F_3.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/04F_3.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/04F_3 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/04F_3 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/04F_3* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/04M_1.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/04M_1.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/04M_1 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/04M_1 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/04M_1* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/04M_2.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/04M_2.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/04M_2 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/04M_2 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/04M_2* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/04M_3.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/04M_3.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/04M_3 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/04M_3 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/04M_3* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/13F_1.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/13F_1.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/13F_1 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/13F_1 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/13F_1* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/13F_2.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/13F_2.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/13F_2 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/13F_2 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/13F_2* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/13F_3.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/13F_3.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/13F_3 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/13F_3 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/13F_3* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/13M_1.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/13M_1.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/13M_1 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/13M_1 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/13M_1* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/13M_2.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/13M_2.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/13M_2 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/13M_2 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/13M_2* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/13M_3.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/13M_3.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/13M_3 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/13M_3 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/13M_3* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/13M_4.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/13M_4.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/13M_4 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/13M_4 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/13M_4* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/15F_1.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/15F_1.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/15F_1 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/15F_1 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/15F_1* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/15F_2.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/15F_2.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/15F_2 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/15F_2 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/15F_2* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/15F_3.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/15F_3.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/15F_3 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/15F_3 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/15F_3* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/15M_1.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/15M_1.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/15M_1 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/15M_1 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/15M_1* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/15M_2.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/15M_2.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/15M_2 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/15M_2 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/15M_2* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/15M_3.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/15M_3.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/15M_3 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/15M_3 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/15M_3* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/21F_1.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/21F_1.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/21F_1 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/21F_1 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/21F_1* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/21F_2.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/21F_2.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/21F_2 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/21F_2 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/21F_2* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/21F_3.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/21F_3.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/21F_3 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/21F_3 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/21F_3* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/21M_1.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/21M_1.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/21M_1 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/21M_1 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/21M_1* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/21M_2.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/21M_2.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/21M_2 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/21M_2 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/21M_2* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/21M_3.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/21M_3.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/21M_3 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/21M_3 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/21M_3* .
+	STAR --runThreadN 40 --readFilesIn ../../3_RNA_seq/0_reads/21M_4.trimmed_1.fastq.gz ../../3_RNA_seq/0_reads/21M_4.trimmed_2.fastq.gz --readFilesCommand zcat --outTmpDir /scratch/afilia/21M_4 --outSAMtype BAM SortedByCoordinate --outFileNamePrefix /scratch/afilia/21M_4 --genomeDir p.viburni.freeze.v0.softmasked.STAR && rsync -av /scratch/afilia/21M_4* .
+
+Run 1: Run BRAKER2 with RNAseq data only
+
+	braker.pl --gff3 --overwrite --species pseudococcus_viburni --verbosity 3 --workingdir /scratch/afilia/PVIB.BRAKER1 --genome=p.viburni.freeze.v0.softmasked.fa --softmasking --bam=04F_1Aligned.sortedByCoord.out.bam,04F_2Aligned.sortedByCoord.out.bam,04F_3Aligned.sortedByCoord.out.bam,04M_1Aligned.sortedByCoord.out.bam,04M_2Aligned.sortedByCoord.out.bam,04M_3Aligned.sortedByCoord.out.bam,13F_1Aligned.sortedByCoord.out.bam,13F_2Aligned.sortedByCoord.out.bam,13F_3Aligned.sortedByCoord.out.bam,13M_1Aligned.sortedByCoord.out.bam,13M_2Aligned.sortedByCoord.out.bam,13M_3Aligned.sortedByCoord.out.bam,13M_4Aligned.sortedByCoord.out.bam,15F_1Aligned.sortedByCoord.out.bam,15F_2Aligned.sortedByCoord.out.bam,15F_3Aligned.sortedByCoord.out.bam,15M_1Aligned.sortedByCoord.out.bam,15M_2Aligned.sortedByCoord.out.bam,15M_3Aligned.sortedByCoord.out.bam,21F_1Aligned.sortedByCoord.out.bam,21F_2Aligned.sortedByCoord.out.bam,21F_3Aligned.sortedByCoord.out.bam,21M_1Aligned.sortedByCoord.out.bam,21M_2Aligned.sortedByCoord.out.bam,21M_3Aligned.sortedByCoord.out.bam,21M_4Aligned.sortedByCoord.out.bam --cores=60 && rsync -av /scratch/afilia/PVIB.BRAKER1 .
+	
+Run 2: Run BRAKER2 with RNAseq data + a database of protein families of "unknown evolutionary distance" (the insecta part of OrthoDB v8; 4978 groupsthat span >90% species)
+
+	braker.pl --gff3 --overwrite --species pseudococcus_viburni --verbosity 3 --workingdir /scratch/afilia/PVIB.BRAKER2 --genome=p.viburni.freeze.v0.softmasked.fa --softmasking --etpmode --prot_seq=orthodb_v8_insecta_90.fa --bam=04F_1Aligned.sortedByCoord.out.bam,04F_2Aligned.sortedByCoord.out.bam,04F_3Aligned.sortedByCoord.out.bam,04M_1Aligned.sortedByCoord.out.bam,04M_2Aligned.sortedByCoord.out.bam,04M_3Aligned.sortedByCoord.out.bam,13F_1Aligned.sortedByCoord.out.bam,13F_2Aligned.sortedByCoord.out.bam,13F_3Aligned.sortedByCoord.out.bam,13M_1Aligned.sortedByCoord.out.bam,13M_2Aligned.sortedByCoord.out.bam,13M_3Aligned.sortedByCoord.out.bam,13M_4Aligned.sortedByCoord.out.bam,15F_1Aligned.sortedByCoord.out.bam,15F_2Aligned.sortedByCoord.out.bam,15F_3Aligned.sortedByCoord.out.bam,15M_1Aligned.sortedByCoord.out.bam,15M_2Aligned.sortedByCoord.out.bam,15M_3Aligned.sortedByCoord.out.bam,21F_1Aligned.sortedByCoord.out.bam,21F_2Aligned.sortedByCoord.out.bam,21F_3Aligned.sortedByCoord.out.bam,21M_1Aligned.sortedByCoord.out.bam,21M_2Aligned.sortedByCoord.out.bam,21M_3Aligned.sortedByCoord.out.bam,21M_4Aligned.sortedByCoord.out.bam --ALIGNMENT_TOOL_PATH=/ceph/software/prothint/bin/ --cores=60 && rsync -av /scratch/afilia/PVIB.BRAKER2 .
+	
+We can do some basic assessment of both annotations
+
+* PVIB.BRAKER1
+	- Number of genes: 23,629
+	- Number of mRNAs: 25,677
+	- C:93.1%[S:78.2%,D:14.9%],F:0.8%,M:6.1%,n:2510 (hemiptera)
+	- C:95.1%[S:83.0%,D:12.1%],F:1.0%,M:3.9%,n:1367 (insecta)
+	- C:96.2%[S:86.9%,D:9.3%],F:0.8%,M:3.0%,n:1013 (arthropoda)
+
+* PVIB.BRAKER2
+	- Number of genes: 23,632
+	- Number of mRNAs: 25,229
+	- C:93.1%[S:79.9%,D:13.2%],F:0.7%,M:6.2%,n:2510 (hemiptera)
+	- C:94.9%[S:84.9%,D:10.0%],F:0.9%,M:4.2%,n:1367 (insecta)
+	- C:96.2%[S:87.9%,D:8.3%],F:0.6%,M:3.2%,n:1013 (arthropoda)
+
+Both are very similar; PVIB.BRAKER1 seems marginally better based on missing genes. Keeping that one.
+
+## 3. Annotation
+
+Let's annotate the predicted genes
+
+	awk '{if(NR==1) {print $0} else {if($0 ~ /^>/) {print "\n"$0} else {printf $0}}}' augustus.hints.aa > p.viburni.freeze.v0.braker.aa.sl.faa
+	awk '{if(NR==1) {print $0} else {if($0 ~ /^>/) {print "\n"$0} else {printf $0}}}' augustus.hints.codingseq > p.viburni.freeze.v0.braker.codingseq.sl.faa
+
+BLASTp against uniprot
+
+	blastp -task blastp -query p.viburni.freeze.v0.braker.aa.sl.faa -db /data/ross/mealybugs/analyses/B_viburni_2020/3_RNA_seq/1_trinity/annotation/uniprot_sprot.pep -max_target_seqs 10 -outfmt 6 -num_threads 48 -evalue 1e-25  -out /scratch/afilia/p.viburni.freeze.v0.braker.aa.blast.vs.uniprot.out && rsync /scratch/afilia/p.viburni.freeze.v0.braker.aa.blast.vs.uniprot.out .
+
+DIAMOND against refprot
+
+	diamond blastp --query p.viburni.freeze.v0.braker.aa.sl.faa --db ceph/software/databases/uniprot_2019_08/full/reference_proteomes.dmnd --outfmt 6 --sensitive --max-target-seqs 5 --evalue 1e-25 --threads 48 --out /scratch/afilia/p.viburni.freeze.v0.braker.aa.diamond.vs.refprot.out && rsync /scratch/afilia/p.viburni.freeze.v0.braker.aa.diamond.vs.refprot.out .
+
+BLASTp against the *de novo* transcriptome assembly (see 3_RNA_seq)
+
+	makeblastdb -in /data/ross/mealybugs/analyses/B_viburni_2020/3_RNA_seq/1_trinity/annotation/viburni.trinity.fasta.transdecoder.pep -dbtype prot
+	blastp -query p.viburni.freeze.v0.braker.aa.sl.faa -db /data/ross/mealybugs/analyses/B_viburni_2020/3_RNA_seq/1_trinity/annotation/viburni.trinity.fasta.transdecoder.pep -outfmt 6 -max_target_seqs 10 -num_threads 48 -evalue 1e-25 --out /scratch/afilia/p.viburni.freeze.v0.braker.aa.blast.vs.transcriptome.out && rsync /scratch/afilia/p.viburni.freeze.v0.braker.aa.blast.vs.transcriptome.out .
+
+Run InterProScan. To do so, let's split in baches (1,000 entries per file)
+
+	split -l 2000 -d --additional-suffix=.faa ../p.viburni.freeze.v0.braker.aa.sl.faa p.viburni.freeze.v0.braker.aa.
+	/ceph/software/interproscan/interproscan-5.35-74.0/interproscan.sh -T /scratch/afilia/ -i {} -o /scratch/afilia/{/}.interproscan.tsv -dp -t p --goterms -appl SignalP-EUK-4.1,Pfam-32.0 -f TSV && rsync /scratch/afilia/{/}.interproscan.tsv
+	parallel -j 1 'qsub -cwd -N interproscan -V -pe smp 1 -b yes {}' :::: interproscan_commands.txt
+
+Predicted proteins with transcriptome hits: 20,473
+Predicted proteins with BLASTp matches: 10,070
+Predicted proteins with diamond matches: 12,412
+Predicted proteins with InterProScan results: 16,120
