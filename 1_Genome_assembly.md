@@ -661,7 +661,4 @@ Run InterProScan. To do so, let's split in baches (1,000 entries per file)
 	/ceph/software/interproscan/interproscan-5.35-74.0/interproscan.sh -T /scratch/afilia/ -i {} -o /scratch/afilia/{/}.interproscan.tsv -dp -t p --goterms -appl SignalP-EUK-4.1,Pfam-32.0 -f TSV && rsync /scratch/afilia/{/}.interproscan.tsv
 	parallel -j 1 'qsub -cwd -N interproscan -V -pe smp 1 -b yes {}' :::: interproscan_commands.txt
 
-Predicted proteins with transcriptome hits: 20,473
-Predicted proteins with BLASTp matches: 10,070
-Predicted proteins with diamond matches: 12,412
-Predicted proteins with InterProScan results: 16,120
+Predicted proteins with transcriptome hits: 20,473; predicted proteins with BLASTp matches: 10,070; predicted proteins with diamond matches: 12,412; predicted proteins with InterProScan results: 16,120
