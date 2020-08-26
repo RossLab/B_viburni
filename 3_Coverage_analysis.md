@@ -51,7 +51,6 @@ Based on the assembly size (435.3Mb), we are looking at estimated coverages betw
 	bwa index /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz ../0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-13.Illumina.350.sorted.bam
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz ../0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-13.Illumina.550.sorted.bam
-	bwa index /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../0_reads/PV_18-04.Illumina.350.trimmed_1.fq.gz ../0_reads/PV_18-04.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-04.initial.sorted.bam
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../0_reads/PV_18-21.Illumina.350.trimmed_1.fq.gz ../0_reads/PV_18-21.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-21.initial.sorted.bam
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../0_reads/PV_18-23.Illumina.350.trimmed_1.fq.gz ../0_reads/PV_18-23.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-23.initial.sorted.bam
@@ -133,28 +132,28 @@ Some initial mapping stats with ```samtools flagstat```:
 	190849052 + 0 properly paired (88.34% : N/A)
 	207719570 + 0 with itself and mate mapped
 
-samtools index PV_18-04.initial.sorted.bam
-samtools index PV_18-13.Illumina.350.sorted.bam
-samtools index PV_18-13.Illumina.550.sorted.bam
-samtools index PV_18-13.initial.sorted.bam
-samtools index PV_18-21.initial.sorted.bam
-samtools index PV_18-23.initial.sorted.bam
+Extract mapped reads with ```bamfilter``` (inclusion/exclusion list is needed, just made an empty one)
 
+	/ceph/software/blobtools/blobtools bamfilter -b PV_18-21.initial.sorted.bam -o /scratch/afilia/PV_18-21 -n -f fq -e no_contigs.txt
+	/ceph/software/blobtools/blobtools bamfilter -b PV_18-23.initial.sorted.bam -o /scratch/afilia/PV_18-23 -n -f fq -e no_contigs.txt
+	/ceph/software/blobtools/blobtools bamfilter -b PV_18-04.initial.sorted.bam -o /scratch/afilia/PV_18-04 -n -f fq -e no_contigs.txt -U
+	/ceph/software/blobtools/blobtools bamfilter -b PV_18-13.Illumina.350.sorted.bam -o /scratch/afilia/PV_18-13.350 -n -f fq -e no_contigs.txt -U
+	/ceph/software/blobtools/blobtools bamfilter -b PV_18-13.Illumina.550.sorted.bam -o /scratch/afilia/PV_18-13.550 -n -f fq -e no_contigs.txt -U
 
-/ceph/software/blobtools/blobtools bamfilter -b PV_18-21.initial.sorted.bam -o PV_18-21 -n -f fq -e no_contigs.txt
-/ceph/software/blobtools/blobtools bamfilter -b PV_18-23.initial.sorted.bam -o PV_18-23 -n -f fq -e no_contigs.txt
+## 4. Remapping
 
-/ceph/software/blobtools/blobtools bamfilter -b PV_18-04.initial.sorted.bam -o PV_18-04 -n -f fq -e no_contigs.txt -U
-/ceph/software/blobtools/blobtools bamfilter -b PV_18-13.Illumina.350.sorted.bam -o PV_18-13.350 -n -f fq -e no_contigs.txt -U
-/ceph/software/blobtools/blobtools bamfilter -b PV_18-13.Illumina.550.sorted.bam -o PV_18-13.550 -n -f fq -e no_contigs.txt -U
-
-/ceph/software/blobtools/blobtools bamfilter -b PV_18-04.initial.sorted.bam -o PV_18-04 -n -f fq -e no_contigs.txt
-
-/ceph/software/blobtools/blobtools bamfilter --threads 8 --include_unmapped -b PV_18-13.initial.sorted.bam -o PV_18-13
-/ceph/software/blobtools/blobtools bamfilter --threads 8 --include_unmapped -b PV_18-21.initial.sorted.bam -o PV_18-21
-/ceph/software/blobtools/blobtools bamfilter --threads 8 --include_unmapped -b PV_18-23.initial.sorted.bam -o PV_18-23
-samtools index PV_18-04.initial.sorted.bam
-samtools index PV_18-13.initial.sorted.bam
-samtools index PV_18-21.initial.sorted.bam
-samtools index PV_18-23.initial.sorted.bam
+	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../1_mapping/PV_18-13.350.PV_18-13.Illumina.350.sorted.bam.InIn.1.fq ../1_mapping/PV_18-13.350.PV_18-13.Illumina.350.sorted.bam.InIn.2.fq | samtools sort -O BAM -o /scratch/afilia/PV_18-13.350.freeze.v0.sorted.bam
+	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../1_mapping/PV_18-13.550.PV_18-13.Illumina.550.sorted.bam.InIn.1.fq ../1_mapping/PV_18-13.550.PV_18-13.Illumina.550.sorted.bam.InIn.2.fq | samtools sort -O BAM -o /scratch/afilia/PV_18-13.550.freeze.v0.sorted.bam
+	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../1_mapping/PV_18-04.PV_18-04.initial.sorted.bam.InIn.1.fq ../1_mapping/PV_18-04.PV_18-04.initial.sorted.bam.InIn.2.fq | samtools sort -O BAM -o /scratch/afilia/PV_18-04.freeze.v0.sorted.bam
+	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../1_mapping/PV_18-21.PV_18-21.initial.sorted.bam.InIn.1.fq ../1_mapping/PV_18-21.PV_18-21.initial.sorted.bam.InIn.2.fq | samtools sort -O BAM -o /scratch/afilia/PV_18-21.freeze.v0.sorted.bam
+	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../1_mapping/PV_18-23.PV_18-23.initial.sorted.bam.InIn.1.fq ../1_mapping/PV_18-23.PV_18-23.initial.sorted.bam.InIn.2.fq | samtools sort -O BAM -o /scratch/afilia/PV_18-23.freeze.v0.sorted.bam
+	samtools merge /scratch/afilia/PV_18-13.freeze.v0.sorted.bam /scratch/afilia/PV_18-13.350.freeze.v0.sorted.bam /scratch/afilia/PV_18-13.550.freeze.v0.sorted.bam
+	rsync -av /scratch/afilia/PV_18-13.freeze.v0.sorted.bam .
+	rsync -av /scratch/afilia/PV_18-04.freeze.v0.sorted.bam .
+	rsync -av /scratch/afilia/PV_18-21.freeze.v0.sorted.bam .
+	rsync -av /scratch/afilia/PV_18-23.freeze.v0.sorted.bam .
+	samtools flagstat PV_18-04.freeze.v0.sorted.bam > PV_18-13.freeze.v0.sorted.stats
+	samtools flagstat PV_18-21.freeze.v0.sorted.bam > PV_18-04.freeze.v0.sorted.stats
+	samtools flagstat PV_18-23.freeze.v0.sorted.bam > PV_18-21.freeze.v0.sorted.stats
+	samtools flagstat PV_18-13.freeze.v0.sorted.bam > PV_18-23.freeze.v0.sorted.stats
 
