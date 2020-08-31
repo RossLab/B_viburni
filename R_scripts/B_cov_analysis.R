@@ -47,4 +47,5 @@ p3 <- ggplot(cov.diff, aes(cov.04v21)) + geom_histogram(bins=150)
 p4 <- ggplot(cov.diff, aes(cov.04v23)) + geom_histogram(bins=150)
 p5 <- ggplot(cov.diff, aes(cov.04v13)) + geom_histogram(bins=150)
 p6 <- ggplot(cov.diff, aes(cov.21v23)) + geom_histogram(bins=150)
-hist <- p1 + p2 + p3 + p4 + p5 + p6
+hist1 <- p1 + p2 + p3 + p4
+hist2 <- p5 + p6
