@@ -188,4 +188,6 @@ This is very promising! Before we carry on, let's normalise all libraries by low
 
 And replot. Now the peak of the histogram is centered at 0:
 
-![](misc/hist.mapped.reads.norm.jpeg)
+![](misc/hist.mapped.reads.norm.all.jpeg)
+
+
