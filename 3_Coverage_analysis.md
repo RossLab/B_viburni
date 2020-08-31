@@ -163,10 +163,29 @@ Coverage depth per contig:
 	samtools depth PV_18-21.freeze.v0.sorted.bam | awk '/BEGIN/{scf='scaffold_1'; coverage_sum = 0; }{ if( scf != $1 ){ print scf "\t" coverage_sum; scf = $1; coverage_sum = $3 } else { scf = $1; coverage_sum += $3} }' > PV_18-21.scaffold.depth
 	samtools depth PV_18-23.freeze.v0.sorted.bam | awk '/BEGIN/{scf='scaffold_1'; coverage_sum = 0; }{ if( scf != $1 ){ print scf "\t" coverage_sum; scf = $1; coverage_sum = $3 } else { scf = $1; coverage_sum += $3} }' > PV_18-23.scaffold.depth
 
+## 5. Exploring coverages
+
 We can explore per-contig coverage differences between lines: log2((mapped reads line 1 + 1)/(mapped reads line 2 + 1)). Indeed, when we compare B+ lines to B- lines, we see a few contigs that have much higher coverage in B+ lines:
 
 ![](misc/hist.mapped.reads1.jpeg)
 
-while we see no such difference comparing B+ lines and B- lines:
+while we see no such differences comparing B+ lines and B- lines:
 
 ![](misc/hist.mapped.reads2.jpeg)
+
+This is very promising! Before we carry on, let's normalise all libraries by lowest number of reads (PV_18-21)
+
+	# mapped read count
+	sum(reads.all.lines[, 'PV04.mapped']) # 395177820
+	sum(reads.all.lines[, 'PV13.mapped']) # 367442467
+	sum(reads.all.lines[, 'PV21.mapped']) # 201661376
+	sum(reads.all.lines[, 'PV23.mapped']) # 212848660
+	# normalisation factor
+	norm.04 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV04.mapped']) # 0.5103
+	norm.13 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV13.mapped']) # 0.5488
+	norm.23 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV23.mapped']) # 0.9474
+	norm.21 <- 1
+
+And replot. Now the peak of the histogram is centered at 0:
+
+![](misc/hist.mapped.reads.norm.jpeg)
