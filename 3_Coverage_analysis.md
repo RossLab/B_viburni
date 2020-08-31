@@ -56,8 +56,6 @@ Based on the assembly size (435.3Mb), we are looking at estimated coverages betw
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../0_reads/PV_18-23.Illumina.350.trimmed_1.fq.gz ../0_reads/PV_18-23.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-23.initial.sorted.bam
 	rsync -av /scratch/afilia/*initial.sorted.bam .
 
-samtools merge PV_18-13.initial.sorted.bam PV_18-13.Illumina.350.sorted.bam PV_18-13.Illumina.550.sorted.bam && rsync -av PV_18-13.initial.sorted.bam /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/1_mapping/
-
 Some initial mapping stats with ```samtools flagstat```:
 
 	==> PV_18-04.initial.sorted.stats <==
@@ -148,12 +146,27 @@ Extract mapped reads with ```bamfilter``` (inclusion/exclusion list is needed, j
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../1_mapping/PV_18-21.PV_18-21.initial.sorted.bam.InIn.1.fq ../1_mapping/PV_18-21.PV_18-21.initial.sorted.bam.InIn.2.fq | samtools sort -O BAM -o /scratch/afilia/PV_18-21.freeze.v0.sorted.bam
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../1_mapping/PV_18-23.PV_18-23.initial.sorted.bam.InIn.1.fq ../1_mapping/PV_18-23.PV_18-23.initial.sorted.bam.InIn.2.fq | samtools sort -O BAM -o /scratch/afilia/PV_18-23.freeze.v0.sorted.bam
 	samtools merge /scratch/afilia/PV_18-13.freeze.v0.sorted.bam /scratch/afilia/PV_18-13.350.freeze.v0.sorted.bam /scratch/afilia/PV_18-13.550.freeze.v0.sorted.bam
-	rsync -av /scratch/afilia/PV_18-13.freeze.v0.sorted.bam .
-	rsync -av /scratch/afilia/PV_18-04.freeze.v0.sorted.bam .
-	rsync -av /scratch/afilia/PV_18-21.freeze.v0.sorted.bam .
-	rsync -av /scratch/afilia/PV_18-23.freeze.v0.sorted.bam .
-	samtools flagstat PV_18-04.freeze.v0.sorted.bam > PV_18-13.freeze.v0.sorted.stats
-	samtools flagstat PV_18-21.freeze.v0.sorted.bam > PV_18-04.freeze.v0.sorted.stats
-	samtools flagstat PV_18-23.freeze.v0.sorted.bam > PV_18-21.freeze.v0.sorted.stats
-	samtools flagstat PV_18-13.freeze.v0.sorted.bam > PV_18-23.freeze.v0.sorted.stats
 
+Collect stats and ```samtools index```
+
+Mapped reads per contig:
+
+	samtools idxstats PV_18-04.freeze.v0.sorted.bam > PV_18-04.reads.mapped.count
+	samtools idxstats PV_18-13.freeze.v0.sorted.bam > PV_18-13.reads.mapped.count
+	samtools idxstats PV_18-21.freeze.v0.sorted.bam > PV_18-21.reads.mapped.count
+	samtools idxstats PV_18-23.freeze.v0.sorted.bam > PV_18-23.reads.mapped.count
+
+Coverage depth per contig:
+
+	samtools depth PV_18-04.freeze.v0.sorted.bam | awk '/BEGIN/{scf='scaffold_1'; coverage_sum = 0; }{ if( scf != $1 ){ print scf "\t" coverage_sum; scf = $1; coverage_sum = $3 } else { scf = $1; coverage_sum += $3} }' > PV_18-04.scaffold.depth
+	samtools depth PV_18-13.freeze.v0.sorted.bam | awk '/BEGIN/{scf='scaffold_1'; coverage_sum = 0; }{ if( scf != $1 ){ print scf "\t" coverage_sum; scf = $1; coverage_sum = $3 } else { scf = $1; coverage_sum += $3} }' > PV_18-13.scaffold.depth
+	samtools depth PV_18-21.freeze.v0.sorted.bam | awk '/BEGIN/{scf='scaffold_1'; coverage_sum = 0; }{ if( scf != $1 ){ print scf "\t" coverage_sum; scf = $1; coverage_sum = $3 } else { scf = $1; coverage_sum += $3} }' > PV_18-21.scaffold.depth
+	samtools depth PV_18-23.freeze.v0.sorted.bam | awk '/BEGIN/{scf='scaffold_1'; coverage_sum = 0; }{ if( scf != $1 ){ print scf "\t" coverage_sum; scf = $1; coverage_sum = $3 } else { scf = $1; coverage_sum += $3} }' > PV_18-23.scaffold.depth
+
+We can explore per-contig coverage differences between lines: log2((mapped reads line 1 + 1)/(mapped reads line 2 + 1)). Indeed, when we compare B+ lines to B- lines, we see a few contigs that have much higher coverage in B+ lines:
+
+![](misc/hist.mapped.reads1.jpeg)
+
+while we see no such difference comparing B+ lines and B- lines:
+
+![](misc/hist.mapped.reads2.jpeg)
