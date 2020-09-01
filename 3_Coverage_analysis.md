@@ -199,7 +199,7 @@ which gives us 105 putative B scaffolds with the more strict filtering (1.4Mb) a
 
 Of course, some of these contigs may be highly repetitive sequences, which should show higher coverage. This is indeed what we see:
 
-![](misc/depth.B.plot.jpeg)
+![](misc/depth.B.plots.jpeg)
 
 (note that the putative B linked scaffold have comparatively higher coverage in PV04, which is consistent with the expectation of 2B chromosomes)
 
