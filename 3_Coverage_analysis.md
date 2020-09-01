@@ -151,10 +151,10 @@ Collect stats and ```samtools index```
 
 Mapped reads per contig:
 
-	samtools idxstats PV_18-04.freeze.v0.sorted.bam > PV_18-04.reads.mapped.count
-	samtools idxstats PV_18-13.freeze.v0.sorted.bam > PV_18-13.reads.mapped.count
-	samtools idxstats PV_18-21.freeze.v0.sorted.bam > PV_18-21.reads.mapped.count
-	samtools idxstats PV_18-23.freeze.v0.sorted.bam > PV_18-23.reads.mapped.count
+	samtools idxstats PV_18-04.initial.sorted.bam > PV_18-04.reads.mapped.count
+	samtools idxstats PV_18-13.initial.sorted.bam > PV_18-13.reads.mapped.count
+	samtools idxstats PV_18-21.initial.sorted.bam > PV_18-21.reads.mapped.count
+	samtools idxstats PV_18-23.initial.sorted.bam > PV_18-23.reads.mapped.count
 
 Coverage depth per contig:
 
@@ -167,13 +167,13 @@ Coverage depth per contig:
 
 We can explore per-contig coverage differences between lines: log2((mapped reads line 1 + 1)/(mapped reads line 2 + 1)). Indeed, when we compare B+ lines to B- lines, we see a few contigs that have much higher coverage in B+ lines:
 
-![](misc/hist.mapped.reads1.jpeg)
+![](misc/hist.mapped.reads.1.jpeg)
 
 while we see no such differences comparing B+ lines and B- lines:
 
-![](misc/hist.mapped.reads2.jpeg)
+![](misc/hist.mapped.reads.2.jpeg)
 
-This is very promising! Before we carry on, let's normalise all libraries by lowest number of reads (PV_18-21)
+This is promising. Before we carry on, let's normalise all libraries by lowest number of reads (PV_18-21)
 
 	# mapped read count
 	sum(reads.all.lines[, 'PV04.mapped']) # 395177820
@@ -190,4 +190,42 @@ And replot. Now the peak of the histogram is centered at 0:
 
 ![](misc/hist.mapped.reads.norm.all.jpeg)
 
+We can define two preliminary sets of candidate B scaffolds based on coverage:
+
+	b.candidates <- reads.all.lines[reads.all.lines$cov.13v21 >= 0.58 & reads.all.lines$cov.13v23 >= 0.58 & reads.all.lines$cov.04v21 >= 0.58 & reads.all.lines$cov.04v23 >= 0.58,] # assuming 1 B copy + 2 A copies
+	b.candidates.strict <- reads.all.lines[reads.all.lines$cov.13v21 >= 2 & reads.all.lines$cov.13v23 >= 2 & reads.all.lines$cov.04v21 >= 2 & reads.all.lines$cov.04v23 >= 2,]
+
+which gives us 105 putative B scaffolds with the more strict filtering (1.4Mb) and 178 with the losser filtering (2.9Mb). That's not a lot...
+
+Of course, some of these contigs may be highly repetitive sequences, which should show higher coverage. This is indeed what we see:
+
+![](misc/depth.B.plot.jpeg)
+
+(note that the putative B linked scaffold have comparatively higher coverage in PV04, which is consistent with the expectation of 2B chromosomes).
+
+
+## 6. kmer method
+
+Following Christina and Kamil's *Sciara* pipeline: https://github.com/RossLab/Sciara-L-chromosome/blob/master/analyses/assigment-of-L-X-A.md
+
+conda activate default_genomics
+# build kmer db
+qsub -cwd -N kmc_heads -V -pe smp64 20 -b yes 'L=5; U=175; SCRATCH=/scratch/$USER/$JOB_ID/; mkdir -p $SCRATCH/tmp data/L-X-A-kmers/kmer_db; kmc -k27 -t20 -m64 -ci$L -cs$U data/L-X-A-kmers/raw_reads/bamfilter.head2.clc.mar29.scop.head2.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/head_kmer_counts $SCRATCH/tmp && mv $SCRATCH/head_kmer_counts* data/L-X-A-kmers/kmer_db'
+# generate alphabetically sorted dump of kmers and their coverages
+qsub -cwd -N kmc_dump_heads -V -pe smp64 20 -b yes 'L=5; U=174; SCRATCH=/scratch/$USER/$JOB_ID; mkdir -p $SCRATCH; kmc_tools transform data/L-X-A-kmers/kmer_db/head_kmer_counts -ci$L -cx$U dump -s $SCRATCH/head_k27.dump && mv $SCRATCH/head_k27.dump data/L-X-A-kmers/kmer_db'
+qsub -cwd -N kmc_testes -V -pe smp64 20 -b yes 'L=5; U=175; SCRATCH=/scratch/$USER/$JOB_ID/; mkdir -p $SCRATCH/tmp data/L-X-A-kmers/kmer_db; kmc -k27 -t20 -m64 -ci$L -cs$U data/L-X-A-kmers/raw_reads/bamfilter.testes.clc.mar29.scop.testes.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/testes_kmer_counts $SCRATCH/tmp && mv $SCRATCH/testes_kmer_counts* data/L-X-A-kmers/kmer_db'
+qsub -cwd -N kmc_dump_testes -V -pe smp64 20 -b yes 'L=5; U=174; SCRATCH=/scratch/$USER/$JOB_ID/; mkdir -p $SCRATCH; kmc_tools transform data/L-X-A-kmers/kmer_db/testes_kmer_counts -ci$L -cx$U dump -s $SCRATCH/testes_k27.dump && mv $SCRATCH/testes_k27.dump data/L-X-A-kmers/kmer_db'
+
+
+kmc -k27 -t20 -m64 data/L-X-A-kmers/raw_reads/bamfilter.testes.clc.mar29.scop.testes.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/testes_kmer_counts $SCRATCH/tmp && rsync -av /scratch/afilia/testes_kmer_counts* data/L-X-A-kmers/kmer_db'
+kmc -k27 -t20 -m64 data/L-X-A-kmers/raw_reads/bamfilter.testes.clc.mar29.scop.testes.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/testes_kmer_counts $SCRATCH/tmp && rsync -av /scratch/afilia/testes_kmer_counts* data/L-X-A-kmers/kmer_db'
+kmc -k27 -t20 -m64 data/L-X-A-kmers/raw_reads/bamfilter.testes.clc.mar29.scop.testes.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/testes_kmer_counts $SCRATCH/tmp && rsync -av /scratch/afilia/testes_kmer_counts* data/L-X-A-kmers/kmer_db'
+kmc -k27 -t20 -m64 data/L-X-A-kmers/raw_reads/bamfilter.testes.clc.mar29.scop.testes.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/testes_kmer_counts $SCRATCH/tmp && rsync -av /scratch/afilia/testes_kmer_counts* data/L-X-A-kmers/kmer_db'
+
+
+ln -s ../../2_short_read_DNA_seq/1_mapping/PV_18-04.initial.sorted.bam 
+ln -s ../../2_short_read_DNA_seq/1_mapping/PV_18-13.Illumina.350.sorted.bam 
+ln -s ../../2_short_read_DNA_seq/1_mapping/PV_18-13.Illumina.550.sorted.bam 
+ln -s ../../2_short_read_DNA_seq/1_mapping/PV_18-21.initial.sorted.bam 
+ln -s ../../2_short_read_DNA_seq/1_mapping/PV_18-23.initial.sorted.bam 
 
