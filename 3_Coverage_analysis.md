@@ -201,7 +201,13 @@ Of course, some of these contigs may be highly repetitive sequences, which shoul
 
 ![](misc/depth.B.plot.jpeg)
 
-(note that the putative B linked scaffold have comparatively higher coverage in PV04, which is consistent with the expectation of 2B chromosomes).
+(note that the putative B linked scaffold have comparatively higher coverage in PV04, which is consistent with the expectation of 2B chromosomes)
+
+| B status | Mean read cov ratio (PV04/PV13) | SD   |
+|----------|---------------------------------|------|
+| A        | 0.99                            | 0.47 |
+| B loose  | 0.14                            | 0.52 |
+| B strict | 2.65                            | 0.65 |
 
 
 ## 6. kmer method
