@@ -130,6 +130,29 @@ Some initial mapping stats with ```samtools flagstat```:
 	190849052 + 0 properly paired (88.34% : N/A)
 	207719570 + 0 with itself and mate mapped
 
+It makes sense to keep primary mapped reads only, as secondary hits might map to A and B.
+
+	samtools view -@ 16 -F 256 -b PV_18-04.initial.sorted.bam -o /scratch/afilia/PV_18-04.initial.sorted.primary.only.bam
+	samtools view -@ 16 -F 256 -b PV_18-13.initial.sorted.bam -o /scratch/afilia/PV_18-13.initial.sorted.primary.only.bam
+	samtools view -@ 16 -F 256 -b PV_18-21.initial.sorted.bam -o /scratch/afilia/PV_18-21.initial.sorted.primary.only.bam
+	samtools view -@ 16 -F 256 -b PV_18-23.initial.sorted.bam -o /scratch/afilia/PV_18-23.initial.sorted.primary.only.bam
+
+Collect stats and ```samtools index```
+
+Mapped reads per contig:
+
+	samtools idxstats PV_18-04.initial.sorted.primary.only.bam > PV_18-04.primary.reads.mapped.count
+	samtools idxstats PV_18-13.initial.sorted.primary.only.bam > PV_18-13.primary.reads.mapped.count
+	samtools idxstats PV_18-21.initial.sorted.primary.only.bam > PV_18-21.primary.reads.mapped.count
+	samtools idxstats PV_18-23.initial.sorted.primary.only.bam > PV_18-23.primary.reads.mapped.count
+
+Alternatively, we could also collect coverage depths per contig:
+
+	samtools depth PV_18-04.freeze.v0.sorted.bam | awk '/BEGIN/{scf='scaffold_1'; coverage_sum = 0; }{ if( scf != $1 ){ print scf "\t" coverage_sum; scf = $1; coverage_sum = $3 } else { scf = $1; coverage_sum += $3} }' > PV_18-04.scaffold.depth
+	samtools depth PV_18-13.freeze.v0.sorted.bam | awk '/BEGIN/{scf='scaffold_1'; coverage_sum = 0; }{ if( scf != $1 ){ print scf "\t" coverage_sum; scf = $1; coverage_sum = $3 } else { scf = $1; coverage_sum += $3} }' > PV_18-13.scaffold.depth
+	samtools depth PV_18-21.freeze.v0.sorted.bam | awk '/BEGIN/{scf='scaffold_1'; coverage_sum = 0; }{ if( scf != $1 ){ print scf "\t" coverage_sum; scf = $1; coverage_sum = $3 } else { scf = $1; coverage_sum += $3} }' > PV_18-21.scaffold.depth
+	samtools depth PV_18-23.freeze.v0.sorted.bam | awk '/BEGIN/{scf='scaffold_1'; coverage_sum = 0; }{ if( scf != $1 ){ print scf "\t" coverage_sum; scf = $1; coverage_sum = $3 } else { scf = $1; coverage_sum += $3} }' > PV_18-23.scaffold.depth
+
 Extract mapped reads with ```bamfilter``` (inclusion/exclusion list is needed, just made an empty one)
 
 	/ceph/software/blobtools/blobtools bamfilter -b PV_18-21.initial.sorted.bam -o /scratch/afilia/PV_18-21 -n -f fq -e no_contigs.txt
@@ -147,22 +170,6 @@ Extract mapped reads with ```bamfilter``` (inclusion/exclusion list is needed, j
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../1_mapping/PV_18-23.PV_18-23.initial.sorted.bam.InIn.1.fq ../1_mapping/PV_18-23.PV_18-23.initial.sorted.bam.InIn.2.fq | samtools sort -O BAM -o /scratch/afilia/PV_18-23.freeze.v0.sorted.bam
 	samtools merge /scratch/afilia/PV_18-13.freeze.v0.sorted.bam /scratch/afilia/PV_18-13.350.freeze.v0.sorted.bam /scratch/afilia/PV_18-13.550.freeze.v0.sorted.bam
 
-Collect stats and ```samtools index```
-
-Mapped reads per contig:
-
-	samtools idxstats PV_18-04.initial.sorted.bam > PV_18-04.reads.mapped.count
-	samtools idxstats PV_18-13.initial.sorted.bam > PV_18-13.reads.mapped.count
-	samtools idxstats PV_18-21.initial.sorted.bam > PV_18-21.reads.mapped.count
-	samtools idxstats PV_18-23.initial.sorted.bam > PV_18-23.reads.mapped.count
-
-Coverage depth per contig:
-
-	samtools depth PV_18-04.freeze.v0.sorted.bam | awk '/BEGIN/{scf='scaffold_1'; coverage_sum = 0; }{ if( scf != $1 ){ print scf "\t" coverage_sum; scf = $1; coverage_sum = $3 } else { scf = $1; coverage_sum += $3} }' > PV_18-04.scaffold.depth
-	samtools depth PV_18-13.freeze.v0.sorted.bam | awk '/BEGIN/{scf='scaffold_1'; coverage_sum = 0; }{ if( scf != $1 ){ print scf "\t" coverage_sum; scf = $1; coverage_sum = $3 } else { scf = $1; coverage_sum += $3} }' > PV_18-13.scaffold.depth
-	samtools depth PV_18-21.freeze.v0.sorted.bam | awk '/BEGIN/{scf='scaffold_1'; coverage_sum = 0; }{ if( scf != $1 ){ print scf "\t" coverage_sum; scf = $1; coverage_sum = $3 } else { scf = $1; coverage_sum += $3} }' > PV_18-21.scaffold.depth
-	samtools depth PV_18-23.freeze.v0.sorted.bam | awk '/BEGIN/{scf='scaffold_1'; coverage_sum = 0; }{ if( scf != $1 ){ print scf "\t" coverage_sum; scf = $1; coverage_sum = $3 } else { scf = $1; coverage_sum += $3} }' > PV_18-23.scaffold.depth
-
 ## 5. Exploring coverages
 
 We can explore per-contig coverage differences between lines: log2((mapped reads line 1 + 1)/(mapped reads line 2 + 1)). Indeed, when we compare B+ lines to B- lines, we see a few contigs that have much higher coverage in B+ lines:
@@ -176,14 +183,14 @@ while we see no such differences comparing B+ lines and B- lines:
 This is promising. Before we carry on, let's normalise all libraries by lowest number of reads (PV_18-21)
 
 	# mapped read count
-	sum(reads.all.lines[, 'PV04.mapped']) # 395177820
-	sum(reads.all.lines[, 'PV13.mapped']) # 367442467
-	sum(reads.all.lines[, 'PV21.mapped']) # 201661376
-	sum(reads.all.lines[, 'PV23.mapped']) # 212848660
+	sum(reads.all.lines[, 'PV04.mapped']) # 388044763
+	sum(reads.all.lines[, 'PV13.mapped']) # 363059148
+	sum(reads.all.lines[, 'PV21.mapped']) # 197844424
+	sum(reads.all.lines[, 'PV23.mapped']) # 208740794
 	# normalisation factor
-	norm.04 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV04.mapped']) # 0.5103
-	norm.13 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV13.mapped']) # 0.5488
-	norm.23 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV23.mapped']) # 0.9474
+	norm.04 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV04.mapped']) # 0.51
+	norm.13 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV13.mapped']) # 0.55
+	norm.23 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV23.mapped']) # 0.95
 	norm.21 <- 1
 
 And replot. Now the peak of the histogram is centered at 0:
@@ -195,7 +202,7 @@ We can define two preliminary sets of candidate B scaffolds based on coverage:
 	b.candidates <- reads.all.lines[reads.all.lines$cov.13v21 >= 0.58 & reads.all.lines$cov.13v23 >= 0.58 & reads.all.lines$cov.04v21 >= 0.58 & reads.all.lines$cov.04v23 >= 0.58,] # assuming 1 B copy + 2 A copies
 	b.candidates.strict <- reads.all.lines[reads.all.lines$cov.13v21 >= 2 & reads.all.lines$cov.13v23 >= 2 & reads.all.lines$cov.04v21 >= 2 & reads.all.lines$cov.04v23 >= 2,]
 
-which gives us 105 putative B scaffolds with the more strict filtering (1.4Mb) and 178 with the losser filtering (2.9Mb). That's not a lot...
+which gives us 109 putative B scaffolds with the more strict filtering (1.46Mb) and 198 with the losser filtering (3.06Mb). That's not a lot...
 
 Of course, some of these contigs may be highly repetitive sequences, which should show higher coverage. This is indeed what we see:
 
@@ -205,33 +212,49 @@ Of course, some of these contigs may be highly repetitive sequences, which shoul
 
 | B status | Mean read cov ratio (PV04/PV13) | SD   |
 |----------|---------------------------------|------|
-| A        | 0.99                            | 0.47 |
-| B loose  | 0.14                            | 0.52 |
-| B strict | 2.65                            | 0.65 |
+| A        | 0.99                            | 0.50 |
+| B loose  | 1.08                            | 0.55 |
+| B strict | 2.61                            | 0.71 |
+
+
+## 5.1. Only primary reads
+
+samtools view -F 256 input.bam
+
+samtools view -@ 16 -F 256 -b PV_18-04.initial.sorted.bam -o /scratch/afilia/PV_18-04.initial.sorted.primary.only.bam
+samtools view -@ 16 -F 256 -b PV_18-13.initial.sorted.bam -o /scratch/afilia/PV_18-13.initial.sorted.primary.only.bam
+samtools view -@ 16 -F 256 -b PV_18-21.initial.sorted.bam -o /scratch/afilia/PV_18-21.initial.sorted.primary.only.bam
+samtools view -@ 16 -F 256 -b PV_18-23.initial.sorted.bam -o /scratch/afilia/PV_18-23.initial.sorted.primary.only.bam
+rsync -av /scratch/afilia/*primary.only* .
+
+## 6. kmer method
+
+
+
+
+
 
 
 ## 6. kmer method
 
 Following Christina and Kamil's *Sciara* pipeline: https://github.com/RossLab/Sciara-L-chromosome/blob/master/analyses/assigment-of-L-X-A.md
 
-conda activate default_genomics
-# build kmer db
-qsub -cwd -N kmc_heads -V -pe smp64 20 -b yes 'L=5; U=175; SCRATCH=/scratch/$USER/$JOB_ID/; mkdir -p $SCRATCH/tmp data/L-X-A-kmers/kmer_db; kmc -k27 -t20 -m64 -ci$L -cs$U data/L-X-A-kmers/raw_reads/bamfilter.head2.clc.mar29.scop.head2.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/head_kmer_counts $SCRATCH/tmp && mv $SCRATCH/head_kmer_counts* data/L-X-A-kmers/kmer_db'
-# generate alphabetically sorted dump of kmers and their coverages
-qsub -cwd -N kmc_dump_heads -V -pe smp64 20 -b yes 'L=5; U=174; SCRATCH=/scratch/$USER/$JOB_ID; mkdir -p $SCRATCH; kmc_tools transform data/L-X-A-kmers/kmer_db/head_kmer_counts -ci$L -cx$U dump -s $SCRATCH/head_k27.dump && mv $SCRATCH/head_k27.dump data/L-X-A-kmers/kmer_db'
-qsub -cwd -N kmc_testes -V -pe smp64 20 -b yes 'L=5; U=175; SCRATCH=/scratch/$USER/$JOB_ID/; mkdir -p $SCRATCH/tmp data/L-X-A-kmers/kmer_db; kmc -k27 -t20 -m64 -ci$L -cs$U data/L-X-A-kmers/raw_reads/bamfilter.testes.clc.mar29.scop.testes.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/testes_kmer_counts $SCRATCH/tmp && mv $SCRATCH/testes_kmer_counts* data/L-X-A-kmers/kmer_db'
-qsub -cwd -N kmc_dump_testes -V -pe smp64 20 -b yes 'L=5; U=174; SCRATCH=/scratch/$USER/$JOB_ID/; mkdir -p $SCRATCH; kmc_tools transform data/L-X-A-kmers/kmer_db/testes_kmer_counts -ci$L -cx$U dump -s $SCRATCH/testes_k27.dump && mv $SCRATCH/testes_k27.dump data/L-X-A-kmers/kmer_db'
+	conda activate default_genomics
+	# build kmer db
+	qsub -cwd -N kmc_heads -V -pe smp64 20 -b yes 'L=5; U=175; SCRATCH=/scratch/$USER/$JOB_ID/; mkdir -p $SCRATCH/tmp data/L-X-A-kmers/kmer_db; kmc -k27 -t20 -m64 -ci$L -cs$U data/L-X-A-kmers/raw_reads/bamfilter.head2.clc.mar29.scop.head2.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/head_kmer_counts $SCRATCH/tmp && mv $SCRATCH/head_kmer_counts* data/L-X-A-kmers/kmer_db'
+	# generate alphabetically sorted dump of kmers and their coverages
+	qsub -cwd -N kmc_dump_heads -V -pe smp64 20 -b yes 'L=5; U=174; SCRATCH=/scratch/$USER/$JOB_ID; mkdir -p $SCRATCH; kmc_tools transform data/L-X-A-kmers/kmer_db/head_kmer_counts -ci$L -cx$U dump -s $SCRATCH/head_k27.dump && mv $SCRATCH/head_k27.dump data/L-X-A-kmers/kmer_db'
+	qsub -cwd -N kmc_testes -V -pe smp64 20 -b yes 'L=5; U=175; SCRATCH=/scratch/$USER/$JOB_ID/; mkdir -p $SCRATCH/tmp data/L-X-A-kmers/kmer_db; kmc -k27 -t20 -m64 -ci$L -cs$U data/L-X-A-kmers/raw_reads/bamfilter.testes.clc.mar29.scop.testes.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/testes_kmer_counts $SCRATCH/tmp && mv $SCRATCH/testes_kmer_counts* data/L-X-A-kmers/kmer_db'
+	qsub -cwd -N kmc_dump_testes -V -pe smp64 20 -b yes 'L=5; U=174; SCRATCH=/scratch/$USER/$JOB_ID/; mkdir -p $SCRATCH; kmc_tools transform data/L-X-A-kmers/kmer_db/testes_kmer_counts -ci$L -cx$U dump -s $SCRATCH/testes_k27.dump && mv $SCRATCH/testes_k27.dump data/L-X-A-kmers/kmer_db'
 
+	kmc -k27 -t20 -m64 data/L-X-A-kmers/raw_reads/bamfilter.testes.clc.mar29.scop.testes.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/testes_kmer_counts $SCRATCH/tmp && rsync -av /scratch/afilia/testes_kmer_counts* data/L-X-A-kmers/kmer_db'
+	kmc -k27 -t20 -m64 data/L-X-A-kmers/raw_reads/bamfilter.testes.clc.mar29.scop.testes.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/testes_kmer_counts $SCRATCH/tmp && rsync -av /scratch/afilia/testes_kmer_counts* data/L-X-A-kmers/kmer_db'
+	kmc -k27 -t20 -m64 data/L-X-A-kmers/raw_reads/bamfilter.testes.clc.mar29.scop.testes.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/testes_kmer_counts $SCRATCH/tmp && rsync -av /scratch/afilia/testes_kmer_counts* data/L-X-A-kmers/kmer_db'
+	kmc -k27 -t20 -m64 data/L-X-A-kmers/raw_reads/bamfilter.testes.clc.mar29.scop.testes.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/testes_kmer_counts $SCRATCH/tmp && rsync -av /scratch/afilia/testes_kmer_counts* data/L-X-A-kmers/kmer_db'
 
-kmc -k27 -t20 -m64 data/L-X-A-kmers/raw_reads/bamfilter.testes.clc.mar29.scop.testes.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/testes_kmer_counts $SCRATCH/tmp && rsync -av /scratch/afilia/testes_kmer_counts* data/L-X-A-kmers/kmer_db'
-kmc -k27 -t20 -m64 data/L-X-A-kmers/raw_reads/bamfilter.testes.clc.mar29.scop.testes.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/testes_kmer_counts $SCRATCH/tmp && rsync -av /scratch/afilia/testes_kmer_counts* data/L-X-A-kmers/kmer_db'
-kmc -k27 -t20 -m64 data/L-X-A-kmers/raw_reads/bamfilter.testes.clc.mar29.scop.testes.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/testes_kmer_counts $SCRATCH/tmp && rsync -av /scratch/afilia/testes_kmer_counts* data/L-X-A-kmers/kmer_db'
-kmc -k27 -t20 -m64 data/L-X-A-kmers/raw_reads/bamfilter.testes.clc.mar29.scop.testes.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/testes_kmer_counts $SCRATCH/tmp && rsync -av /scratch/afilia/testes_kmer_counts* data/L-X-A-kmers/kmer_db'
-
-
-ln -s ../../2_short_read_DNA_seq/1_mapping/PV_18-04.initial.sorted.bam 
-ln -s ../../2_short_read_DNA_seq/1_mapping/PV_18-13.Illumina.350.sorted.bam 
-ln -s ../../2_short_read_DNA_seq/1_mapping/PV_18-13.Illumina.550.sorted.bam 
-ln -s ../../2_short_read_DNA_seq/1_mapping/PV_18-21.initial.sorted.bam 
-ln -s ../../2_short_read_DNA_seq/1_mapping/PV_18-23.initial.sorted.bam 
+	ln -s ../../2_short_read_DNA_seq/1_mapping/PV_18-04.initial.sorted.bam 
+	ln -s ../../2_short_read_DNA_seq/1_mapping/PV_18-13.Illumina.350.sorted.bam 
+	ln -s ../../2_short_read_DNA_seq/1_mapping/PV_18-13.Illumina.550.sorted.bam 
+	ln -s ../../2_short_read_DNA_seq/1_mapping/PV_18-21.initial.sorted.bam 
+	ln -s ../../2_short_read_DNA_seq/1_mapping/PV_18-23.initial.sorted.bam 
 
