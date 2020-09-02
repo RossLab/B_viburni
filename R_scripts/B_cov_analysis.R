@@ -7,21 +7,23 @@ library(patchwork)
 library(lattice)
 library(grid)
 library(gridExtra)
+library(reshape2)
+library(plyr)
 
 setwd("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/data/coverage_analysis")
 
 # import number of reads mapped to scaffold
 
-PV04.reads.mapped <- read_delim("PV_18-04.reads.mapped.count", 
+PV04.reads.mapped <- read_delim("PV_18-04.primary.reads.mapped.count", 
                                     "\t", escape_double = FALSE, col_names = FALSE, 
                                     trim_ws = TRUE)
-PV13.reads.mapped <- read_delim("PV_18-13.reads.mapped.count", 
+PV13.reads.mapped <- read_delim("PV_18-13.primary.reads.mapped.count", 
                                 "\t", escape_double = FALSE, col_names = FALSE, 
                                 trim_ws = TRUE)
-PV21.reads.mapped <- read_delim("PV_18-21.reads.mapped.count", 
+PV21.reads.mapped <- read_delim("PV_18-21.primary.reads.mapped.count", 
                                 "\t", escape_double = FALSE, col_names = FALSE, 
                                 trim_ws = TRUE)
-PV23.reads.mapped <- read_delim("PV_18-23.reads.mapped.count", 
+PV23.reads.mapped <- read_delim("PV_18-23.primary.reads.mapped.count", 
                                 "\t", escape_double = FALSE, col_names = FALSE, 
                                 trim_ws = TRUE)
 
@@ -64,15 +66,15 @@ reads.all.lines <-reads.all.lines0[1:(nrow(reads.all.lines0)-1),] # remove last 
 
 # normalise by total number of reads
 
-sum(reads.all.lines[, 'PV04.mapped']) # 395178560
-sum(reads.all.lines[, 'PV13.mapped']) # 367442808
-sum(reads.all.lines[, 'PV21.mapped']) # 201661407
-sum(reads.all.lines[, 'PV23.mapped']) # 212848740
+sum(reads.all.lines[, 'PV04.mapped']) # 388044763
+sum(reads.all.lines[, 'PV13.mapped']) # 363059148
+sum(reads.all.lines[, 'PV21.mapped']) # 197844424
+sum(reads.all.lines[, 'PV23.mapped']) # 208740794
 
 # normalisation factor
 
 norm.04 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV04.mapped']) # 0.51
-norm.13 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV13.mapped']) # 0.59
+norm.13 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV13.mapped']) # 0.55
 norm.23 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV23.mapped']) # 0.95
 norm.21 <- 1
 
@@ -98,37 +100,44 @@ hist3 <- p1 + p2 + p3 + p4 + p5 + p6
 
 # let's look at B candidates
 
-reads.all.lines$b.status <- ifelse((reads.all.lines$cov.13v21 >= 0.58 & reads.all.lines$cov.13v23 >= 0.58 & reads.all.lines$cov.04v21 >= 0.58 & reads.all.lines$cov.04v23 >= 0.58), "b.loose", "no")
-reads.all.lines$b.status <- ifelse((reads.all.lines$cov.13v21 >= 2 & reads.all.lines$cov.13v23 >= 2 & reads.all.lines$cov.04v21 >= 2 & reads.all.lines$cov.04v23 >= 2), "b.strict", reads.all.lines$b.status)
+reads.all.lines$b.status <- ifelse((reads.all.lines$cov.13v21 >= 0.58 & reads.all.lines$cov.13v23 >= 0.58 & reads.all.lines$cov.04v21 >= 0.58 & reads.all.lines$cov.04v23 >= 0.58), "B.loose", "A")
+reads.all.lines$b.status <- ifelse((reads.all.lines$cov.13v21 >= 2 & reads.all.lines$cov.13v23 >= 2 & reads.all.lines$cov.04v21 >= 2 & reads.all.lines$cov.04v23 >= 2), "B.strict", reads.all.lines$b.status)
 
 table(reads.all.lines$b.status)
-sum(b.candidates$length)
-
-nrow(b.candidates.strict)
-sum(b.candidates.strict$length)
+sum(reads.all.lines[reads.all.lines$b.status != "A",]$length)
 
 # let's look at B candidates
 
-reads.B.lines <- reads.all.lines[c(1,2,3,4)]
-reads.B.lines$PV13.read.cov <- reads.B.lines$PV13.mapped/reads.B.lines$length
-reads.B.lines$PV04.read.cov <- reads.B.lines$PV04.mapped/reads.B.lines$length
+reads.B.lines <- reads.all.lines[c(1,2,3,4,13)]
 
-ggplot(reads.B.lines, aes(log10(PV13.read.cov),log10(PV04.read.cov))) + geom_point()
-                            
-          
-  geom_bar(stat="identity", position=position_dodge(),fill="plum4") +
-  scale_x_discrete(limit = c("maternal.only", "maternal.bias", "biparental","paternal.bias","paternal.only"),
-                   labels = c("M","MB","B","PB","P")) +
-  geom_text(aes(label=N),position = position_dodge(0.9),vjust=-1) +
-  labs(title="WC", y="%", x = "Category of bias") +
-  theme(plot.title = element_text(hjust = 0.5, family = "Helvetica", size = (14)), 
-        axis.title = element_text(family = "Helvetica", size = (13)),
-        axis.text = element_text(family = "Helvetica", size = (12)),
-        legend.text = element_text(family = "Helvetica", size = (12)),
-        legend.title = element_text(family = "Helvetica", size = (13))) +
-  theme(panel.background = element_rect(fill = 'white', colour = 'black')) +
-  theme()
+norm2.04 <- sum(reads.all.lines[, 'PV13.mapped']) / sum(reads.all.lines[, 'PV04.mapped']) # 0.94
+norm2.13 <- 1
 
+reads.B.lines$PV13.read.cov <- reads.B.lines$PV13.mapped*norm2.13/reads.B.lines$length
+reads.B.lines$PV04.read.cov <- reads.B.lines$PV04.mapped*norm2.04/reads.B.lines$length
+
+p1 <- ggplot(reads.B.lines, aes(log10(PV13.read.cov+1e-4),log10(PV04.read.cov+1e-4))) + geom_point(aes(colour=b.status),size=1)  + scale_color_manual(values=c("azure3", "darkgreen", "deeppink3")) +
+  labs(title="log10(norm read cov + 1e-4)", y="PV04", x = "PV13") + theme_bw()
+
+reads.B.lines.cov <- reads.B.lines[c(1,5,6,7)]
+colnames(reads.B.lines.cov)[3] <- "PV13"
+colnames(reads.B.lines.cov)[4] <- "PV04"
+
+reads.B.lines.long <- melt(reads.B.lines.cov, id.vars=c("seq","b.status"))
+colnames(reads.B.lines.long)[3] <- "B.line"
+colnames(reads.B.lines.long)[4] <- "read.cov"
+
+p2 <- ggplot(reads.B.lines.long, aes(B.line, log10(read.cov+1e-4),fill=b.status)) +
+  geom_boxplot(alpha=0.75,outlier.shape = NA,notch=TRUE,lwd=0.6) + #ylim(-1.5,2) +
+  scale_fill_manual(breaks = c("A","B.loose","B.strict"), values = c("azure3", "darkgreen", "deeppink3")) + 
+  theme_bw() 
+
+p.depth <- p1 + p2
+
+# coverage differences between PV04 and PV13:
+
+aggregate((reads.B.lines$PV04.read.cov+1e-4)/(reads.B.lines$PV13.read.cov+1e-4)~b.status, FUN=mean, data = reads.B.lines)
+aggregate((reads.B.lines$PV04.read.cov+1e-4)/(reads.B.lines$PV13.read.cov+1e-4)~b.status, FUN=sd, data = reads.B.lines)
 
 
 
