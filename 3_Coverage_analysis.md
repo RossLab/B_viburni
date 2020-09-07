@@ -223,15 +223,58 @@ Of course, some of these contigs may be highly repetitive sequences, which shoul
 | B loose  | 1.08                            | 0.73 |
 | B strict | 2.63                            | 1.09 |
 
+## 5.1. Inspecting the B strict candidates
 
-## 5.1. An alternative: the chromosome quotient.
+This is the length distribution:
 
-To minimise false negatives, we may want to keep only reads that align with no mismatches (Carvalho & Clark, 2013; Hall et al., 2013; Smeds et al., 2015; Vicoso et al., 2013)
+![](misc/B.strict.lengths.jpeg)
 
-	bamtools filter -tag NM:0 -in PV_18-04.initial.sorted.primary.only.bam -out /scratch/afilia/PV_18-04.initial.sorted.primary.only.no.mismatches.bam
-	bamtools filter -tag XM:0 -in PV_18-13.initial.sorted.primary.only.bam -out /scratch/afilia/PV_18-13.initial.sorted.primary.only.no.mismatches.bam
-	bamtools filter -tag XM:0 -in PV_18-21.initial.sorted.primary.only.bam -out /scratch/afilia/PV_18-21.initial.sorted.primary.only.no.mismatches.bam
-	bamtools filter -tag XM:0 -in PV_18-23.initial.sorted.primary.only.bam -out /scratch/afilia/PV_18-23.initial.sorted.primary.only.no.mismatches.bam
+Are there genes on the B strict scaffold set?
+
+	awk 'NR==FNR{c[$1]++;next};c[$3] > 0' B.strict.candidates /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.braker.genes.mapped.txt > genes.in.B.strict.candidates.txt
+
+98 genes, of which the following are annotated:
+
+| gene   | length | seq           | transcript | uniprot     | refprot    | anno  |
+|--------|--------|---------------|------------|-------------|------------|---|
+| g1208  | 283    | scaffold_2293 | g1208.t1   | FAS_CHICK   | A0A2J7PFW7 | Fatty acid synthase  |
+| g12159 | 1076   | scaffold_1269 | g12159.t1  | NA          | A0A226CTZ9 | Zinc finger BED domain-containing protein 1  |
+| g12160 | 1038   | scaffold_1269 | g12160.t1  | NA          | A0A226DDY8 | Zinc finger BED domain-containing protein 1  |
+| g12794 | 1169   | scaffold_1418 | g12794.t1  | GAGXE_DROME | A0A194RK46 | Nucleic-acid-binding protein from transposon X-element (ORF1)  |
+| g12795 | 854    | scaffold_1418 | g12795.t1  | RTJK_DROFU  | A0A2A4K918 | RNA-directed DNA polymerase from mobile element jockey (jockey\pol)  |
+| g13953 | 1483   | scaffold_2040 | g13953.t2  | EP300_HUMAN | A0A3B3RK67 | Histone acetyltransferase p300 (chromatin remodeling)  |
+| g15851 | 2339   | scaffold_1514 | g15851.t1  | NA          | J9K4F9     | DUF4806 domain-containing protein |
+| g16323 | 725    | scaffold_1148 | g16323.t1  | KIF23_HUMAN | K7J331     | Kinesin-like protein KIF23 (cell cycle cytokinesis)  |
+| g16324 | 797    | scaffold_1148 | g16324.t1  | KIF23_HUMAN | K7J331     | Kinesin-like protein KIF23 (cell cycle cytokinesis)  |
+| g16455 | 3374   | scaffold_1425 | g16455.t1  | PAIN_DROME  | A0A482WJY3 | Transient receptor potential cation channel protein painless  |
+| g16456 | 788    | scaffold_1425 | g16456.t1  | NA          | A0A2P8Z590 | ANK_REP_REGION domain-containing protein  |
+| g17661 | 267    | scaffold_1508 | g17661.t1  | NA          | A0A482VIA6 | Suppressor APC domain-containing protein 2  |
+| g17662 | 1823   | scaffold_1508 | g17662.t1  | SUCB2_COLLI | R4G3Z4     | Succinate--CoA ligase [GDP-forming] subunit beta, mitochondrial  |
+| g17664 | 1238   | scaffold_1508 | g17664.t1  | RM38_MOUSE  | A0A067QJE0 | 39S ribosomal protein L38, mitochondrial  |
+| g18439 | 577    | scaffold_1579 | g18439.t1  | CSN4_DANRE  | A0A2J7R0G0 | COP9 signalosome complex subunit 4  |
+| g18472 | 1015   | scaffold_798  | g18472.t1  | MOG2A_XENLA | G3UGB8     | 2-acylglycerol O-acyltransferase 2-A  |
+| g18473 | 988    | scaffold_798  | g18473.t1  | MOG2A_XENLA | T1H8G4     | 2-acylglycerol O-acyltransferase 2-A |
+| g18474 | 1231   | scaffold_798  | g18474.t1  | DGAT2_DANRE | A0A182GB69 | Diacylglycerol O-acyltransferase 2  |
+| g18475 | 496    | scaffold_798  | g18475.t1  | MOG2A_XENLA | NA         | 2-acylglycerol O-acyltransferase 2-A  |
+| g18476 | 1047   | scaffold_798  | g18476.t2  | MOG2A_XENLA | A0A482X8Q2 | 2-acylglycerol O-acyltransferase 2-A  |
+| g18800 | 1289   | scaffold_1581 | g18800.t1  | NA          | J9MAL5     | Uncharacterized protein  |
+| g19061 | 1061   | scaffold_902  | g19061.t1  | NA          | K7JWY9     | Reverse transcriptase domain-containing protein  |
+| g20084 | 1170   | scaffold_552  | g20084.t1  | NA          | A0A0J7N8Y6 | Reverse transcriptase |
+| g20092 | 2589   | scaffold_552  | g20092.t1  | NA          | A0A0R3QBG2 | Reverse transcriptase domain-containing protein  |
+| g20097 | 552    | scaffold_552  | g20097.t1  | NA          | T1HLH9     | Uncharacterized protein  |
+| g20100 | 3042   | scaffold_552  | g20100.t1  | NA          | A0A087T926 | Uncharacterized protein  |
+| g20103 | 842    | scaffold_552  | g20103.t1  | NA          | J9L5G6     | Uncharacterized protein  |
+| g20106 | 1316   | scaffold_552  | g20106.t1  | YMD2_CAEEL  | A0A151IDY8 | Uncharacterized protein  |
+| g20108 | 2547   | scaffold_552  | g20108.t1  | NA          | A0A0R3QAL5 | Uncharacterized protein  |
+| g20110 | 641    | scaffold_552  | g20110.t1  | NA          | D6WQK2     | Uncharacterized protein  |
+| g20115 | 482    | scaffold_552  | g20115.t1  | NA          | J9KK61     | Uncharacterized protein  |
+| g2155  | 3164   | scaffold_887  | g2155.t1   | NA          | J9KIL6     | Uncharacterized protein  |
+| g23391 | 2182   | scaffold_1768 | g23391.t1  | NA          | J9LQI3     | Uncharacterized protein  |
+| g2644  | 4614   | scaffold_786  | g2644.t1   | PGBD4_HUMAN | X1X046     | PiggyBac transposable element-derived protein 4  |
+| g2645  | 894    | scaffold_1454 | g2645.t1   | NA          | J9K3D3     | 3-hydroxyacyl-[acyl-carrier-protein] dehydratase  |
+| g5582  | 663    | scaffold_897  | g5582.t1   | FAS_ANSAN   | A0A158NZW8 | Fatty acid synthase  |
+| g9062  | 1025   | scaffold_848  | g9062.t1   | NA          | A0A1H8D3N8 | PD-(D/E)XK nuclease superfamily protein  |
+| g9063  | 327    | scaffold_848  | g9063.t1   | TRET1_DROPS | A0A3Q0J369 | Facilitated trehalose transporter Tret1  |
 
 ## 6. kmer method
 
