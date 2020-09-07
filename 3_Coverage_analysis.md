@@ -276,6 +276,8 @@ Are there genes on the B strict scaffold set?
 | g9062  | 1025   | scaffold_848  | g9062.t1   | NA          | A0A1H8D3N8 | PD-(D/E)XK nuclease superfamily protein  |
 | g9063  | 327    | scaffold_848  | g9063.t1   | TRET1_DROPS | A0A3Q0J369 | Facilitated trehalose transporter Tret1  |
 
+Also, 64 genes have a BLAST hit to predicted transcrips in the *de novo* transcriptome. We can use this information to cross this dataset with the overexpressed transcripts in B lines. 26 transcripts corresponding to 16 genes are overexpressed or unique to B lines: 7 overexpressed in B, 18 unique in B, 1 unique in B males.
+
 ## 6. kmer method
 
 Following Christina and Kamil's *Sciara* pipeline: https://github.com/RossLab/Sciara-L-chromosome/blob/master/analyses/assigment-of-L-X-A.md
