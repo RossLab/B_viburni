@@ -4,7 +4,7 @@
 	# working directory	
 	/data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads
 	qlogin -pe smp 24 -N busco
-    /ceph/software/utilities/sge/qlogin -pe smp 16 -l h=c5 -N samtools
+    /ceph/software/utilities/sge/qlogin -pe smp 1 -l h=c5 -N samtools
 
 ## 1. Raw reads
 
@@ -137,6 +137,13 @@ It makes sense to keep primary mapped reads only, as secondary hits might map to
 	samtools view -@ 16 -F 256 -b PV_18-21.initial.sorted.bam -o /scratch/afilia/PV_18-21.initial.sorted.primary.only.bam
 	samtools view -@ 16 -F 256 -b PV_18-23.initial.sorted.bam -o /scratch/afilia/PV_18-23.initial.sorted.primary.only.bam
 
+To minimise false negatives, for now we want to keep reads that align with no mismatches only (Carvalho & Clark, 2013; Hall et al., 2013; Smeds et al., 2015; Vicoso et al., 2013).
+
+	bamtools filter -tag NM:0 -in PV_18-04.initial.sorted.primary.only.bam -out /scratch/afilia/PV_18-04.initial.sorted.primary.only.no.mismatches.bam
+	bamtools filter -tag XM:0 -in PV_18-13.initial.sorted.primary.only.bam -out /scratch/afilia/PV_18-13.initial.sorted.primary.only.no.mismatches.bam
+	bamtools filter -tag XM:0 -in PV_18-21.initial.sorted.primary.only.bam -out /scratch/afilia/PV_18-21.initial.sorted.primary.only.no.mismatches.bam
+	bamtools filter -tag XM:0 -in PV_18-23.initial.sorted.primary.only.bam -out /scratch/afilia/PV_18-23.initial.sorted.primary.only.no.mismatches.bam
+
 Collect stats and ```samtools index```
 
 Mapped reads per contig:
@@ -183,14 +190,14 @@ while we see no such differences comparing B+ lines and B- lines:
 This is promising. Before we carry on, let's normalise all libraries by lowest number of reads (PV_18-21)
 
 	# mapped read count
-	sum(reads.all.lines[, 'PV04.mapped']) # 388044763
-	sum(reads.all.lines[, 'PV13.mapped']) # 363059148
-	sum(reads.all.lines[, 'PV21.mapped']) # 197844424
-	sum(reads.all.lines[, 'PV23.mapped']) # 208740794
+	sum(reads.all.lines[, 'PV04.mapped']) # 180975436
+	sum(reads.all.lines[, 'PV13.mapped']) # 186868354
+	sum(reads.all.lines[, 'PV21.mapped']) # 88933548
+	sum(reads.all.lines[, 'PV23.mapped']) # 95633941
 	# normalisation factor
-	norm.04 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV04.mapped']) # 0.51
-	norm.13 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV13.mapped']) # 0.55
-	norm.23 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV23.mapped']) # 0.95
+	norm.04 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV04.mapped']) # 0.49
+	norm.13 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV13.mapped']) # 0.48
+	norm.23 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV23.mapped']) # 0.93
 	norm.21 <- 1
 
 And replot. Now the peak of the histogram is centered at 0:
@@ -202,7 +209,7 @@ We can define two preliminary sets of candidate B scaffolds based on coverage:
 	b.candidates <- reads.all.lines[reads.all.lines$cov.13v21 >= 0.58 & reads.all.lines$cov.13v23 >= 0.58 & reads.all.lines$cov.04v21 >= 0.58 & reads.all.lines$cov.04v23 >= 0.58,] # assuming 1 B copy + 2 A copies
 	b.candidates.strict <- reads.all.lines[reads.all.lines$cov.13v21 >= 2 & reads.all.lines$cov.13v23 >= 2 & reads.all.lines$cov.04v21 >= 2 & reads.all.lines$cov.04v23 >= 2,]
 
-which gives us 109 putative B scaffolds with the more strict filtering (1.46Mb) and 198 with the losser filtering (3.06Mb). That's not a lot...
+which gives us 140 putative B scaffolds with the more strict filtering (1.95Mb) and 258 with the losser filtering (5.45Mb). That's not a lot...
 
 Of course, some of these contigs may be highly repetitive sequences, which should show higher coverage. This is indeed what we see:
 
@@ -212,49 +219,67 @@ Of course, some of these contigs may be highly repetitive sequences, which shoul
 
 | B status | Mean read cov ratio (PV04/PV13) | SD   |
 |----------|---------------------------------|------|
-| A        | 0.99                            | 0.50 |
-| B loose  | 1.08                            | 0.55 |
-| B strict | 2.61                            | 0.71 |
+| A        | 0.99                            | 0.64 |
+| B loose  | 1.08                            | 0.73 |
+| B strict | 2.63                            | 1.09 |
 
 
-## 5.1. Only primary reads
+## 5.1. An alternative: the chromosome quotient.
 
-samtools view -F 256 input.bam
+To minimise false negatives, we may want to keep only reads that align with no mismatches (Carvalho & Clark, 2013; Hall et al., 2013; Smeds et al., 2015; Vicoso et al., 2013)
 
-samtools view -@ 16 -F 256 -b PV_18-04.initial.sorted.bam -o /scratch/afilia/PV_18-04.initial.sorted.primary.only.bam
-samtools view -@ 16 -F 256 -b PV_18-13.initial.sorted.bam -o /scratch/afilia/PV_18-13.initial.sorted.primary.only.bam
-samtools view -@ 16 -F 256 -b PV_18-21.initial.sorted.bam -o /scratch/afilia/PV_18-21.initial.sorted.primary.only.bam
-samtools view -@ 16 -F 256 -b PV_18-23.initial.sorted.bam -o /scratch/afilia/PV_18-23.initial.sorted.primary.only.bam
-rsync -av /scratch/afilia/*primary.only* .
-
-## 6. kmer method
-
-
-
-
-
-
+	bamtools filter -tag NM:0 -in PV_18-04.initial.sorted.primary.only.bam -out /scratch/afilia/PV_18-04.initial.sorted.primary.only.no.mismatches.bam
+	bamtools filter -tag XM:0 -in PV_18-13.initial.sorted.primary.only.bam -out /scratch/afilia/PV_18-13.initial.sorted.primary.only.no.mismatches.bam
+	bamtools filter -tag XM:0 -in PV_18-21.initial.sorted.primary.only.bam -out /scratch/afilia/PV_18-21.initial.sorted.primary.only.no.mismatches.bam
+	bamtools filter -tag XM:0 -in PV_18-23.initial.sorted.primary.only.bam -out /scratch/afilia/PV_18-23.initial.sorted.primary.only.no.mismatches.bam
 
 ## 6. kmer method
 
 Following Christina and Kamil's *Sciara* pipeline: https://github.com/RossLab/Sciara-L-chromosome/blob/master/analyses/assigment-of-L-X-A.md
 
-	conda activate default_genomics
+	conda activate /ceph/users/kjaron/.conda/envs/default_genomics (kmc v.3.1.1)
 	# build kmer db
-	qsub -cwd -N kmc_heads -V -pe smp64 20 -b yes 'L=5; U=175; SCRATCH=/scratch/$USER/$JOB_ID/; mkdir -p $SCRATCH/tmp data/L-X-A-kmers/kmer_db; kmc -k27 -t20 -m64 -ci$L -cs$U data/L-X-A-kmers/raw_reads/bamfilter.head2.clc.mar29.scop.head2.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/head_kmer_counts $SCRATCH/tmp && mv $SCRATCH/head_kmer_counts* data/L-X-A-kmers/kmer_db'
-	# generate alphabetically sorted dump of kmers and their coverages
-	qsub -cwd -N kmc_dump_heads -V -pe smp64 20 -b yes 'L=5; U=174; SCRATCH=/scratch/$USER/$JOB_ID; mkdir -p $SCRATCH; kmc_tools transform data/L-X-A-kmers/kmer_db/head_kmer_counts -ci$L -cx$U dump -s $SCRATCH/head_k27.dump && mv $SCRATCH/head_k27.dump data/L-X-A-kmers/kmer_db'
-	qsub -cwd -N kmc_testes -V -pe smp64 20 -b yes 'L=5; U=175; SCRATCH=/scratch/$USER/$JOB_ID/; mkdir -p $SCRATCH/tmp data/L-X-A-kmers/kmer_db; kmc -k27 -t20 -m64 -ci$L -cs$U data/L-X-A-kmers/raw_reads/bamfilter.testes.clc.mar29.scop.testes.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/testes_kmer_counts $SCRATCH/tmp && mv $SCRATCH/testes_kmer_counts* data/L-X-A-kmers/kmer_db'
-	qsub -cwd -N kmc_dump_testes -V -pe smp64 20 -b yes 'L=5; U=174; SCRATCH=/scratch/$USER/$JOB_ID/; mkdir -p $SCRATCH; kmc_tools transform data/L-X-A-kmers/kmer_db/testes_kmer_counts -ci$L -cx$U dump -s $SCRATCH/testes_k27.dump && mv $SCRATCH/testes_k27.dump data/L-X-A-kmers/kmer_db'
+	# generate alphabetically sorted dump of kmers and their coverages (directly from the bam file)
+	kmc -fbam -k27 -t20 -m32 ../cov/PV_18-04.initial.sorted.bam /scratch/afilia/PV_18-04_kmer_counts /scratch/afilia/tmp04 && rsync -av /scratch/afilia/PV_18-04_kmer_counts .
+	kmc -fbam -k27 -t20 -m32 ../cov/PV_18-13.initial.sorted.bam /scratch/afilia/PV_18-13_kmer_counts /scratch/afilia/tmp13 && rsync -av /scratch/afilia/PV_18-13_kmer_counts .
+	kmc -fbam -k27 -t20 -m32 ../cov/PV_18-21.initial.sorted.bam /scratch/afilia/PV_18-21_kmer_counts /scratch/afilia/tmp21 && rsync -av /scratch/afilia/PV_18-21_kmer_counts .
+	kmc -fbam -k27 -t20 -m32 ../cov/PV_18-23.initial.sorted.bam /scratch/afilia/PV_18-23_kmer_counts /scratch/afilia/tmp23 && rsync -av /scratch/afilia/PV_18-23_kmer_counts .
+	# generate alphabetically sorted dump of kmers and their coverages (directly from the bam file)
+	kmc_tools transform PV_18-04_kmer_counts histogram /scratch/afilia/PV_18-04_kmer_counts.2.hist dump -s /scratch/afilia/PV_18-04_kmer_counts.2.dump && rsync -av /scratch/afilia/PV_18-04_kmer_counts.2.dump* .
+	kmc_tools transform PV_18-13_kmer_counts histogram /scratch/afilia/PV_18-13_kmer_counts.2.hist dump -s /scratch/afilia/PV_18-13_kmer_counts.2.dump && rsync -av /scratch/afilia/PV_18-13_kmer_counts.2.dump* .
+	kmc_tools transform PV_18-21_kmer_counts histogram /scratch/afilia/PV_18-21_kmer_counts.2.hist dump -s /scratch/afilia/PV_18-21_kmer_counts.2.dump && rsync -av /scratch/afilia/PV_18-21_kmer_counts.2.dump* .
+	kmc_tools transform PV_18-23_kmer_counts histogram /scratch/afilia/PV_18-23_kmer_counts.2.hist dump -s /scratch/afilia/PV_18-23_kmer_counts.2.dump && rsync -av /scratch/afilia/PV_18-23_kmer_counts.2.dump* .
 
-	kmc -k27 -t20 -m64 data/L-X-A-kmers/raw_reads/bamfilter.testes.clc.mar29.scop.testes.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/testes_kmer_counts $SCRATCH/tmp && rsync -av /scratch/afilia/testes_kmer_counts* data/L-X-A-kmers/kmer_db'
-	kmc -k27 -t20 -m64 data/L-X-A-kmers/raw_reads/bamfilter.testes.clc.mar29.scop.testes.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/testes_kmer_counts $SCRATCH/tmp && rsync -av /scratch/afilia/testes_kmer_counts* data/L-X-A-kmers/kmer_db'
-	kmc -k27 -t20 -m64 data/L-X-A-kmers/raw_reads/bamfilter.testes.clc.mar29.scop.testes.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/testes_kmer_counts $SCRATCH/tmp && rsync -av /scratch/afilia/testes_kmer_counts* data/L-X-A-kmers/kmer_db'
-	kmc -k27 -t20 -m64 data/L-X-A-kmers/raw_reads/bamfilter.testes.clc.mar29.scop.testes.vs.scop.clc.sorted.bam.InIn.fq.gz $SCRATCH/testes_kmer_counts $SCRATCH/tmp && rsync -av /scratch/afilia/testes_kmer_counts* data/L-X-A-kmers/kmer_db'
-
-	ln -s ../../2_short_read_DNA_seq/1_mapping/PV_18-04.initial.sorted.bam 
-	ln -s ../../2_short_read_DNA_seq/1_mapping/PV_18-13.Illumina.350.sorted.bam 
-	ln -s ../../2_short_read_DNA_seq/1_mapping/PV_18-13.Illumina.550.sorted.bam 
-	ln -s ../../2_short_read_DNA_seq/1_mapping/PV_18-21.initial.sorted.bam 
-	ln -s ../../2_short_read_DNA_seq/1_mapping/PV_18-23.initial.sorted.bam 
+	PV_04
+	No. of k-mers below min. threshold :   2566096852
+	No. of k-mers above max. threshold :            0
+	No. of unique k-mers               :   3293270669
+	No. of unique counted k-mers       :    727173817
+	Total no. of k-mers                :  49660791524
+	Total no. of reads                 :    409941120
+	Total no. of super-k-mers          :   5241435343
+	PV_13
+	No. of k-mers below min. threshold :   3170817280
+	No. of k-mers above max. threshold :            0
+	No. of unique k-mers               :   3915067457
+	No. of unique counted k-mers       :    744250177
+	Total no. of k-mers                :  44917847372
+	Total no. of reads                 :    371266376
+	Total no. of super-k-mers          :   4750712304
+	PV_21
+	No. of k-mers below min. threshold :   1393681770
+	No. of k-mers above max. threshold :            0
+	No. of unique k-mers               :   1934919083
+	No. of unique counted k-mers       :    541237313
+	Total no. of k-mers                :  24680995770
+	Total no. of reads                 :    203208820
+	Total no. of super-k-mers          :   2613231085
+	PV_23
+	No. of k-mers below min. threshold :   1430489783
+	No. of k-mers above max. threshold :            0
+	No. of unique k-mers               :   1980045593
+	No. of unique counted k-mers       :    549555810
+	Total no. of k-mers                :  26271897356
+	Total no. of reads                 :    216048000
+	Total no. of super-k-mers          :   2782708461
 
