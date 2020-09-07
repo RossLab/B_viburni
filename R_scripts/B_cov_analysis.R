@@ -107,7 +107,6 @@ table(reads.all.lines$b.status)
 sum(reads.all.lines[reads.all.lines$b.status == "B.strict",]$length)
 sum(reads.all.lines[reads.all.lines$b.status != "A",]$length)
 
-
 # let's look at B candidates
 
 reads.B.lines <- reads.all.lines[c(1,2,3,4,13)]
@@ -146,9 +145,13 @@ aggregate((reads.B.lines$PV04.read.cov+1e-4)/(reads.B.lines$PV13.read.cov+1e-4)~
 B.strict <- reads.all.lines[reads.all.lines$b.status == "B.strict",]
 ggplot(B.strict, aes(length)) + geom_bar() + scale_x_binned(n.breaks = 20, limits = c(1,200000)) + labs(x="Length", y="Scaffold count") + theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
+
+# import hits
+
 freeze.v0.blast.uniprot <- read_delim("p.viburni.freeze.v0.braker.aa.blast.vs.uniprot.out", 
                                       "\t", escape_double = FALSE, col_names = FALSE, 
                                       trim_ws = TRUE)
+
 freeze.v0.blast.uniprot <- freeze.v0.blast.uniprot[c(1,2)]
 colnames(freeze.v0.blast.uniprot)[1] <- "transcript"
 colnames(freeze.v0.blast.uniprot)[2] <- "uniprot"
@@ -167,6 +170,7 @@ freeze.v0.diamond.refprot.best <- freeze.v0.diamond.refprot %>% distinct(transcr
 
 # merge with candidates
 freeze.v0.genes <- merge(freeze.v0.blast.uniprot.best,freeze.v0.diamond.refprot.best,by="transcript",all=TRUE)
+freeze.v0.genes <- merge(freeze.v0.genes.0,freeze.v0.blast.transcriptome,by="transcript",all=TRUE)
 freeze.v0.genes$gene <- gsub("\\..*","", freeze.v0.genes$transcript)
 
 genes.in.B.strict.candidates <- read_delim("genes.in.B.strict.candidates.txt", 
@@ -180,6 +184,31 @@ colnames(genes.in.B.strict.candidates)[3] <- "seq"
 genes.in.B.strict.anno <- merge(genes.in.B.strict.candidates,freeze.v0.genes,by="gene")
 nrow(genes.in.B.strict.anno)
 
+# transcriptome
+
+freeze.v0.blast.transcriptome <- read_delim("p.viburni.freeze.v0.braker.aa.blast.vs.transcriptome.out", 
+                                            "\t", escape_double = FALSE, col_names = FALSE, 
+                                            trim_ws = TRUE)
+colnames(freeze.v0.blast.transcriptome)[1] <- "transcript"
+colnames(freeze.v0.blast.transcriptome)[2] <- "protein_id"
+freeze.v0.blast.transcriptome$gene <- gsub("\\..*","", freeze.v0.blast.transcriptome$transcript)
+
+genes.in.B.strict.transcriptome <- merge(genes.in.B.strict.candidates,freeze.v0.blast.transcriptome,by="gene")
+nrow(genes.in.B.strict.transcriptome)
+
+# import differentially expressed trasncripts
+
+overexpressed.B.transcripts <- read_csv("~/Documents/genomics/B_viburni_ross_lab/data/preliminary_rna_seq/sleuth_v1/overexpressed.B.transcripts.csv")
+overexpressed.B.transcripts.cat <- overexpressed.B.transcripts[c("transcript_id","info","sprot_Top_BLASTX_hit","sprot_Top_BLASTP_hit","Pfam","eggnog","Kegg","gene_ontology_BLASTX","gene_ontology_BLASTP","gene_ontology_Pfam")]
+
+genes.in.B.strict.transcriptome$transcript_id <- gsub("\\..*","", genes.in.B.strict.transcriptome$protein_id)
+genes.in.B.strict.transcriptome.expr <- merge(genes.in.B.strict.transcriptome, overexpressed.B.transcripts.cat, by = "transcript_id")
+
+count(unique(genes.in.B.strict.transcriptome$gene))
+count(unique(genes.in.B.strict.transcriptome.expr$gene))
+
+View(genes.in.B.strict.transcriptome.expr)
+table(genes.in.B.strict.transcriptome.expr$info)
 # export lists
 # write.csv(B.strict,"/Users/agarcia/Documents/genomics/B_viburni_ross_lab/data/coverage_analysis/B.strict.primary.reads.mapped.no.mismatches.csv", row.names = FALSE)
-write.csv(genes.in.B.strict.anno,"/Users/agarcia/Documents/genomics/B_viburni_ross_lab/data/coverage_analysis/genes.in.B.strict.anno.csv", row.names = FALSE)
+# write.csv(genes.in.B.strict.anno,"/Users/agarcia/Documents/genomics/B_viburni_ross_lab/data/coverage_analysis/genes.in.B.strict.anno.csv", row.names = FALSE)
