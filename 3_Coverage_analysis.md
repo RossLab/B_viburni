@@ -4,7 +4,7 @@
 	# working directory	
 	/data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads
 	qlogin -pe smp 24 -N busco
-    /ceph/software/utilities/sge/qlogin -pe smp 1 -l h=c5 -N samtools
+    /ceph/software/utilities/sge/qlogin -pe smp 1 -l h=c5 -N QLOGIN
 
 ## 1. Raw reads
 
@@ -282,18 +282,17 @@ Also, 64 genes have a BLAST hit to predicted transcrips in the *de novo* transcr
 
 Following Christina and Kamil's *Sciara* pipeline: https://github.com/RossLab/Sciara-L-chromosome/blob/master/analyses/assigment-of-L-X-A.md
 
-	conda activate /ceph/users/kjaron/.conda/envs/default_genomics (kmc v.3.1.1)
-	# build kmer db
+	# build kmer db with kmc v.3.1.1
 	# generate alphabetically sorted dump of kmers and their coverages (directly from the bam file)
 	kmc -fbam -k27 -t20 -m32 ../cov/PV_18-04.initial.sorted.bam /scratch/afilia/PV_18-04_kmer_counts /scratch/afilia/tmp04 && rsync -av /scratch/afilia/PV_18-04_kmer_counts .
 	kmc -fbam -k27 -t20 -m32 ../cov/PV_18-13.initial.sorted.bam /scratch/afilia/PV_18-13_kmer_counts /scratch/afilia/tmp13 && rsync -av /scratch/afilia/PV_18-13_kmer_counts .
 	kmc -fbam -k27 -t20 -m32 ../cov/PV_18-21.initial.sorted.bam /scratch/afilia/PV_18-21_kmer_counts /scratch/afilia/tmp21 && rsync -av /scratch/afilia/PV_18-21_kmer_counts .
 	kmc -fbam -k27 -t20 -m32 ../cov/PV_18-23.initial.sorted.bam /scratch/afilia/PV_18-23_kmer_counts /scratch/afilia/tmp23 && rsync -av /scratch/afilia/PV_18-23_kmer_counts .
 	# generate alphabetically sorted dump of kmers and their coverages (directly from the bam file)
-	kmc_tools transform PV_18-04_kmer_counts histogram /scratch/afilia/PV_18-04_kmer_counts.2.hist dump -s /scratch/afilia/PV_18-04_kmer_counts.2.dump && rsync -av /scratch/afilia/PV_18-04_kmer_counts.2.dump* .
-	kmc_tools transform PV_18-13_kmer_counts histogram /scratch/afilia/PV_18-13_kmer_counts.2.hist dump -s /scratch/afilia/PV_18-13_kmer_counts.2.dump && rsync -av /scratch/afilia/PV_18-13_kmer_counts.2.dump* .
-	kmc_tools transform PV_18-21_kmer_counts histogram /scratch/afilia/PV_18-21_kmer_counts.2.hist dump -s /scratch/afilia/PV_18-21_kmer_counts.2.dump && rsync -av /scratch/afilia/PV_18-21_kmer_counts.2.dump* .
-	kmc_tools transform PV_18-23_kmer_counts histogram /scratch/afilia/PV_18-23_kmer_counts.2.hist dump -s /scratch/afilia/PV_18-23_kmer_counts.2.dump && rsync -av /scratch/afilia/PV_18-23_kmer_counts.2.dump* .
+	kmc_tools transform PV_18-04_kmer_counts histogram /scratch/afilia/PV_18-04_kmer_counts.hist dump -s /scratch/afilia/PV_18-04_kmer_counts.dump && rsync -av /scratch/afilia/PV_18-04_kmer_counts* .
+	kmc_tools transform PV_18-13_kmer_counts histogram /scratch/afilia/PV_18-13_kmer_counts.hist dump -s /scratch/afilia/PV_18-13_kmer_counts.dump && rsync -av /scratch/afilia/PV_18-13_kmer_counts* .
+	kmc_tools transform PV_18-21_kmer_counts histogram /scratch/afilia/PV_18-21_kmer_counts.hist dump -s /scratch/afilia/PV_18-21_kmer_counts.dump && rsync -av /scratch/afilia/PV_18-21_kmer_counts* .
+	kmc_tools transform PV_18-23_kmer_counts histogram /scratch/afilia/PV_18-23_kmer_counts.hist dump -s /scratch/afilia/PV_18-23_kmer_counts.dump && rsync -av /scratch/afilia/PV_18-23_kmer_counts* .
 
 	PV_04
 	No. of k-mers below min. threshold :   2566096852
@@ -327,4 +326,42 @@ Following Christina and Kamil's *Sciara* pipeline: https://github.com/RossLab/Sc
 	Total no. of k-mers                :  26271897356
 	Total no. of reads                 :    216048000
 	Total no. of super-k-mers          :   2782708461
+
+This is what we get running this through Genomescope -- a bit disconcerting!
+
+![](misc/genomescope_1.jpeg)
+
+Why do the non-B lines get a higher genome size estimate than the B lines? The kmer distribution looks a bit off too. Talking to Kamil and Christina, they suggested a few ideas. First, let's do this again with 1) raw fastq files directly, contaminants and all and 2) a higher upper threshold (1e6).
+
+![](misc/kmerhist_1e6.jpeg)
+
+It doesn't seem we were missing any high coverage kmers (kmers with >1e6 coverage misisng from the plot, but it's just a few hundreds)
+
+	cat PV_18-04.Illumina.350.trimmed_1.fq.gz PV_18-04.Illumina.350.trimmed_2.fq.gz > ../../4_cov_analysis/kmer/PV_18-04.Illumina.trimmed_merged.fq.gz
+	cat PV_18-21.Illumina.350.trimmed_1.fq.gz PV_18-21.Illumina.350.trimmed_2.fq.gz > ../../4_cov_analysis/kmer/PV_18-21.Illumina.trimmed_merged.fq.gz
+	cat PV_18-23.Illumina.350.trimmed_1.fq.gz PV_18-23.Illumina.350.trimmed_2.fq.gz > ../../4_cov_analysis/kmer/PV_18-23.Illumina.trimmed_merged.fq.gz
+	cat PV_18-13.Illumina.350.trimmed_1.fq.gz PV_18-13.Illumina.350.trimmed_2.fq.gz PV_18-13.Illumina.550.trimmed_1.fq.gz PV_18-13.Illumina.550.trimmed_2.fq.gz > ../../4_cov_analysis/kmer/PV_18-13.Illumina.trimmed.merged.fq.gz
+	rm -rf /scratch/afilia/tmp04 && mkdir /scratch/afilia/tmp04
+	rm -rf /scratch/afilia/tmp13 && mkdir /scratch/afilia/tmp13
+	rm -rf /scratch/afilia/tmp21 && mkdir /scratch/afilia/tmp21
+	rm -rf /scratch/afilia/tmp23 && mkdir /scratch/afilia/tmp23
+	kmc -k27 -t24 -m32 -cs50000000 PV_18-04.Illumina.trimmed_merged.fq.gz /scratch/afilia/PV_18-04_kmer_counts_round2 /scratch/afilia/tmp04 && rsync -av /scratch/afilia/PV_18-04_kmer_counts_round2* .
+	kmc -k27 -t24 -m32 -cs50000000 PV_18-13.Illumina.trimmed.merged.fq.gz /scratch/afilia/PV_18-13_kmer_counts_round2 /scratch/afilia/tmp13 && rsync -av /scratch/afilia/PV_18-13_kmer_counts_round2* .
+	kmc -k27 -t24 -m32 -cs50000000 PV_18-21.Illumina.trimmed_merged.fq.gz /scratch/afilia/PV_18-21_kmer_counts_round2 /scratch/afilia/tmp21 && rsync -av /scratch/afilia/PV_18-21_kmer_counts_round2* .
+	kmc -k27 -t24 -m32 -cs50000000 PV_18-23.Illumina.trimmed_merged.fq.gz /scratch/afilia/PV_18-23_kmer_counts_round2 /scratch/afilia/tmp23 && rsync -av /scratch/afilia/PV_18-23_kmer_counts_round2* .
+	kmc_tools transform PV_18-04_kmer_counts_round2 histogram PV_18-04_kmer_counts_round2.max.hist -cx50000000
+	kmc_tools transform PV_18-13_kmer_counts_round2 histogram PV_18-13_kmer_counts_round2.max.hist -cx50000000
+	kmc_tools transform PV_18-21_kmer_counts_round2 histogram PV_18-21_kmer_counts_round2.max.hist -cx50000000
+	kmc_tools transform PV_18-23_kmer_counts_round2 histogram PV_18-23_kmer_counts_round2.max.hist -cx50000000
+
+
+
+
+
+
+
+
+
+
+
 
