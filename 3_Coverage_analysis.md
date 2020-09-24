@@ -396,9 +396,8 @@ Only 57 scaffolds are present in B+ lines and not B- lines, of which 49 correspo
 	dnadiff -d 21.spades.v.freeze.v0.delta -p dnadiff -d /scratch/afilia/21.spades.v.freeze.v0.dnadiff
 	dnadiff -d 23.spades.v.freeze.v0.delta -p dnadiff -d /scratch/afilia/23.spades.v.freeze.v0.dnadiff
 
-
-1-to-1	PV04: 177209	PV13: 180508	PV21: 114931	PV23: 172949
-M-to-M	PV04: 696533	PV13: 919725	PV21: 348865	PV23: 651283
+One-to-one alignments	PV04: 177209	PV13: 180508	PV21: 114931	PV23: 172949
+Many-to-many alignments	PV04: 696533	PV13: 919725	PV21: 348865	PV23: 651283
 
 
 
