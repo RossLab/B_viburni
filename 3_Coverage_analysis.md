@@ -378,10 +378,7 @@ Why do the non-B lines get a higher genome size estimate than the B lines? The k
 	cat PV_18-21.Illumina.350.trimmed_1.fq.gz PV_18-21.Illumina.350.trimmed_2.fq.gz > ../../4_cov_analysis/kmer/PV_18-21.Illumina.trimmed_merged.fq.gz
 	cat PV_18-23.Illumina.350.trimmed_1.fq.gz PV_18-23.Illumina.350.trimmed_2.fq.gz > ../../4_cov_analysis/kmer/PV_18-23.Illumina.trimmed_merged.fq.gz
 	cat PV_18-13.Illumina.350.trimmed_1.fq.gz PV_18-13.Illumina.350.trimmed_2.fq.gz PV_18-13.Illumina.550.trimmed_1.fq.gz PV_18-13.Illumina.550.trimmed_2.fq.gz > ../../4_cov_analysis/kmer/PV_18-13.Illumina.trimmed.merged.fq.gz
-	rm -rf /scratch/afilia/tmp04 && mkdir /scratch/afilia/tmp04
-	rm -rf /scratch/afilia/tmp13 && mkdir /scratch/afilia/tmp13
-	rm -rf /scratch/afilia/tmp21 && mkdir /scratch/afilia/tmp21
-	rm -rf /scratch/afilia/tmp23 && mkdir /scratch/afilia/tmp23
+
 	kmc -k27 -t24 -m32 -cs50000000 PV_18-04.Illumina.trimmed_merged.fq.gz /scratch/afilia/PV_18-04_kmer_counts_round2 /scratch/afilia/tmp04 && rsync -av /scratch/afilia/PV_18-04_kmer_counts_round2* .
 	kmc -k27 -t24 -m32 -cs50000000 PV_18-13.Illumina.trimmed.merged.fq.gz /scratch/afilia/PV_18-13_kmer_counts_round2 /scratch/afilia/tmp13 && rsync -av /scratch/afilia/PV_18-13_kmer_counts_round2* .
 	kmc -k27 -t24 -m32 -cs50000000 PV_18-21.Illumina.trimmed_merged.fq.gz /scratch/afilia/PV_18-21_kmer_counts_round2 /scratch/afilia/tmp21 && rsync -av /scratch/afilia/PV_18-21_kmer_counts_round2* .
@@ -390,6 +387,11 @@ Why do the non-B lines get a higher genome size estimate than the B lines? The k
 	kmc_tools transform PV_18-13_kmer_counts_round2 histogram PV_18-13_kmer_counts_round2.max.hist -cx50000000
 	kmc_tools transform PV_18-21_kmer_counts_round2 histogram PV_18-21_kmer_counts_round2.max.hist -cx50000000
 	kmc_tools transform PV_18-23_kmer_counts_round2 histogram PV_18-23_kmer_counts_round2.max.hist -cx50000000
+
+	kmc_tools dump -s /scratch/afilia/PV_18-04_kmer_counts.dump && rsync -av /scratch/afilia/PV_18-04_kmer_counts* .
+	kmc_tools dump -s /scratch/afilia/PV_18-13_kmer_counts.dump && rsync -av /scratch/afilia/PV_18-13_kmer_counts* .
+	kmc_tools dump -s /scratch/afilia/PV_18-21_kmer_counts.dump && rsync -av /scratch/afilia/PV_18-21_kmer_counts* .
+	kmc_tools dump -s /scratch/afilia/PV_18-23_kmer_counts.dump && rsync -av /scratch/afilia/PV_18-23_kmer_counts* .
 
 Let's plot up to 1e6. It doesn't seem we were missing any high coverage kmers (kmers with >1e6 coverage misisng from the plot, but it's just a few hundreds):
 
@@ -424,16 +426,54 @@ Now, let's get obtain a spectra-cn plot against the v0 reference.
 
 ![](misc/350v550.jpeg)
 
+## 7.3 kmer coverage
+
+Let's generate the kmer dumps with a lower threshold of 2 and an upper threshold of 1000 
+
+	qsub -cwd -N kmc -V -pe smp64 20 -b yes 'L=5; U=1000; SCRATCH=/scratch/$USER/$JOB_ID; mkdir -p $SCRATCH; kmc_tools transform PV_18-04_kmer_counts_round2 -ci$L -cx$U dump -s $SCRATCH/PV_18-04_5to10k.dump && rsync $SCRATCH/PV_18-04_5to10k.dump .'
+	qsub -cwd -N kmc -V -pe smp64 20 -b yes 'L=5; U=1000; SCRATCH=/scratch/$USER/$JOB_ID; mkdir -p $SCRATCH; kmc_tools transform PV_18-13_kmer_counts_round2 -ci$L -cx$U dump -s $SCRATCH/PV_18-13_5to10k.dump && rsync $SCRATCH/PV_18-13_5to10k.dump .'
+	qsub -cwd -N kmc -V -pe smp64 20 -b yes 'L=5; U=1000; SCRATCH=/scratch/$USER/$JOB_ID; mkdir -p $SCRATCH; kmc_tools transform PV_18-21_kmer_counts_round2 -ci$L -cx$U dump -s $SCRATCH/PV_18-21_5to10k.dump && rsync $SCRATCH/PV_18-21_5to10k.dump .'
+	qsub -cwd -N kmc -V -pe smp64 20 -b yes 'L=5; U=1000; SCRATCH=/scratch/$USER/$JOB_ID; mkdir -p $SCRATCH; kmc_tools transform PV_18-23_kmer_counts_round2 -ci$L -cx$U dump -s $SCRATCH/PV_18-23_5to10k.dump && rsync $SCRATCH/PV_18-23_5to10k.dump .'
+
+To merge the 4 dumps into a single file:
+
+	rm(list=ls())
+	ls()
+	PV_18.04_5to10k.dump <- read.delim("PV_18-04_5to10k.dump", header=FALSE)
+	PV_18.13_5to10k.dump <- read.delim("PV_18-13_5to10k.dump", header=FALSE)
+	PV_18.21_5to10k.dump <- read.delim("PV_18-21_5to10k.dump", header=FALSE)
+	PV_18.23_5to10k.dump <- read.delim("PV_18-23_5to10k.dump", header=FALSE)
+	colnames(PV_18.04_5to10k.dump)[1] <- "kmer"
+	colnames(PV_18.13_5to10k.dump)[1] <- "kmer"
+	colnames(PV_18.21_5to10k.dump)[1] <- "kmer"
+	colnames(PV_18.23_5to10k.dump)[1] <- "kmer"
+	colnames(PV_18.04_5to10k.dump)[2] <- "PV04"
+	colnames(PV_18.13_5to10k.dump)[2] <- "PV13"
+	colnames(PV_18.21_5to10k.dump)[2] <- "PV21"
+	colnames(PV_18.23_5to10k.dump)[2] <- "PV23"
+	head(PV_18.04_5to10k.dump)
+	head(PV_18.13_5to10k.dump)
+	head(PV_18.21_5to10k.dump)
+	head(PV_18.23_5to10k.dump)
+	a0 <- merge(PV_18.04_5to10k.dump,PV_18.13_5to10k.dump,by="kmer",all = TRUE)
+	a1 <- merge(a0,PV_18.21_5to10k.dump,by="kmer",all = TRUE)
+	all_lines_5to10k.dump <- merge(a1,PV_18.23_5to10k.dump,by="kmer",all = TRUE)
+	write.table(all_lines_5to10k.dump, file = "all_lines_5to10k.dump", sep = "\t",row.names = F, col.names = TRUE, quote = FALSE)
+	quit()
+
+	R < merge_dumps.R --vanilla
+
+We have a very healthy count of 587,590,720 27-mers in the merged file. Let's start by naively extracting kmers that are unique to PV_04 and PV_13 (putative B-unique kmers) and kmers that are shared by all lines (should be A)
+
+	awk '{ if((($2 != "NA") && ($2 >= 5)) && (($3 != "NA") && ($3 >= 5)) && ($4 == "NA") && ($5 == "NA")) { print }}' all_lines_5to1k.dump > b_lines_unique_kmers.tsv
+	awk '{ if(($2 != "NA") && ($3 != "NA") && ($4 != "NA") && ($5 != "NA")) { print }}' all_lines_5to1k.dump > all_lines_shared_kmers.tsv
+	awk '{print $1}' b_lines_unique_kmers.tsv | awk '{ print ">B_"NR"\n"$0 }' > b_lines_unique_kmers.fasta # 44,305,008 kmers
+	awk '{print $1}' all_lines_shared_kmers.tsv | awk '{ print ">A_"NR"\n"$0 }' > all_lines_shared_kmers.fasta # 343,163,864
+
+Map the fasta files to our Pacbio reference:
+
+	bwa mem -t 24 -k 27 -T 27 -a /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../b_lines_unique_kmers.fasta | samtools sort -@24 -O bam - > /scratch/afilia/Bput_kmers_vs_freeze.v0.sorted.bam # 44,305,008, of which 18,081,156 mapped
+	bwa mem -t 24 -k 27 -T 27 -a /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../all_lines_shared_kmers.fasta | samtools sort -@24 -O bam - > /scratch/afilia/Aput_kmers_vs_freeze.v0.sorted.bam # 343,163,864 in total, of which 322,128,767 mapped (only 40.52%)
 
 
-
-
-
-
-
-
-
-
-
-
-
+samtools view -H Bput_kmers_vs_freeze.v0.sorted.bam | grep "^@SQ" | awk '{ print substr($2,4) "\t" substr($3,4) }' > bo
