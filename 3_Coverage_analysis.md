@@ -341,14 +341,14 @@ Same results using the m-to-m alignments. Only 57 scaffolds are present in B+ li
 
 107 scaffolds are unique to the PV04 and PV13 assemblies, of which 72 (0.68Mb) correspond to B strict candidates. If we incorporate this to our coverage-based analysis, we get:
 
-| Scaffolds              | Count|
-|------------------------|------|
-| B.strict.plus.assembly |   72 |
-|               B.strict |   68 |
-|  B.loose.plus.assembly |   14 |
-|                B.loose |  104 |
-|             B.assembly |   21 |
-|                      A | 2113 |
+| Scaffolds              | Count| Size (Mb) |
+|------------------------|------|-----------|
+| B.strict.plus.assembly |   72 | 0.68      |
+|               B.strict |   68 | 1.26      |
+|  B.loose.plus.assembly |   14 | 0.14      |
+|                B.loose |  104 | 3.36      |
+|             B.assembly |   21 | 0.21      |
+|                      A | 2113 | 430       |
 
 ![](misc/depth.B.cov.assembly.plots.jpeg)
 
@@ -406,12 +406,21 @@ The new genome estimate is closer to the assembly -- that's good. ALSO -- only t
 ## 7.2 2d histograms of sample pairs
 
 	# conda install -c bioconda/label/cf201901 kat (v2.4.1)
-	kat comp -n -t 24 -o /scratch/afilia/04_vs_21_kat ../PV_18-04.Illumina.trimmed_merged.fq.gz ../PV_18-21.Illumina.trimmed_merged.fq.gz && rsync -av /scratch/afilia/04_vs_21_ka*
-	kat comp -n -t 24 -o /scratch/afilia/13_vs_21_kat ../PV_18-13.Illumina.trimmed.merged.fq.gz ../PV_18-21.Illumina.trimmed_merged.fq.gz && rsync -av /scratch/afilia/13_vs_21_ka*
-	kat comp -n -t 24 -o /scratch/afilia/04_vs_23_kat ../PV_18-04.Illumina.trimmed_merged.fq.gz ../PV_18-23.Illumina.trimmed_merged.fq.gz && rsync -av /scratch/afilia/04_vs_23_ka*
-	kat comp -n -t 24 -o /scratch/afilia/13_vs_23_kat ../PV_18-13.Illumina.trimmed.merged.fq.gz ../PV_18-23.Illumina.trimmed_merged.fq.gz && rsync -av /scratch/afilia/13_vs_23_ka*
-	kat comp -n -t 24 -o /scratch/afilia/04_vs_13_kat ../PV_18-04.Illumina.trimmed_merged.fq.gz ../PV_18-13.Illumina.trimmed.merged.fq.gz && rsync -av /scratch/afilia/04_vs_13_ka*
-	kat comp -n -t 24 -o /scratch/afilia/21_vs_23_kat ../PV_18-21.Illumina.trimmed_merged.fq.gz ../PV_18-23.Illumina.trimmed_merged.fq.gz && rsync -av /scratch/afilia/21_vs_23_ka*
+	kat comp -n -t 24 -o /scratch/afilia/04_vs_21_kat ../PV_18-04.Illumina.trimmed_merged.fq.gz ../PV_18-21.Illumina.trimmed_merged.fq.gz && rsync -av /scratch/afilia/04_vs_21_kat
+	kat comp -n -t 24 -o /scratch/afilia/13_vs_21_kat ../PV_18-13.Illumina.trimmed.merged.fq.gz ../PV_18-21.Illumina.trimmed_merged.fq.gz && rsync -av /scratch/afilia/13_vs_21_kat
+	kat comp -n -t 24 -o /scratch/afilia/04_vs_23_kat ../PV_18-04.Illumina.trimmed_merged.fq.gz ../PV_18-23.Illumina.trimmed_merged.fq.gz && rsync -av /scratch/afilia/04_vs_23_kat
+	kat comp -n -t 24 -o /scratch/afilia/13_vs_23_kat ../PV_18-13.Illumina.trimmed.merged.fq.gz ../PV_18-23.Illumina.trimmed_merged.fq.gz && rsync -av /scratch/afilia/13_vs_23_kat
+	kat comp -n -t 24 -o /scratch/afilia/04_vs_13_kat ../PV_18-04.Illumina.trimmed_merged.fq.gz ../PV_18-13.Illumina.trimmed.merged.fq.gz && rsync -av /scratch/afilia/04_vs_13_kat
+	kat comp -n -t 24 -o /scratch/afilia/21_vs_23_kat ../PV_18-21.Illumina.trimmed_merged.fq.gz ../PV_18-23.Illumina.trimmed_merged.fq.gz && rsync -av /scratch/afilia/21_vs_23_kat
+
+Here they are:
+
+![](misc/04_vs_13_kat-main.mx.density.png)
+![](misc/04_vs_21_kat-main.mx.density.png)
+![](misc/04_vs_23_kat-main.mx.density.png)
+![](misc/13_vs_21_kat-main.mx.density.png)
+![](misc/13_vs_23_kat-main.mx.density.png)
+![](misc/21_vs_23_kat-main.mx.density.png)
 
 Plus, as a sanity check, let's male sure the 350 and the 550 18_13 libraries are not too different -- if they are, we have a problem. It looks good though:
 
@@ -475,7 +484,13 @@ Map the fasta files to our Pacbio reference:
 	bwa mem -t 24 -k 27 -T 27 -a /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../b_lines_unique_kmers.fasta | samtools sort -@24 -O bam - > /scratch/afilia/Bput_kmers_vs_freeze.v0.sorted.bam # 44,305,008, of which 18,081,156 mapped
 	bwa mem -t 24 -k 27 -T 27 -a /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../all_lines_shared_kmers.fasta | samtools sort -@24 -O bam - > /scratch/afilia/Aput_kmers_vs_freeze.v0.sorted.bam # 343,163,864 in total, of which 322,128,767 mapped (only 40.52%)
 
-Index and count the numbers of A and B k-mers mapping to the assembly
+Index and count the numbers of A and B k-mers mapping to the assembly:
 
 	samtools index *bam
 	samtools idxstats *bam
+
+Almost all scaffolds have kmers from both sets. The resolution is a bit crap -- it seems we'll need to define better coverage thresholds. However, a ray of light: we see very good agreement with the previous analyses. 
+
+![](misc/kmer_ratio.jpeg)
+
+
