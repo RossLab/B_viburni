@@ -6,7 +6,7 @@ Start date: 08.10.2019, restarted 21.04.2020
 	/data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly
     qlogin -pe smp 24 -N busco
     /ceph/software/utilities/sge/qlogin -pe smp 32 -N interproscan
-/ceph/software/utilities/sge/qlogin -pe smp 1 -N aa
+	/ceph/software/utilities/sge/qlogin -pe smp 1 -N QLOGIN
 
 # I. ASSEMBLY
 
@@ -349,7 +349,7 @@ Stats for the filtered assembly
 
 ### 11.1 With redundans
 
-Try redundans to scaffold the genome and remove duplication: https://github.com/Gabaldonlab/redundans. It makes more sense to start with the non-decontaminated assembly for now.
+Try redundans to scaffold the genome and remove duplication: https://github.com/Gabaldonlab/redundans. It makes more sense to start with the non-decontaminated assembly for now and decontaminate later.
 
 conda create -n afilia_scaffold python=2.7 anaconda
 conda install -c numpy matplotlib
@@ -409,7 +409,7 @@ The "relaxed" scaffolded assembly with 50,000 insert size is the best of the bun
 	- LongestContig 4205925
 	- Num 2862
 	- Span 440158428
-	- Min 362f
+	- Min 362
 	- Mean 153794
 	- N50 818128
 	- NumN50 164
@@ -535,6 +535,8 @@ Other contigs to remove:
  - ctg968	29449	0.3732	64.3328	Streptophyta	tax0=no-hit:0.0;tax1=Streptophyta:468.8;
  - ctg2361	6689	0.3397	59.2066	Chlamydiae	tax0=no-hit:0.0;tax1=Chlamydiae:223.4;
  - scaffold_81_uid_1592524719	5818	0.3109	40.4742	Mucoromycota	tax0=no-hit:0.0;tax1=Mucoromycota:280.8;
+
+ This will remove 395 contigs/scaffolds.
 
 ## 14. Assembly v1: QC
 
@@ -670,5 +672,13 @@ Try flye:
 
 	flye --pacbio-raw /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz -g 440m -o flye -t 32 -i 2
 
+- Total length:   550853374
+- Fragments:      10757
+- Fragments N50:  372050
+- Largest frg:    4903815
+- Scaffolds:      98
+- Mean coverage:  23
+- C:95.7%[S:90.4%,D:5.3%],F:1.1%,M:3.2%,n:1367 (insecta)
 
+This is similar (slighly higher actually) to the BUSCO score for freeze.v0. Of course this assembly is more fragmented.
 
