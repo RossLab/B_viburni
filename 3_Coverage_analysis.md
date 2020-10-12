@@ -523,7 +523,6 @@ This will simply follow the steps in sections 3 and 4, but let's not bother with
 	samtools idxstats PV_18-21.to_flye.sorted.bam > PV_18-21.to_flye.sorted.mapped.count
 	samtools idxstats PV_18-23.to_flye.sorted.bam > PV_18-23.to_flye.sorted.mapped.count
 
-
 ### 8. Kmers revisited
 
 Let's generate everything again (genomescope, 2d histograms, dumps) but this time after filtering out reads that map to contaminants. 
