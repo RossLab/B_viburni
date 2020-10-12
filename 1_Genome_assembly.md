@@ -663,3 +663,12 @@ Run InterProScan. To do so, let's split in baches (1,000 entries per file)
 	/exports/software/bedops/bedops_linux_x86_64-v2.4.26/bin/gff2bed < p.viburni.freeze.v0.braker.gff3 > p.viburni.freeze.v0.braker.gff3.bed
 
 Predicted proteins with transcriptome hits: 20,473; predicted proteins with BLASTp matches: 10,070; predicted proteins with diamond matches: 12,412; predicted proteins with InterProScan results: 16,120
+
+## 4. Alternative assemblies
+
+Try flye:
+
+	flye --pacbio-raw /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.1.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.2.subreads.fasta.gz /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/0_reads/PV_18-13.3.subreads.fasta.gz -g 440m -o flye -t 32 -i 2
+
+
+
