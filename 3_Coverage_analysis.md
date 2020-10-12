@@ -70,30 +70,6 @@ Some initial mapping stats with ```samtools flagstat```:
 	356671170 + 0 properly paired (87.01% : N/A)
 	386220084 + 0 with itself and mate mapped
 	
-	==> PV_18-13.Illumina.350.sorted.stats <==
-	211557204 + 0 in total (QC-passed reads + QC-failed reads)
-	2602832 + 0 secondary
-	0 + 0 supplementary
-	0 + 0 duplicates
-	207064350 + 0 mapped (97.88% : N/A)
-	208954372 + 0 paired in sequencing
-	104477186 + 0 read1
-	104477186 + 0 read2
-	191120582 + 0 properly paired (91.47% : N/A)
-	203695802 + 0 with itself and mate mapped
-	
-	==> PV_18-13.Illumina.550.sorted.stats <==
-	164092832 + 0 in total (QC-passed reads + QC-failed reads)
-	1780828 + 0 secondary
-	0 + 0 supplementary
-	0 + 0 duplicates
-	160378458 + 0 mapped (97.74% : N/A)
-	162312004 + 0 paired in sequencing
-	81156002 + 0 read1
-	81156002 + 0 read2
-	147147792 + 0 properly paired (90.66% : N/A)
-	157690294 + 0 with itself and mate mapped
-	
 	==> PV_18-13.initial.sorted.stats <==
 	375650036 + 0 in total (QC-passed reads + QC-failed reads)
 	4383660 + 0 secondary
@@ -130,6 +106,30 @@ Some initial mapping stats with ```samtools flagstat```:
 	190849052 + 0 properly paired (88.34% : N/A)
 	207719570 + 0 with itself and mate mapped
 
+		==> PV_18-13.Illumina.350.sorted.stats <==
+	211557204 + 0 in total (QC-passed reads + QC-failed reads)
+	2602832 + 0 secondary
+	0 + 0 supplementary
+	0 + 0 duplicates
+	207064350 + 0 mapped (97.88% : N/A)
+	208954372 + 0 paired in sequencing
+	104477186 + 0 read1
+	104477186 + 0 read2
+	191120582 + 0 properly paired (91.47% : N/A)
+	203695802 + 0 with itself and mate mapped
+	
+	==> PV_18-13.Illumina.550.sorted.stats <==
+	164092832 + 0 in total (QC-passed reads + QC-failed reads)
+	1780828 + 0 secondary
+	0 + 0 supplementary
+	0 + 0 duplicates
+	160378458 + 0 mapped (97.74% : N/A)
+	162312004 + 0 paired in sequencing
+	81156002 + 0 read1
+	81156002 + 0 read2
+	147147792 + 0 properly paired (90.66% : N/A)
+	157690294 + 0 with itself and mate mapped
+	
 It makes sense to keep primary mapped reads only, as secondary hits might map to A and B.
 
 	samtools view -@ 16 -F 256 -b PV_18-04.initial.sorted.bam -o /scratch/afilia/PV_18-04.initial.sorted.primary.only.bam
@@ -140,9 +140,9 @@ It makes sense to keep primary mapped reads only, as secondary hits might map to
 To minimise false negatives, for now we want to keep reads that align with no mismatches only (Carvalho & Clark, 2013; Hall et al., 2013; Smeds et al., 2015; Vicoso et al., 2013).
 
 	bamtools filter -tag NM:0 -in PV_18-04.initial.sorted.primary.only.bam -out /scratch/afilia/PV_18-04.initial.sorted.primary.only.no.mismatches.bam
-	bamtools filter -tag XM:0 -in PV_18-13.initial.sorted.primary.only.bam -out /scratch/afilia/PV_18-13.initial.sorted.primary.only.no.mismatches.bam
-	bamtools filter -tag XM:0 -in PV_18-21.initial.sorted.primary.only.bam -out /scratch/afilia/PV_18-21.initial.sorted.primary.only.no.mismatches.bam
-	bamtools filter -tag XM:0 -in PV_18-23.initial.sorted.primary.only.bam -out /scratch/afilia/PV_18-23.initial.sorted.primary.only.no.mismatches.bam
+	bamtools filter -tag NM:0 -in PV_18-13.initial.sorted.primary.only.bam -out /scratch/afilia/PV_18-13.initial.sorted.primary.only.no.mismatches.bam
+	bamtools filter -tag NM:0 -in PV_18-21.initial.sorted.primary.only.bam -out /scratch/afilia/PV_18-21.initial.sorted.primary.only.no.mismatches.bam
+	bamtools filter -tag NM:0 -in PV_18-23.initial.sorted.primary.only.bam -out /scratch/afilia/PV_18-23.initial.sorted.primary.only.no.mismatches.bam
 
 Collect stats and ```samtools index```
 
@@ -493,19 +493,61 @@ Almost all scaffolds have kmers from both sets. The resolution is a bit crap -- 
 
 ![](misc/kmer_ratio.jpeg)
 
-## 7. A detour with alternative assemblies
+## 7. A detour with an alternative assemblies
 
 Some B chromosomal contigs/scaffolds could have been misassembled during the assembly/correction process due to repetitive structure etc. Before proceeding with more sophisticated assignments, let's take a moment and see if we get a higher fraction of B-linked contigs using:
 
-- the raw Pacbio assembly
-- the wtpoa corrected assembly (not scaffolded)
+- the raw Pacbio assembly (quick dirty check; very similar profile to freeze.v0. Not worth pursuing this.)
 - an alternative assembly (with flye)
 
-This will simply follow the steps in sections 3 and 4, but let's not bother with filtering out reads with mismatches for now.
+This will simply follow the steps in sections 3 and 4, but let's not bother with filtering out reads with mismatches for now (commands below for the flye assembly)
+
+	bwa index ../../1_pacbio_assembly/9_alternative/raw_flye/assembly.fasta
+	bwa mem -M -t 32 ../../1_pacbio_assembly/9_alternative/raw_flye/assembly.fasta ../../../2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_	18-13.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-13.to_flye.350.sorted.bam
+	bwa mem -M -t 32 ../../1_pacbio_assembly/9_alternative/raw_flye/assembly.fasta ../../../2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_	18-13.Illumina.550.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-13.to_flye.550.sorted.bam
+	bwa mem -M -t 32 ../../1_pacbio_assembly/9_alternative/raw_flye/assembly.fasta ../../../2_short_read_DNA_seq/0_reads/PV_18-04.Illumina.350.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_	18-04.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-04.to_flye.sorted.bam
+	bwa mem -M -t 32 ../../1_pacbio_assembly/9_alternative/raw_flye/assembly.fasta ../../../2_short_read_DNA_seq/0_reads/PV_18-21.Illumina.350.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_	18-21.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-21.to_flye.sorted.bam
+	bwa mem -M -t 32 ../../1_pacbio_assembly/9_alternative/raw_flye/assembly.fasta ../../../2_short_read_DNA_seq/0_reads/PV_18-23.Illumina.350.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_	18-23.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-23.to_flye.sorted.bam
+	samtools merge /scratch/afilia/PV_18-13.to_flye.sorted.bam /scratch/afilia/PV_18-13.to_flye.350.sorted.bam /scratch/afilia/PV_18-13.to_flye.550.sorted.bam
+	rsync -av /scratch/afilia/*to_flye.sorted.bam .
+	samtools index PV_18-04.to_flye.sorted.bam
+	samtools index PV_18-13.to_flye.sorted.bam
+	samtools index PV_18-21.to_flye.sorted.bam
+	samtools index PV_18-23.to_flye.sorted.bam
+	samtools flagstat PV_18-04.to_flye.sorted.bam > PV_18-04.to_flye.sorted.stats
+	samtools flagstat PV_18-13.to_flye.sorted.bam > PV_18-13.to_flye.sorted.stats
+	samtools flagstat PV_18-21.to_flye.sorted.bam > PV_18-21.to_flye.sorted.stats
+	samtools flagstat PV_18-23.to_flye.sorted.bam > PV_18-23.to_flye.sorted.stats
+	samtools idxstats PV_18-04.to_flye.sorted.bam > PV_18-04.to_flye.sorted.mapped.count
+	samtools idxstats PV_18-13.to_flye.sorted.bam > PV_18-13.to_flye.sorted.mapped.count
+	samtools idxstats PV_18-21.to_flye.sorted.bam > PV_18-21.to_flye.sorted.mapped.count
+	samtools idxstats PV_18-23.to_flye.sorted.bam > PV_18-23.to_flye.sorted.mapped.count
 
 
+### 8. Kmers revisited
 
+Let's generate everything again (genomescope, 2d histograms, dumps) but this time after filtering out reads that map to contaminants. 
 
+	bwa index /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/4_blobtools/hypo3.scubat.besst1.fa
+	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/4_blobtools/hypo3.scubat.besst1.fa ../../../2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-13.to_hypo3.scubat.besst1.350.sorted.bam
+	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/4_blobtools/hypo3.scubat.besst1.fa ../../../2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-13.to_hypo3.scubat.besst1.550.sorted.bam
+	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/4_blobtools/hypo3.scubat.besst1.fa ../../../2_short_read_DNA_seq/0_reads/PV_18-04.Illumina.350.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_18-04.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-04.to_hypo3.scubat.besst1.sorted.bam
+	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/4_blobtools/hypo3.scubat.besst1.fa ../../../2_short_read_DNA_seq/0_reads/PV_18-21.Illumina.350.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_18-21.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-21.to_hypo3.scubat.besst1.sorted.bam
+	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/4_blobtools/hypo3.scubat.besst1.fa ../../../2_short_read_DNA_seq/0_reads/PV_18-23.Illumina.350.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_18-23.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-23.to_hypo3.scubat.besst1.sorted.bam
+	samtools merge /scratch/afilia/PV_18-13.to_hypo3.scubat.besst1.sorted.bam /scratch/afilia/PV_18-13.to_hypo3.scubat.besst1.350.sorted.bam /scratch/afilia/PV_18-13.to_hypo3.scubat.besst1.550.sorted.bam
+	samtools flagstat /scratch/afilia/PV_18-04.to_hypo3.scubat.besst1.sorted.bam > PV_18-04.to_hypo3.scubat.besst1.sorted.stats
+	samtools flagstat /scratch/afilia/PV_18-13.to_hypo3.scubat.besst1.sorted.bam > PV_18-13.to_hypo3.scubat.besst1.sorted.stats
+	samtools flagstat /scratch/afilia/PV_18-21.to_hypo3.scubat.besst1.sorted.bam > PV_18-21.to_hypo3.scubat.besst1.sorted.stats
+	samtools flagstat /scratch/afilia/PV_18-23.to_hypo3.scubat.besst1.sorted.bam > PV_18-23.to_hypo3.scubat.besst1.sorted.stats
+	samtools index /scratch/afilia/PV_18-04.to_hypo3.scubat.besst1.sorted.bam
+	samtools index /scratch/afilia/PV_18-13.to_hypo3.scubat.besst1.sorted.bam
+	samtools index /scratch/afilia/PV_18-21.to_hypo3.scubat.besst1.sorted.bam
+	samtools index /scratch/afilia/PV_18-23.to_hypo3.scubat.besst1.sorted.bam
+	/ceph/software/blobtools/blobtools bamfilter -b /scratch/afilia/PV_18-04.to_hypo3.scubat.besst1.sorted.bam -o /scratch/afilia/PV_18-04.decon.for.kmers -f fq -e ../../../1_pacbio_assembly/4_blobtools/	contigs.to.remove.scaffolded.txt
+	/ceph/software/blobtools/blobtools bamfilter -b /scratch/afilia/PV_18-13.to_hypo3.scubat.besst1.sorted.bam -o /scratch/afilia/PV_18-13.decon.for.kmers -f fq -e ../../../1_pacbio_assembly/4_blobtools/	contigs.to.remove.scaffolded.txt
+	/ceph/software/blobtools/blobtools bamfilter -b /scratch/afilia/PV_18-21.to_hypo3.scubat.besst1.sorted.bam -o /scratch/afilia/PV_18-21.decon.for.kmers -f fq -e ../../../1_pacbio_assembly/4_blobtools/	contigs.to.remove.scaffolded.txt
+	/ceph/software/blobtools/blobtools bamfilter -b /scratch/afilia/PV_18-23.to_hypo3.scubat.besst1.sorted.bam -o /scratch/afilia/PV_18-23.decon.for.kmers -f fq -e ../../../1_pacbio_assembly/4_blobtools/	contigs.to.remove.scaffolded.txt
+	rsync -av /scratch/afilia/*decon.for.kmers* .
 
 
 
