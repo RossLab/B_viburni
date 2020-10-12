@@ -168,7 +168,7 @@ Extract mapped reads with ```bamfilter``` (inclusion/exclusion list is needed, j
 	/ceph/software/blobtools/blobtools bamfilter -b PV_18-13.Illumina.350.sorted.bam -o /scratch/afilia/PV_18-13.350 -n -f fq -e no_contigs.txt -U
 	/ceph/software/blobtools/blobtools bamfilter -b PV_18-13.Illumina.550.sorted.bam -o /scratch/afilia/PV_18-13.550 -n -f fq -e no_contigs.txt -U
 
-## 4. Remapping
+Should we want to remap in the future:
 
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../1_mapping/PV_18-13.350.PV_18-13.Illumina.350.sorted.bam.InIn.1.fq ../1_mapping/PV_18-13.350.PV_18-13.Illumina.350.sorted.bam.InIn.2.fq | samtools sort -O BAM -o /scratch/afilia/PV_18-13.350.freeze.v0.sorted.bam
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../1_mapping/PV_18-13.550.PV_18-13.Illumina.550.sorted.bam.InIn.1.fq ../1_mapping/PV_18-13.550.PV_18-13.Illumina.550.sorted.bam.InIn.2.fq | samtools sort -O BAM -o /scratch/afilia/PV_18-13.550.freeze.v0.sorted.bam
@@ -177,7 +177,7 @@ Extract mapped reads with ```bamfilter``` (inclusion/exclusion list is needed, j
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../1_mapping/PV_18-23.PV_18-23.initial.sorted.bam.InIn.1.fq ../1_mapping/PV_18-23.PV_18-23.initial.sorted.bam.InIn.2.fq | samtools sort -O BAM -o /scratch/afilia/PV_18-23.freeze.v0.sorted.bam
 	samtools merge /scratch/afilia/PV_18-13.freeze.v0.sorted.bam /scratch/afilia/PV_18-13.350.freeze.v0.sorted.bam /scratch/afilia/PV_18-13.550.freeze.v0.sorted.bam
 
-## 5. Exploring coverages
+## 4. Exploring coverages
 
 We can explore per-contig coverage differences between lines: log2((mapped reads line 1 + 1)/(mapped reads line 2 + 1)). Indeed, when we compare B+ lines to B- lines, we see a few contigs that have much higher coverage in B+ lines:
 
@@ -223,7 +223,7 @@ Of course, some of these contigs may be highly repetitive sequences, which shoul
 | B loose  | 1.08                            | 0.73 |
 | B strict | 2.63                            | 1.09 |
 
-## 5.1. Inspecting the B strict candidates
+### 4.1. Inspecting the B strict candidates
 
 This is the length distribution:
 
@@ -278,7 +278,7 @@ Are there genes on the B strict scaffold set?
 
 Also, 64 genes have a BLAST hit to predicted transcrips in the *de novo* transcriptome. We can use this information to cross this dataset with the overexpressed transcripts in B lines. 26 transcripts corresponding to 16 genes are overexpressed or unique to B lines: 7 overexpressed in B, 18 unique in B, 1 unique in B males.
 
-## 6. Mapping Illumina assemblies to reference
+## 5. Mapping Illumina assemblies to reference
 
 Let's build assemblies from the Illumina data and map them to the PacBio reference.
 
@@ -352,7 +352,7 @@ Same results using the m-to-m alignments. Only 57 scaffolds are present in B+ li
 
 ![](misc/depth.B.cov.assembly.plots.jpeg)
 
-## 7. kmer method
+## 6. kmer method
 
 Following Christina and Kamil's *Sciara* pipeline: https://github.com/RossLab/Sciara-L-chromosome/blob/master/analyses/assigment-of-L-X-A.md
 
@@ -403,7 +403,7 @@ And run genomescope again with cov up to 1e5:
 
 The new genome estimate is closer to the assembly -- that's good. ALSO -- only the 18-13 library comes from a pool of 3 individuals! 18-4, 18-21 and 18-23 are from single females -- Isabelle needs to confirm this. Now this makes sense: the heterozygosity peak is broader in 18-13 (rather corresponding to minor allele freq!)
 
-## 7.2 2d histograms of sample pairs
+### 6.1 2d histograms of sample pairs
 
 	# conda install -c bioconda/label/cf201901 kat (v2.4.1)
 	kat comp -n -t 24 -o /scratch/afilia/04_vs_21_kat ../PV_18-04.Illumina.trimmed_merged.fq.gz ../PV_18-21.Illumina.trimmed_merged.fq.gz && rsync -av /scratch/afilia/04_vs_21_kat
@@ -435,7 +435,7 @@ Now, let's get obtain a spectra-cn plot against the v0 reference.
 
 ![](misc/350v550.jpeg)
 
-## 7.3 kmer coverage
+### 6.2 kmer coverage
 
 Let's generate the kmer dumps with a lower threshold of 2 and an upper threshold of 1000 
 
@@ -492,5 +492,20 @@ Index and count the numbers of A and B k-mers mapping to the assembly:
 Almost all scaffolds have kmers from both sets. The resolution is a bit crap -- it seems we'll need to define better coverage thresholds. However, a ray of light: we see very good agreement with the previous analyses. 
 
 ![](misc/kmer_ratio.jpeg)
+
+## 7. A detour with alternative assemblies
+
+Some B chromosomal contigs/scaffolds could have been misassembled during the assembly/correction process due to repetitive structure etc. Before proceeding with more sophisticated assignments, let's take a moment and see if we get a higher fraction of B-linked contigs using:
+
+- the raw Pacbio assembly
+- the wtpoa corrected assembly (not scaffolded)
+- an alternative assembly (with flye)
+
+This will simply follow the steps in sections 3 and 4, but let's not bother with filtering out reads with mismatches for now.
+
+
+
+
+
 
 
