@@ -2,13 +2,11 @@ rm(list=ls())
 ls()
 library(tidyverse)
 library(gridExtra)
-#devtools::install_github("thomasp85/patchwork")
 library(patchwork)
 library(lattice)
 library(grid)
 library(gridExtra)
 library(reshape2)
-library(plyr)
 
 setwd("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/data/coverage_analysis")
 
@@ -144,7 +142,6 @@ aggregate((reads.B.lines$PV04.read.cov+1e-4)/(reads.B.lines$PV13.read.cov+1e-4)~
 
 B.strict <- reads.all.lines[reads.all.lines$b.status == "B.strict",]
 ggplot(B.strict, aes(length)) + geom_bar() + scale_x_binned(n.breaks = 20, limits = c(1,200000)) + labs(x="Length", y="Scaffold count") + theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
 
 # import hits
 
@@ -304,24 +301,26 @@ reads.B.lines.spades$b.status <- ifelse(reads.B.lines.spades$seq %in% pviburni.B
 reads.B.lines.spades$b.status <- ifelse(reads.B.lines.spades$seq %in% pviburni.B.scaffolds$scaffold & reads.B.lines.spades$b.status == "B.loose", "B.loose.plus.assembly", reads.B.lines.spades$b.status)
 reads.B.lines.spades$b.status <- ifelse(reads.B.lines.spades$seq %in% pviburni.B.scaffolds$scaffold & reads.B.lines.spades$b.status == "A", "B.assembly", reads.B.lines.spades$b.status)
 count(reads.B.lines.spades$b.status)
+ddply(reads.B.lines.spades,c("b.status"),summarise, N = length(seq), size = sum(length)/1000000) # get counts
 
 reads.B.lines.spades$b.status <- factor(reads.B.lines.spades$b.status, levels = c("B.strict.plus.assembly","B.strict","B.loose.plus.assembly","B.loose","B.assembly","A"))
-
 
 p1 <- ggplot(reads.B.lines.spades, aes(log10(PV13.read.cov+1e-4),log10(PV04.read.cov+1e-4))) + geom_point(aes(colour=b.status),size=1) +
   scale_color_manual(values=c("royalblue4", "dodgerblue", "green4", "green1", "lavenderblush4", "lavenderblush1")) +
   labs(title="log10(norm read cov + 1e-4)", y="PV04", x = "PV13") + theme_bw()
 
-reads.B.lines.cov <- reads.B.lines[c(1,5,6,7)]
-colnames(reads.B.lines.cov)[3] <- "PV13"
-colnames(reads.B.lines.cov)[4] <- "PV04"
+reads.B.lines.spades.cov <- reads.B.lines.spades[c(1,5,6,7)]
+colnames(reads.B.lines.spades.cov)[3] <- "PV13"
+colnames(reads.B.lines.spades.cov)[4] <- "PV04"
 
-reads.B.lines.long <- melt(reads.B.lines.cov, id.vars=c("seq","b.status"))
-colnames(reads.B.lines.long)[3] <- "B.line"
-colnames(reads.B.lines.long)[4] <- "read.cov"
+reads.B.lines.spades.long <- melt(reads.B.lines.spades.cov, id.vars=c("seq","b.status"))
+colnames(reads.B.lines.spades.long)[3] <- "B.line"
+colnames(reads.B.lines.spades.long)[4] <- "read.cov"
 
-p2 <- ggplot(reads.B.lines.long, aes(B.line, log10(read.cov+1e-4),fill=b.status)) +
-  geom_boxplot(alpha=0.75,outlier.shape = NA,notch=TRUE,lwd=0.6) + #ylim(-1.5,2) +
-  scale_fill_manual(breaks = c("A","B.loose","B.strict"), values = c("azure3", "darkgreen", "deeppink3")) + 
+p2 <- ggplot(reads.B.lines.spades.long, aes(B.line, log10(read.cov+1e-4),fill=b.status)) +
+  geom_boxplot(alpha=0.75,outlier.shape = NA,notch=FALSE,lwd=0.6) + ylim(-1.5,2) +
+  scale_fill_manual(values=c("royalblue4", "dodgerblue", "green4", "green1", "lavenderblush4", "lavenderblush1")) + 
   theme_bw() 
-
+p1 + p2
+aggregate((reads.B.lines.spades$PV04.read.cov+1e-4)/(reads.B.lines.spades$PV13.read.cov+1e-4)~b.status, FUN=mean, data = reads.B.lines.spades)
+aggregate((reads.B.lines.spades$PV04.read.cov+1e-4)/(reads.B.lines.spades$PV13.read.cov+1e-4)~b.status, FUN=sd, data = reads.B.lines.spades)
