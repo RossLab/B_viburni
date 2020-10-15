@@ -3,8 +3,8 @@
 
 	# working directory	
 	/data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads
-	qlogin -pe smp 24 -N busco
-    /ceph/software/utilities/sge/qlogin -pe smp 1 -N QLOGIN
+	qlogin -pe smp64 32 -N bwa -l h=bigwig
+    /ceph/software/utilities/sge/qlogin -pe smp64 32 -N bamfilter
 
 ## 1. Raw reads
 
@@ -48,6 +48,7 @@ Based on the assembly size (435.3Mb), we are looking at estimated coverages betw
 
 ## 3. Initial mapping
 
+	# /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/1_mapping
 	bwa index /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz ../0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-13.Illumina.350.sorted.bam
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz ../0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-13.Illumina.550.sorted.bam
@@ -132,6 +133,7 @@ Some initial mapping stats with ```samtools flagstat```:
 	
 It makes sense to keep primary mapped reads only, as secondary hits might map to A and B.
 
+	# /data/ross/mealybugs/analyses/B_viburni_2020/4_cov_analysis/cov
 	samtools view -@ 16 -F 256 -b PV_18-04.initial.sorted.bam -o /scratch/afilia/PV_18-04.initial.sorted.primary.only.bam
 	samtools view -@ 16 -F 256 -b PV_18-13.initial.sorted.bam -o /scratch/afilia/PV_18-13.initial.sorted.primary.only.bam
 	samtools view -@ 16 -F 256 -b PV_18-21.initial.sorted.bam -o /scratch/afilia/PV_18-21.initial.sorted.primary.only.bam
@@ -160,16 +162,16 @@ Alternatively, we could also collect coverage depths per contig:
 	samtools depth PV_18-21.freeze.v0.sorted.bam | awk '/BEGIN/{scf='scaffold_1'; coverage_sum = 0; }{ if( scf != $1 ){ print scf "\t" coverage_sum; scf = $1; coverage_sum = $3 } else { scf = $1; coverage_sum += $3} }' > PV_18-21.scaffold.depth
 	samtools depth PV_18-23.freeze.v0.sorted.bam | awk '/BEGIN/{scf='scaffold_1'; coverage_sum = 0; }{ if( scf != $1 ){ print scf "\t" coverage_sum; scf = $1; coverage_sum = $3 } else { scf = $1; coverage_sum += $3} }' > PV_18-23.scaffold.depth
 
-Extract mapped reads with ```bamfilter``` (inclusion/exclusion list is needed, just made an empty one)
-
+The initial bam files will do for now. Alternatively, we can extract mapped reads with ```bamfilter``` (inclusion/exclusion list is needed, just made an empty one) and remap. Let's keep this there for now and see if we come back to it later.
+	
+	# /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/1_mapping
 	/ceph/software/blobtools/blobtools bamfilter -b PV_18-21.initial.sorted.bam -o /scratch/afilia/PV_18-21 -n -f fq -e no_contigs.txt
 	/ceph/software/blobtools/blobtools bamfilter -b PV_18-23.initial.sorted.bam -o /scratch/afilia/PV_18-23 -n -f fq -e no_contigs.txt
 	/ceph/software/blobtools/blobtools bamfilter -b PV_18-04.initial.sorted.bam -o /scratch/afilia/PV_18-04 -n -f fq -e no_contigs.txt -U
 	/ceph/software/blobtools/blobtools bamfilter -b PV_18-13.Illumina.350.sorted.bam -o /scratch/afilia/PV_18-13.350 -n -f fq -e no_contigs.txt -U
 	/ceph/software/blobtools/blobtools bamfilter -b PV_18-13.Illumina.550.sorted.bam -o /scratch/afilia/PV_18-13.550 -n -f fq -e no_contigs.txt -U
 
-Should we want to remap in the future:
-
+	# /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/2_mapping_2nd
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../1_mapping/PV_18-13.350.PV_18-13.Illumina.350.sorted.bam.InIn.1.fq ../1_mapping/PV_18-13.350.PV_18-13.Illumina.350.sorted.bam.InIn.2.fq | samtools sort -O BAM -o /scratch/afilia/PV_18-13.350.freeze.v0.sorted.bam
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../1_mapping/PV_18-13.550.PV_18-13.Illumina.550.sorted.bam.InIn.1.fq ../1_mapping/PV_18-13.550.PV_18-13.Illumina.550.sorted.bam.InIn.2.fq | samtools sort -O BAM -o /scratch/afilia/PV_18-13.550.freeze.v0.sorted.bam
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../1_mapping/PV_18-04.PV_18-04.initial.sorted.bam.InIn.1.fq ../1_mapping/PV_18-04.PV_18-04.initial.sorted.bam.InIn.2.fq | samtools sort -O BAM -o /scratch/afilia/PV_18-04.freeze.v0.sorted.bam
@@ -282,6 +284,7 @@ Also, 64 genes have a BLAST hit to predicted transcrips in the *de novo* transcr
 
 Let's build assemblies from the Illumina data and map them to the PacBio reference.
 
+	# /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/3_spades
 	/ceph/software/spades/SPAdes-3.11.1-Linux/bin/spades.py -t 32 --only-assembler -k 21,33,55,77,99,127 -o 13_SPADES --pe1-1 ../0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz --pe1-2 ../0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz --pe2-1 ../0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz --pe2-2 ../0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz
 	/ceph/software/spades/SPAdes-3.11.1-Linux/bin/spades.py -t 32 --only-assembler -k 21,33,55,77,99,127 -o 04_SPADES -1 ../0_reads/PV_18-04.Illumina.350.trimmed_1.fq.gz -2 ../0_reads/PV_18-04.Illumina.350.trimmed_2.fq.gz
 	/ceph/software/spades/SPAdes-3.11.1-Linux/bin/spades.py -t 32 --only-assembler -k 21,33,55,77,99,127 -o 21_SPADES -1 ../0_reads/PV_18-21.Illumina.350.trimmed_1.fq.gz -2 ../0_reads/PV_18-21.Illumina.350.trimmed_2.fq.gz
@@ -332,7 +335,7 @@ Many-to-many alignments - PV04: 696533, PV13: 919725, PV21: 348865, PV23: 651283
 	awk '{ a[$12]++ } END { for (b in a) { print b } }' 21.spades.v.freeze.v0.dnadiff.mcoords > 21.spades.v.freeze.v0.dnadiff.mcoords.list # 2235
 	awk '{ a[$12]++ } END { for (b in a) { print b } }' 23.spades.v.freeze.v0.dnadiff.mcoords > 23.spades.v.freeze.v0.dnadiff.mcoords.list # 2256
 
-Same results using the m-to-m alignments. Only 57 scaffolds are present in B+ lines and not B- lines, of which 49 correspond to B candidates (0.39Mb only). Let's try 1-to-1 now
+Same results using the m-to-m alignments. Only 57 scaffolds are present in B+ lines and not B- lines, of which 49 correspond to B candidates (0.39Mb only). Let's try 1-to-1 now:
 
 	awk '{ a[$12]++ } END { for (b in a) { print b } }' 04.spades.v.freeze.v0.dnadiff.1coords > 04.spades.v.freeze.v0.dnadiff.1coords.list # 2231
 	awk '{ a[$12]++ } END { for (b in a) { print b } }' 13.spades.v.freeze.v0.dnadiff.1coords > 13.spades.v.freeze.v0.dnadiff.1coords.list # 2298
@@ -356,6 +359,7 @@ Same results using the m-to-m alignments. Only 57 scaffolds are present in B+ li
 
 Following Christina and Kamil's *Sciara* pipeline: https://github.com/RossLab/Sciara-L-chromosome/blob/master/analyses/assigment-of-L-X-A.md
 
+	# /data/ross/mealybugs/analyses/B_viburni_2020/4_cov_analysis/kmer/initial
 	# build kmer db with kmc v.3.1.1
 	# generate alphabetically sorted dump of kmers and their coverages (directly from the bam file)
 	kmc -fbam -k27 -t20 -m32 ../cov/PV_18-04.initial.sorted.bam /scratch/afilia/PV_18-04_kmer_counts /scratch/afilia/tmp04 && rsync -av /scratch/afilia/PV_18-04_kmer_counts .
@@ -435,9 +439,9 @@ Now, let's get obtain a spectra-cn plot against the v0 reference.
 
 ![](misc/350v550.jpeg)
 
-### 6.2 kmer coverage
+### 6.2. kmer coverage (naive)
 
-Let's generate the kmer dumps with a lower threshold of 2 and an upper threshold of 1000 
+Let's generate the kmer dumps again with a lower threshold of 2 and an upper threshold of 1000:
 
 	qsub -cwd -N kmc -V -pe smp64 20 -b yes 'L=5; U=1000; SCRATCH=/scratch/$USER/$JOB_ID; mkdir -p $SCRATCH; kmc_tools transform PV_18-04_kmer_counts_round2 -ci$L -cx$U dump -s $SCRATCH/PV_18-04_5to10k.dump && rsync $SCRATCH/PV_18-04_5to10k.dump .'
 	qsub -cwd -N kmc -V -pe smp64 20 -b yes 'L=5; U=1000; SCRATCH=/scratch/$USER/$JOB_ID; mkdir -p $SCRATCH; kmc_tools transform PV_18-13_kmer_counts_round2 -ci$L -cx$U dump -s $SCRATCH/PV_18-13_5to10k.dump && rsync $SCRATCH/PV_18-13_5to10k.dump .'
@@ -493,12 +497,29 @@ Almost all scaffolds have kmers from both sets. The resolution is a bit crap -- 
 
 ![](misc/kmer_ratio.jpeg)
 
+### 6.3. kmer coverage (improved)
+
+Instead of defining A/B kmer as above, we can try with coverage ratios. As above, we can speculate that a B kmer may be unique to Bs or shared between A and B. Therefore, we could expect anything with a log2(B lines/non-B lines) >= 0.58 to be a putative B kmer. We can also define a stricter thresfold of >= 2. Therefore, we can generate this set. To do so, we need to normalise the kmer data (Kamil suggested haploid coverage estimated by genomescope, which sounds good) and establish a threshold of kmer coverage.
+
+- PV04 = 42.5
+- PV13 = 40.1
+- PV21 = 22.7
+- PV23 = 24.7
+
+Since we set our lower threshold to 5, anything with normalised coverage < 5 can be assigned a value of 4 before estimating the ratios. We can discard all kmers with norm cov < 5 in all four lines. After doing that and calculating coverages, these are our sets:
+
+ - a.candidates.loose.tsv = 507336789 
+ - b.candidates.loose.tsv = 47347191 
+ - a.candidates.strict.tsv = 535347275 
+ - b.candidates.strict.tsv = 19336705
+
+
 ## 7. A detour with an alternative assemblies
 
 Some B chromosomal contigs/scaffolds could have been misassembled during the assembly/correction process due to repetitive structure etc. Before proceeding with more sophisticated assignments, let's take a moment and see if we get a higher fraction of B-linked contigs using:
 
-- the raw Pacbio assembly (quick dirty check; very similar profile to freeze.v0. Not worth pursuing this.)
-- an alternative assembly (with flye)
+- the raw Pacbio assembly (quick dirty check; very similar profile to freeze.v0. Not worth pursuing this.) # /data/ross/mealybugs/analyses/B_viburni_2020/4_cov_analysis/cov/to_raw
+- an alternative assembly (with flye) # /data/ross/mealybugs/analyses/B_viburni_2020/4_cov_analysis/cov/to_flye
 
 This will simply follow the steps in sections 3 and 4, but let's not bother with filtering out reads with mismatches for now (commands below for the flye assembly)
 
@@ -523,6 +544,8 @@ This will simply follow the steps in sections 3 and 4, but let's not bother with
 	samtools idxstats PV_18-21.to_flye.sorted.bam > PV_18-21.to_flye.sorted.mapped.count
 	samtools idxstats PV_18-23.to_flye.sorted.bam > PV_18-23.to_flye.sorted.mapped.count
 
+Mapping to the new assembly gives a slightly bigger set of putative B chromosomal contigs is recovered (2.2Mb v 1.95Mb strict), but since the flye assembly is bigger the fraction is very similar. It doesn't seem worth pursuing further with this.
+
 ### 8. Kmers revisited
 
 Let's generate everything again (genomescope, 2d histograms, dumps) but this time after filtering out reads that map to contaminants. 
@@ -542,11 +565,10 @@ Let's generate everything again (genomescope, 2d histograms, dumps) but this tim
 	samtools index /scratch/afilia/PV_18-13.to_hypo3.scubat.besst1.sorted.bam
 	samtools index /scratch/afilia/PV_18-21.to_hypo3.scubat.besst1.sorted.bam
 	samtools index /scratch/afilia/PV_18-23.to_hypo3.scubat.besst1.sorted.bam
-	/ceph/software/blobtools/blobtools bamfilter -b /scratch/afilia/PV_18-04.to_hypo3.scubat.besst1.sorted.bam -o /scratch/afilia/PV_18-04.decon.for.kmers -f fq -e ../../../1_pacbio_assembly/4_blobtools/	contigs.to.remove.scaffolded.txt
-	/ceph/software/blobtools/blobtools bamfilter -b /scratch/afilia/PV_18-13.to_hypo3.scubat.besst1.sorted.bam -o /scratch/afilia/PV_18-13.decon.for.kmers -f fq -e ../../../1_pacbio_assembly/4_blobtools/	contigs.to.remove.scaffolded.txt
-	/ceph/software/blobtools/blobtools bamfilter -b /scratch/afilia/PV_18-21.to_hypo3.scubat.besst1.sorted.bam -o /scratch/afilia/PV_18-21.decon.for.kmers -f fq -e ../../../1_pacbio_assembly/4_blobtools/	contigs.to.remove.scaffolded.txt
-	/ceph/software/blobtools/blobtools bamfilter -b /scratch/afilia/PV_18-23.to_hypo3.scubat.besst1.sorted.bam -o /scratch/afilia/PV_18-23.decon.for.kmers -f fq -e ../../../1_pacbio_assembly/4_blobtools/	contigs.to.remove.scaffolded.txt
-	rsync -av /scratch/afilia/*decon.for.kmers* .
-
-
-
+	samtools idxstats PV_18-21.to_hypo3.scubat.besst1.sorted.bam > PV_18-21.to_hypo3.scubat.besst1.sorted.stats 
+	blobtools bamfilter -b PV_18-04.to_hypo3.scubat.besst1.sorted.bam -o /scratch/afilia/PV_18-04.decon -e ../../../1_pacbio_assembly/4_blobtools/contigs.to.remove.scaffolded.txt -u --threads 32
+	blobtools bamfilter -b PV_18-13.to_hypo3.scubat.besst1.sorted.bam -o /scratch/afilia/PV_18-13.decon -e ../../../1_pacbio_assembly/4_blobtools/contigs.to.remove.scaffolded.txt -u --threads 32
+	blobtools bamfilter -b PV_18-21.to_hypo3.scubat.besst1.sorted.bam -o /scratch/afilia/PV_18-21.decon -e ../../../1_pacbio_assembly/4_blobtools/contigs.to.remove.scaffolded.txt -u --threads 32
+	blobtools bamfilter -b PV_18-21.to_hypo3.scubat.besst1.sorted.bam -o /scratch/afilia/PV_18-21b.decon -e ../../../1_pacbio_assembly/4_blobtools/contigs.to.remove.scaffolded.txt --threads 32
+	blobtools bamfilter -b PV_18-23.to_hypo3.scubat.besst1.sorted.bam -o /scratch/afilia/PV_18-23.decon -e ../../../1_pacbio_assembly/4_blobtools/contigs.to.remove.scaffolded.txt -u --threads 32
+rsync -av /scratch/afilia/P*decon* . 
