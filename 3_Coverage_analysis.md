@@ -383,14 +383,14 @@ Why do the non-B lines get a higher genome size estimate than the B lines? The k
 	cat PV_18-23.Illumina.350.trimmed_1.fq.gz PV_18-23.Illumina.350.trimmed_2.fq.gz > ../../4_cov_analysis/kmer/PV_18-23.Illumina.trimmed_merged.fq.gz
 	cat PV_18-13.Illumina.350.trimmed_1.fq.gz PV_18-13.Illumina.350.trimmed_2.fq.gz PV_18-13.Illumina.550.trimmed_1.fq.gz PV_18-13.Illumina.550.trimmed_2.fq.gz > ../../4_cov_analysis/kmer/PV_18-13.Illumina.trimmed.merged.fq.gz
 
-	kmc -k27 -t24 -m32 -cs50000000 PV_18-04.Illumina.trimmed_merged.fq.gz /scratch/afilia/PV_18-04_kmer_counts_round2 /scratch/afilia/tmp04 && rsync -av /scratch/afilia/PV_18-04_kmer_counts_round2* .
-	kmc -k27 -t24 -m32 -cs50000000 PV_18-13.Illumina.trimmed.merged.fq.gz /scratch/afilia/PV_18-13_kmer_counts_round2 /scratch/afilia/tmp13 && rsync -av /scratch/afilia/PV_18-13_kmer_counts_round2* .
-	kmc -k27 -t24 -m32 -cs50000000 PV_18-21.Illumina.trimmed_merged.fq.gz /scratch/afilia/PV_18-21_kmer_counts_round2 /scratch/afilia/tmp21 && rsync -av /scratch/afilia/PV_18-21_kmer_counts_round2* .
-	kmc -k27 -t24 -m32 -cs50000000 PV_18-23.Illumina.trimmed_merged.fq.gz /scratch/afilia/PV_18-23_kmer_counts_round2 /scratch/afilia/tmp23 && rsync -av /scratch/afilia/PV_18-23_kmer_counts_round2* .
-	kmc_tools transform PV_18-04_kmer_counts_round2 histogram PV_18-04_kmer_counts_round2.max.hist -cx50000000
-	kmc_tools transform PV_18-13_kmer_counts_round2 histogram PV_18-13_kmer_counts_round2.max.hist -cx50000000
-	kmc_tools transform PV_18-21_kmer_counts_round2 histogram PV_18-21_kmer_counts_round2.max.hist -cx50000000
-	kmc_tools transform PV_18-23_kmer_counts_round2 histogram PV_18-23_kmer_counts_round2.max.hist -cx50000000
+	kmc -k27 -t24 -m32 -cs5000000 PV_18-04.Illumina.trimmed_merged.fq.gz /scratch/afilia/PV_18-04_kmer_counts_round2 /scratch/afilia/tmp04 && rsync -av /scratch/afilia/PV_18-04_kmer_counts_round2* .
+	kmc -k27 -t24 -m32 -cs5000000 PV_18-13.Illumina.trimmed.merged.fq.gz /scratch/afilia/PV_18-13_kmer_counts_round2 /scratch/afilia/tmp13 && rsync -av /scratch/afilia/PV_18-13_kmer_counts_round2* .
+	kmc -k27 -t24 -m32 -cs5000000 PV_18-21.Illumina.trimmed_merged.fq.gz /scratch/afilia/PV_18-21_kmer_counts_round2 /scratch/afilia/tmp21 && rsync -av /scratch/afilia/PV_18-21_kmer_counts_round2* .
+	kmc -k27 -t24 -m32 -cs5000000 PV_18-23.Illumina.trimmed_merged.fq.gz /scratch/afilia/PV_18-23_kmer_counts_round2 /scratch/afilia/tmp23 && rsync -av /scratch/afilia/PV_18-23_kmer_counts_round2* .
+	kmc_tools transform PV_18-04_kmer_counts_round2 histogram PV_18-04_kmer_counts_round2.max.hist -cx5000000
+	kmc_tools transform PV_18-13_kmer_counts_round2 histogram PV_18-13_kmer_counts_round2.max.hist -cx5000000
+	kmc_tools transform PV_18-21_kmer_counts_round2 histogram PV_18-21_kmer_counts_round2.max.hist -cx5000000
+	kmc_tools transform PV_18-23_kmer_counts_round2 histogram PV_18-23_kmer_counts_round2.max.hist -cx5000000
 
 	kmc_tools dump -s /scratch/afilia/PV_18-04_kmer_counts.dump && rsync -av /scratch/afilia/PV_18-04_kmer_counts* .
 	kmc_tools dump -s /scratch/afilia/PV_18-13_kmer_counts.dump && rsync -av /scratch/afilia/PV_18-13_kmer_counts* .
@@ -513,7 +513,6 @@ Since we set our lower threshold to 5, anything with normalised coverage < 5 can
  - a.candidates.strict.tsv = 535347275 
  - b.candidates.strict.tsv = 19336705
 
-
 ## 7. A detour with an alternative assemblies
 
 Some B chromosomal contigs/scaffolds could have been misassembled during the assembly/correction process due to repetitive structure etc. Before proceeding with more sophisticated assignments, let's take a moment and see if we get a higher fraction of B-linked contigs using:
@@ -550,6 +549,7 @@ Mapping to the new assembly gives a slightly bigger set of putative B chromosoma
 
 Let's generate everything again (genomescope, 2d histograms, dumps) but this time after filtering out reads that map to contaminants. 
 
+	# /data/ross/mealybugs/analyses/B_viburni_2020/4_cov_analysis/kmer/decon_kmers
 	bwa index /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/4_blobtools/hypo3.scubat.besst1.fa
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/4_blobtools/hypo3.scubat.besst1.fa ../../../2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-13.to_hypo3.scubat.besst1.350.sorted.bam
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/4_blobtools/hypo3.scubat.besst1.fa ../../../2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-13.to_hypo3.scubat.besst1.550.sorted.bam
@@ -565,10 +565,26 @@ Let's generate everything again (genomescope, 2d histograms, dumps) but this tim
 	samtools index /scratch/afilia/PV_18-13.to_hypo3.scubat.besst1.sorted.bam
 	samtools index /scratch/afilia/PV_18-21.to_hypo3.scubat.besst1.sorted.bam
 	samtools index /scratch/afilia/PV_18-23.to_hypo3.scubat.besst1.sorted.bam
-	samtools idxstats PV_18-21.to_hypo3.scubat.besst1.sorted.bam > PV_18-21.to_hypo3.scubat.besst1.sorted.stats 
-	blobtools bamfilter -b PV_18-04.to_hypo3.scubat.besst1.sorted.bam -o /scratch/afilia/PV_18-04.decon -e ../../../1_pacbio_assembly/4_blobtools/contigs.to.remove.scaffolded.txt -u --threads 32
-	blobtools bamfilter -b PV_18-13.to_hypo3.scubat.besst1.sorted.bam -o /scratch/afilia/PV_18-13.decon -e ../../../1_pacbio_assembly/4_blobtools/contigs.to.remove.scaffolded.txt -u --threads 32
-	blobtools bamfilter -b PV_18-21.to_hypo3.scubat.besst1.sorted.bam -o /scratch/afilia/PV_18-21.decon -e ../../../1_pacbio_assembly/4_blobtools/contigs.to.remove.scaffolded.txt -u --threads 32
-	blobtools bamfilter -b PV_18-21.to_hypo3.scubat.besst1.sorted.bam -o /scratch/afilia/PV_18-21b.decon -e ../../../1_pacbio_assembly/4_blobtools/contigs.to.remove.scaffolded.txt --threads 32
-	blobtools bamfilter -b PV_18-23.to_hypo3.scubat.besst1.sorted.bam -o /scratch/afilia/PV_18-23.decon -e ../../../1_pacbio_assembly/4_blobtools/contigs.to.remove.scaffolded.txt -u --threads 32
-rsync -av /scratch/afilia/P*decon* . 
+	# with blobools v1.0 and an exclusion list without the >
+	blobtools bamfilter -b PV_18-04.to_hypo3.scubat.besst1.sorted.bam -o /scratch/afilia/PV_18-04.decon -e contigs.to.remove.scaffolded.txt -u --threads 32
+	blobtools bamfilter -b PV_18-13.to_hypo3.scubat.besst1.sorted.bam -o /scratch/afilia/PV_18-13.decon -e contigs.to.remove.scaffolded.txt -u --threads 32
+	blobtools bamfilter -b PV_18-21.to_hypo3.scubat.besst1.sorted.bam -o /scratch/afilia/PV_18-21.decon -e contigs.to.remove.scaffolded.txt -u --threads 32
+	blobtools bamfilter -b PV_18-23.to_hypo3.scubat.besst1.sorted.bam -o /scratch/afilia/PV_18-23.decon -e contigs.to.remove.scaffolded.txt -u --threads 32
+	rsync -av /scratch/afilia/*fq /data/ross/mealybugs/analyses/B_viburni_2020/4_cov_analysis/kmer/decon_kmers,reads_bamfiltered
+	kmc -fq -k27 -t32 -m32 -cs1000000 @PV04.txt /scratch/afilia/PV04_decon_kmer_counts /scratch/afilia/tmp04/
+	kmc -fq -k27 -t32 -m32 -cs1000000 @PV13.txt /scratch/afilia/PV13_decon_kmer_counts /scratch/afilia/tmp13
+	kmc -fq -k27 -t32 -m32 -cs1000000 @PV21.txt /scratch/afilia/PV21_decon_kmer_counts /scratch/afilia/tmp21
+	kmc -fq -k27 -t32 -m32 -cs1000000 @PV23.txt /scratch/afilia/PV23_decon_kmer_counts /scratch/afilia/tmp23
+	kmc_tools transform /scratch/afilia/PV04_decon_kmer_counts histogram /scratch/afilia/PV04_decon_kmer_counts.hist -cx1000000 -t32
+	kmc_tools transform /scratch/afilia/PV13_decon_kmer_counts histogram /scratch/afilia/PV13_decon_kmer_counts.hist -cx1000000 -t32
+	kmc_tools transform /scratch/afilia/PV21_decon_kmer_counts histogram /scratch/afilia/PV21_decon_kmer_counts.hist -cx1000000 -t32
+	kmc_tools transform /scratch/afilia/PV23_decon_kmer_counts histogram /scratch/afilia/PV23_decon_kmer_counts.hist -cx1000000 -t32
+	rsync -av /scratch/afilia/*decon_kmer_counts*
+	dump -s /scratch/afilia/PV04_decon_kmer_counts.dump && rsync -av /scratch/afilia/PV04_decon_kmer_counts* .
+	dump -s /scratch/afilia/PV13_decon_kmer_counts.dump && rsync -av /scratch/afilia/PV13_decon_kmer_counts* .
+	dump -s /scratch/afilia/PV21_decon_kmer_counts.dump && rsync -av /scratch/afilia/PV21_decon_kmer_counts* .
+	dump -s /scratch/afilia/PV23_decon_kmer_counts.dump && rsync -av /scratch/afilia/PV23_decon_kmer_counts* .
+
+Both the GenomeScope output and the kat 2v2 comparisons are virtually identical after removing contaminants -- it looks like the noise in the plots is coming from real biological variation in the mealybug genome rather than endosymbionts, etc. Can't say this was much of a surprise,
+
+![](kat_comp_InInExInUnUn.jpg)
