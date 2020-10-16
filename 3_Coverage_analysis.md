@@ -587,6 +587,6 @@ Let's generate everything again (genomescope, 2d histograms, dumps) but this tim
 
 Both the GenomeScope output and the kat 2v2 comparisons are virtually identical after removing contaminants -- it looks like the noise in the plots is coming from real biological variation in the mealybug genome rather than endosymbionts, etc. Can't say this was much of a surprise:
 
-![](kat_comp_InInExInUnUn.jpg)
+![](misc/kat_comp_InInExInUnUn.jpg)
 
 So
