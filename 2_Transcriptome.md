@@ -287,4 +287,118 @@ We have TruSeq stranded mRNA-seq, so the orientation must be "reverse". However,
 
 ### 4. Calculate differentially expressed genes (fdr<0.05)
 
-Let's try a new pipelineL edgeR + limma
+
+From here Isabelle 
+
+Working directory
+```
+/data/ross/mealybugs/analyses/B_viburni_2020/3_RNA_seq/4_genome_based/
+```
+
+Copied results (.gene.results and .isoform.results) from RSEM expression to wd in this folder
+
+```
+/data/ross/mealybugs/analyses/B_viburni_2020/3_RNA_seq/4_genome_based/RSEMresults
+```
+
+Checking number of lines in each file
+```
+wc -l *.genes.results
+```
+
+   23630 04F_1.genes.results
+   23630 04F_2.genes.results
+   23630 04F_3.genes.results
+   23630 04M_1.genes.results
+   23630 04M_2.genes.results
+   23630 04M_3.genes.results
+   23630 13F_1.genes.results
+   23630 13F_2.genes.results
+   23630 13F_3.genes.results
+   23630 13M_1.genes.results
+   23630 13M_2.genes.results
+   23630 13M_3.genes.results
+   23630 13M_4.genes.results
+   23630 15F_1.genes.results
+   23630 15F_2.genes.results
+   23630 15F_3.genes.results
+   23630 15M_1.genes.results
+   23630 15M_2.genes.results
+   23630 15M_3.genes.results
+   23630 21F_1.genes.results
+   23630 21F_2.genes.results
+   23630 21F_3.genes.results
+   23630 21M_1.genes.results
+   23630 21M_2.genes.results
+   23630 21M_3.genes.results
+   23630 21M_4.genes.results
+  614380 total
+
+
+ 
+Checking genes.results content
+
+```
+head 04F_2.genes.results
+```
+```
+gene_id	transcript_id(s)	length	effective_length	expected_count	TPM	FPKM	posterior_mean_count	posterior_standard_deviation_of_count	pme_TPM	pme_FPKM
+g1	g1.t1	531.00	369.59	19.00	1.42	1.59	17.55	1.67	0.00	0.00
+g10	g10.t1	312.00	152.06	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+g100	g100.t1	207.00	55.47	243.72	121.06	135.55	243.80	1.92	0.00	0.00
+g1000	g1000.t1	240.00	84.03	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+g10000	g10000.t1	2883.00	2721.55	1572.00	15.92	17.82	1572.00	0.00	0.00	0.00
+g10001	g10001.t1	285.00	125.99	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+g10002	g10002.t1	435.00	273.72	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+g10003	g10003.t1	390.00	228.93	1.00	0.12	0.13	1.00	0.00	0.00	0.00
+g10004	g10004.t1	864.00	702.55	60.00	2.35	2.63	60.00	0.00	0.00	0.00
+```
+
+remove last three col of gene.results
+
+```
+for i in *.genes.results; do
+    awk 'NF{NF-=4};1' $i > $i.out
+done
+
+```
+
+
+#### Create gene-level matrix
+Creating the matrix from all samples in the order above, using expected counts as the value.
+Pasting all files together horizontally (checked before that the gene ids were in the same order for all the files). Then select cut only the expected count column
+```
+paste -d " " *.genes.results.out | tail -n+2 | sed 's/ /\t/g' | \
+cut -f1,5,12,19,26,33,40,47,54,61,68,75,82,89,96,103,110,117,124,131,138,145,152,159,166,173,180 > edgeR.genes.rsem.txt
+
+```
+OMG... took me forever to figure out why it was not working 
+
+```
+head edgeR.genes.rsem.txt
+```
+
+```
+g1	0.00	19.00	2.66	0.00	0.00	0.00	1.72	0.00	6.17	0.00	0.00	5.41	0.00	0.00	4.00	3.34	0.00	0.00	0.00	1.24	9.003.33	0.00	0.00	0.00	0.00
+g10	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.000.00	0.00	0.00	0.00	0.00
+g100	220.35	243.72	175.32	318.32	220.37	187.48	90.45	231.73	164.25	173.39	260.54	214.72	205.74	104.47	93.12	219.31	149.21	135.14	207.42	59.34	94.384.40	105.56	93.56	93.71	93.07
+g1000	1.00	0.00	2.00	2.00	1.00	4.00	0.00	0.00	5.00	2.00	4.00	3.00	4.00	3.00	1.00	0.00	4.00	3.00	2.00	1.00	2.001.00	8.00	6.00	5.00	3.00
+g10000	1247.00	1572.00	1242.00	314.00	166.00	137.00	1577.00	1681.00	1633.00	457.00	1077.00	340.00	445.00	1062.00	711.00	1883.00	454.00	300.00	331.00	1443.00	1293.00	1472.00	415.00	542.00	341.00	365.00
+g10001	3.00	0.00	1.00	1.00	5.00	0.00	5.00	2.00	9.00	0.00	3.00	9.00	2.00	2.00	1.00	0.00	7.00	1.00	0.00	0.00	3.003.00	4.00	3.00	3.00	0.00
+g10002	6.00	0.00	0.00	1128.00	102.00	19.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	0.00	343.00	236.00	165.00	0.00	0.000.00	89.00	2372.00	223.00	190.00
+g10003	2.00	1.00	0.00	909.00	73.00	7.00	0.00	2.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	1.00	316.00	202.00	133.00	1.00	0.001.00	72.00	1848.00	152.00	129.00
+g10004	48.00	60.00	24.00	12.00	6.00	11.00	86.00	124.00	68.00	43.00	34.00	22.00	22.00	56.00	32.00	91.00	24.00	24.00	21.00	91.00	47.059.00	32.00	21.00	20.00	12.00
+g10005	3.00	1.00	0.00	141.00	219.00	268.00	4.00	0.00	0.00	208.00	109.00	210.00	190.00	6.00	4.00	8.00	245.00	115.00	251.00	5.00	0.000.00	335.00	103.00	197.00	260.00
+
+```
+Checking number of colums
+```
+
+awk '{print NF}' edgeR.genes.rsem.txt | sort -nu | tail -n 1
+```
+We have 26 samples and gene id col => ok
+
+
+Using this matrix, I will run EdgeR. Will add isoforms differential expression too.
+
+
