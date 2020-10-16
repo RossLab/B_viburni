@@ -553,7 +553,6 @@ Stats for the filtered scaffolded assembly (let's call it p.viburni.freeze.v0.fa
  * BUSCO insecta: C:95.2%[S:91.7%,D:3.5%],F:0.9%,M:3.9%,n:1367
  * BUSCO arthropoda: C:95.9%[S:92.7%,D:3.2%],F:0.9%,M:3.2%,n:1013
 
-
 # II. ANNOTATION
 
 ## 1. Repeat masking
