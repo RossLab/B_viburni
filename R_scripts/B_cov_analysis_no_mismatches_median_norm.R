@@ -1,5 +1,6 @@
 rm(list=ls())
 ls()
+library(plyr)
 library(tidyverse)
 library(gridExtra)
 library(patchwork)
@@ -143,9 +144,6 @@ nrow(B.strict)
 
 ggplot(B.strict, aes(length)) + geom_bar() + scale_x_binned(n.breaks = 20, limits = c(1,200000)) + labs(x="Length", y="Scaffold count") + theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-
-
-
 # get alignments of SPAdes assemblies to the Pacbio reference
 
 # import files: many-to-many
@@ -191,7 +189,7 @@ pviburni.scaffold.in.Bplus.m <- pviburni.scaffold.table[!is.na(pviburni.scaffold
                                                         & is.na(pviburni.scaffold.table$PV.21) & is.na(pviburni.scaffold.table$PV.23)
                                                         & !is.na(pviburni.scaffold.table$B.candidate),]
 
-count(pviburni.scaffold.in.Bplus.m$B.candidate)
+table(pviburni.scaffold.in.Bplus.m$B.candidate)
 sum(pviburni.scaffold.in.Bplus.m$len)
 
 # reimport files: 1-to-1
@@ -228,7 +226,7 @@ pviburni.scaffold.table <- left_join(pviburni.scaffold.table,spades.nucmer.23,by
 
 pviburni.B.scaffolds <- pviburni.scaffold.table[!is.na(pviburni.scaffold.table$PV.13) & !is.na(pviburni.scaffold.table$PV.04)
                                                 & is.na(pviburni.scaffold.table$PV.21) & is.na(pviburni.scaffold.table$PV.23),]
-count(pviburni.B.scaffolds$B.candidate)
+table(pviburni.B.scaffolds$B.candidate)
 
 # let's plot this
 
@@ -236,7 +234,7 @@ reads.B.lines.spades <- reads.B.lines
 reads.B.lines.spades$b.status <- ifelse(reads.B.lines.spades$seq %in% pviburni.B.scaffolds$scaffold & reads.B.lines.spades$b.status == "B.strict", "B.strict.plus.assembly", reads.B.lines.spades$b.status)
 reads.B.lines.spades$b.status <- ifelse(reads.B.lines.spades$seq %in% pviburni.B.scaffolds$scaffold & reads.B.lines.spades$b.status == "B.loose", "B.loose.plus.assembly", reads.B.lines.spades$b.status)
 reads.B.lines.spades$b.status <- ifelse(reads.B.lines.spades$seq %in% pviburni.B.scaffolds$scaffold & reads.B.lines.spades$b.status == "A", "B.assembly", reads.B.lines.spades$b.status)
-count(reads.B.lines.spades$b.status)
+table(reads.B.lines.spades$b.status)
 ddply(reads.B.lines.spades,c("b.status"),summarise, N = length(seq), size = sum(length)/1000000) # get counts
 
 reads.B.lines.spades$b.status <- factor(reads.B.lines.spades$b.status, levels = c("B.strict.plus.assembly","B.strict","B.loose.plus.assembly","B.loose","B.assembly","A"))
@@ -245,7 +243,7 @@ p1 <- ggplot(reads.B.lines.spades, aes(log10(PV13.read.cov+1e-4),log10(PV04.read
   scale_color_manual(values=c("royalblue4", "dodgerblue", "green4", "green1", "lavenderblush4", "lavenderblush1")) +
   labs(title="log10(norm read cov + 1e-4)", y="PV04", x = "PV13") + theme_bw()
 
-reads.B.lines.spades.cov <- reads.B.lines.spades[c(1,5,6,7)]
+reads.B.lines.spades.cov <- reads.B.lines.spades[c(1,6,7,8)]
 colnames(reads.B.lines.spades.cov)[3] <- "PV13"
 colnames(reads.B.lines.spades.cov)[4] <- "PV04"
 
