@@ -189,18 +189,15 @@ while we see no such differences comparing B+ lines and B- lines:
 
 ![](misc/hist.mapped.reads.2.jpeg)
 
-This is promising. Before we carry on, let's normalise all libraries by lowest number of reads (PV_18-21)
+This is promising. Before we carry on, let's normalise all samples by median coverage differences between pairs of lines
 
-	# mapped read count
-	sum(reads.all.lines[, 'PV04.mapped']) # 180975436
-	sum(reads.all.lines[, 'PV13.mapped']) # 186868354
-	sum(reads.all.lines[, 'PV21.mapped']) # 88933548
-	sum(reads.all.lines[, 'PV23.mapped']) # 95633941
-	# normalisation factor
-	norm.04 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV04.mapped']) # 0.49
-	norm.13 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV13.mapped']) # 0.48
-	norm.23 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV23.mapped']) # 0.93
-	norm.21 <- 1
+	# normalisation factors
+	median(cov.13v21_norm) # 2.08
+	median(cov.13v23_norm) # 1.91 
+	median(cov.04v21_norm) # 1.87
+	median(cov.04v23_norm) # 1.77
+	median(cov.04v13_norm) # 0.95
+	median(cov.21v23_norm) # 0.94
 
 And replot. Now the peak of the histogram is centered at 0:
 
@@ -211,7 +208,7 @@ We can define two preliminary sets of candidate B scaffolds based on coverage:
 	b.candidates <- reads.all.lines[reads.all.lines$cov.13v21 >= 0.58 & reads.all.lines$cov.13v23 >= 0.58 & reads.all.lines$cov.04v21 >= 0.58 & reads.all.lines$cov.04v23 >= 0.58,] # assuming 1 B copy + 2 A copies
 	b.candidates.strict <- reads.all.lines[reads.all.lines$cov.13v21 >= 2 & reads.all.lines$cov.13v23 >= 2 & reads.all.lines$cov.04v21 >= 2 & reads.all.lines$cov.04v23 >= 2,]
 
-which gives us 140 putative B scaffolds with the more strict filtering (1.95Mb) and 258 with the losser filtering (5.45Mb). That's not a lot...
+which gives us 145 putative B scaffolds with the more strict filtering (2.03Mb) and 280 with the losser filtering (6.44Mb). 
 
 Of course, some of these contigs may be highly repetitive sequences, which should show higher coverage. This is indeed what we see:
 
@@ -221,9 +218,9 @@ Of course, some of these contigs may be highly repetitive sequences, which shoul
 
 | B status | Mean read cov ratio (PV04/PV13) | SD   |
 |----------|---------------------------------|------|
-| A        | 0.99                            | 0.64 |
-| B loose  | 1.08                            | 0.73 |
-| B strict | 2.63                            | 1.09 |
+| A        | 1.01                            | 0.65 |
+| B loose  | 1.04                            | 0.72 |
+| B strict | 2.64                            | 1.13 |
 
 ### 4.1. Inspecting the B strict candidates
 
@@ -579,14 +576,22 @@ Let's generate everything again (genomescope, 2d histograms, dumps) but this tim
 	kmc_tools transform /scratch/afilia/PV13_decon_kmer_counts histogram /scratch/afilia/PV13_decon_kmer_counts.hist -cx1000000 -t32
 	kmc_tools transform /scratch/afilia/PV21_decon_kmer_counts histogram /scratch/afilia/PV21_decon_kmer_counts.hist -cx1000000 -t32
 	kmc_tools transform /scratch/afilia/PV23_decon_kmer_counts histogram /scratch/afilia/PV23_decon_kmer_counts.hist -cx1000000 -t32
-	rsync -av /scratch/afilia/*decon_kmer_counts*
-	dump -s /scratch/afilia/PV04_decon_kmer_counts.dump && rsync -av /scratch/afilia/PV04_decon_kmer_counts* .
-	dump -s /scratch/afilia/PV13_decon_kmer_counts.dump && rsync -av /scratch/afilia/PV13_decon_kmer_counts* .
-	dump -s /scratch/afilia/PV21_decon_kmer_counts.dump && rsync -av /scratch/afilia/PV21_decon_kmer_counts* .
-	dump -s /scratch/afilia/PV23_decon_kmer_counts.dump && rsync -av /scratch/afilia/PV23_decon_kmer_counts* .
 
 Both the GenomeScope output and the kat 2v2 comparisons are virtually identical after removing contaminants -- it looks like the noise in the plots is coming from real biological variation in the mealybug genome rather than endosymbionts, etc. Can't say this was much of a surprise:
 
 ![](misc/kat_comp_InInExInUnUn.jpg)
 
-So
+Let's dump the kmers with a lower threshold of 3 and a upper threshold of 100,000.
+
+	dump -s /scratch/afilia/PV04_decon_kmer_counts.dump && rsync -av /scratch/afilia/PV04_decon_kmer_counts* .
+	dump -s /scratch/afilia/PV13_decon_kmer_counts.dump && rsync -av /scratch/afilia/PV13_decon_kmer_counts* .
+	dump -s /scratch/afilia/PV21_decon_kmer_counts.dump && rsync -av /scratch/afilia/PV21_decon_kmer_counts* .
+	dump -s /scratch/afilia/PV23_decon_kmer_counts.dump && rsync -av /scratch/afilia/PV23_decon_kmer_counts* .
+
+	qsub -cwd -N kmc -V -pe smp64 20 -b yes 'L=3; U=100000; kmc_tools transform PV04_decon_kmer_counts -ci$L -cx$U dump -s /scratch/afilia/PV04_decon_kmer.dump && rsync /scratch/afilia/PV04_decon_kmer.dump .'
+	qsub -cwd -N kmc -V -pe smp64 20 -b yes 'L=3; U=100000; kmc_tools transform PV13_decon_kmer_counts -ci$L -cx$U dump -s /scratch/afilia/PV13_decon_kmer.dump && rsync /scratch/afilia/PV13_decon_kmer.dump .'
+	qsub -cwd -N kmc -V -pe smp64 20 -b yes 'L=3; U=100000; kmc_tools transform PV21_decon_kmer_counts -ci$L -cx$U dump -s /scratch/afilia/PV21_decon_kmer.dump && rsync /scratch/afilia/PV21_decon_kmer.dump .'
+	qsub -cwd -N kmc -V -pe smp64 20 -b yes 'L=3; U=100000; kmc_tools transform PV23_decon_kmer_counts -ci$L -cx$U dump -s /scratch/afilia/PV23_decon_kmer.dump && rsync /scratch/afilia/PV23_decon_kmer.dump .'
+
+	
+
