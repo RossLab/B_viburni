@@ -62,14 +62,7 @@ PV23 <- PV23.reads.mapped[ ,3]
 reads.all.lines0 <- data.frame(seq,length,PV04,PV13,PV21,PV23)
 reads.all.lines <-reads.all.lines0[1:(nrow(reads.all.lines0)-1),] # remove last line (not a scaffold)
 
-# normalise by total number of reads
-
-sum(reads.all.lines[, 'PV04.mapped']) # 180975436
-sum(reads.all.lines[, 'PV13.mapped']) # 186868354
-sum(reads.all.lines[, 'PV21.mapped']) # 88933548
-sum(reads.all.lines[, 'PV23.mapped']) # 95633941
-
-# normalisation factor
+# normalisation factor: median coverage difference between pairs of lines
 
 cov.13v21_norm <- round((PV13.reads.mapped$PV13.mapped+1)/(PV21.reads.mapped$PV21.mapped+1),2)
 cov.13v23_norm <- round((PV13.reads.mapped$PV13.mapped+1)/(PV23.reads.mapped$PV23.mapped+1),2)
@@ -77,19 +70,14 @@ cov.04v21_norm <- round((PV04.reads.mapped$PV04.mapped+1)/(PV21.reads.mapped$PV2
 cov.04v23_norm <- round((PV04.reads.mapped$PV04.mapped+1)/(PV23.reads.mapped$PV23.mapped+1),2)
 cov.04v13_norm <- round((PV04.reads.mapped$PV04.mapped+1)/(PV13.reads.mapped$PV13.mapped+1),2)
 cov.21v23_norm <- round((PV21.reads.mapped$PV21.mapped+1)/(PV23.reads.mapped$PV23.mapped+1),2)
-median(cov.13v21_norm)
-median(cov.13v23_norm)
-median(cov.04v21_norm)
-median(cov.04v23_norm)
-median(cov.04v13_norm)
-median(cov.21v23_norm)
+median(cov.13v21_norm) # 2.08
+median(cov.13v23_norm) # 1.91 
+median(cov.04v21_norm) # 1.87
+median(cov.04v23_norm) # 1.77
+median(cov.04v13_norm) # 0.95
+median(cov.21v23_norm) # 0.94
 
-norm.04 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV04.mapped']) # 0.49
-norm.13 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV13.mapped']) # 0.48
-norm.23 <- sum(reads.all.lines[, 'PV21.mapped']) / sum(reads.all.lines[, 'PV23.mapped']) # 0.93
-norm.21 <- 1
-
-# coverage differences (with normalised read counts)
+# normalised coverage differences 
 
 reads.all.lines$cov.13v21 <- log2(((reads.all.lines$PV13.mapped + 1)/(reads.all.lines$PV21.mapped + 1))/median(cov.13v21_norm))
 reads.all.lines$cov.13v23 <- log2(((reads.all.lines$PV13.mapped + 1)/(reads.all.lines$PV23.mapped + 1))/median(cov.13v23_norm))
@@ -120,18 +108,15 @@ sum(reads.all.lines[reads.all.lines$b.status != "A",]$length)
 
 # let's look at B candidates
 
-reads.B.lines <- reads.all.lines[c(1,2,3,4,13)]
+reads.B.lines <- reads.all.lines[c(1,2,3,4,11,13)]
 
-norm2.13 <- sum(reads.all.lines[, 'PV04.mapped']) / sum(reads.all.lines[, 'PV13.mapped']) # 0.97
-norm2.04 <- 1
-
-reads.B.lines$PV13.read.cov <- reads.B.lines$PV13.mapped*norm2.13/reads.B.lines$length
-reads.B.lines$PV04.read.cov <- reads.B.lines$PV04.mapped*norm2.04/reads.B.lines$length
+reads.B.lines$PV13.read.cov <- reads.B.lines$PV13.mapped*median(cov.04v13_norm)/reads.B.lines$length
+reads.B.lines$PV04.read.cov <- reads.B.lines$PV04.mapped*1/reads.B.lines$length
 
 p1 <- ggplot(reads.B.lines, aes(log10(PV13.read.cov+1e-4),log10(PV04.read.cov+1e-4))) + geom_point(aes(colour=b.status),size=1)  + scale_color_manual(values=c("azure3", "darkgreen", "deeppink3")) +
   labs(title="log10(norm read cov + 1e-4)", y="PV04", x = "PV13") + theme_bw()
 
-reads.B.lines.cov <- reads.B.lines[c(1,5,6,7)]
+reads.B.lines.cov <- reads.B.lines[c(1,6,7,8)]
 colnames(reads.B.lines.cov)[3] <- "PV13"
 colnames(reads.B.lines.cov)[4] <- "PV04"
 
@@ -154,74 +139,12 @@ aggregate((reads.B.lines$PV04.read.cov+1e-4)/(reads.B.lines$PV13.read.cov+1e-4)~
 # inspect B strict set
 
 B.strict <- reads.all.lines[reads.all.lines$b.status == "B.strict",]
+nrow(B.strict)
+
 ggplot(B.strict, aes(length)) + geom_bar() + scale_x_binned(n.breaks = 20, limits = c(1,200000)) + labs(x="Length", y="Scaffold count") + theme_bw() + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-# import hits
 
-freeze.v0.blast.uniprot <- read_delim("p.viburni.freeze.v0.braker.aa.blast.vs.uniprot.out", 
-                                      "\t", escape_double = FALSE, col_names = FALSE, 
-                                      trim_ws = TRUE)
 
-freeze.v0.blast.uniprot <- freeze.v0.blast.uniprot[c(1,2)]
-colnames(freeze.v0.blast.uniprot)[1] <- "transcript"
-colnames(freeze.v0.blast.uniprot)[2] <- "uniprot"
-
-freeze.v0.diamond.refprot <- read_delim("p.viburni.freeze.v0.braker.aa.diamond.vs.refprot.out", 
-                                        "\t", escape_double = FALSE, col_names = FALSE, 
-                                        trim_ws = TRUE)
-
-freeze.v0.diamond.refprot <- freeze.v0.diamond.refprot[c(1,2)]
-colnames(freeze.v0.diamond.refprot)[1] <- "transcript"
-colnames(freeze.v0.diamond.refprot)[2] <- "refprot"
-
-# keep first (best) hit only
-freeze.v0.blast.uniprot.best <- freeze.v0.blast.uniprot %>% distinct(transcript, .keep_all = TRUE)
-freeze.v0.diamond.refprot.best <- freeze.v0.diamond.refprot %>% distinct(transcript, .keep_all = TRUE)
-
-# merge with candidates
-freeze.v0.genes <- merge(freeze.v0.blast.uniprot.best,freeze.v0.diamond.refprot.best,by="transcript",all=TRUE)
-freeze.v0.genes <- merge(freeze.v0.genes,freeze.v0.blast.transcriptome,by="transcript",all=TRUE)
-freeze.v0.genes$gene <- gsub("\\..*","", freeze.v0.genes$transcript)
-
-genes.in.B.strict.candidates <- read_delim("genes.in.B.strict.candidates.txt", 
-                                           "\t", escape_double = FALSE, col_names = FALSE, 
-                                           trim_ws = TRUE)
-
-colnames(genes.in.B.strict.candidates)[1] <- "gene"
-colnames(genes.in.B.strict.candidates)[2] <- "length"
-colnames(genes.in.B.strict.candidates)[3] <- "seq"
-
-genes.in.B.strict.anno <- merge(genes.in.B.strict.candidates,freeze.v0.genes,by="gene")
-nrow(genes.in.B.strict.anno)
-
-# transcriptome
-
-freeze.v0.blast.transcriptome <- read_delim("p.viburni.freeze.v0.braker.aa.blast.vs.transcriptome.out", 
-                                            "\t", escape_double = FALSE, col_names = FALSE, 
-                                            trim_ws = TRUE)
-colnames(freeze.v0.blast.transcriptome)[1] <- "transcript"
-colnames(freeze.v0.blast.transcriptome)[2] <- "protein_id"
-freeze.v0.blast.transcriptome$gene <- gsub("\\..*","", freeze.v0.blast.transcriptome$transcript)
-
-genes.in.B.strict.transcriptome <- merge(genes.in.B.strict.candidates,freeze.v0.blast.transcriptome,by="gene")
-nrow(genes.in.B.strict.transcriptome)
-
-# import differentially expressed transcripts
-
-overexpressed.B.transcripts <- read_csv("~/Documents/genomics/B_viburni_ross_lab/data/preliminary_rna_seq/sleuth_v1/overexpressed.B.transcripts.csv")
-overexpressed.B.transcripts.cat <- overexpressed.B.transcripts[c("transcript_id","info","sprot_Top_BLASTX_hit","sprot_Top_BLASTP_hit","Pfam","eggnog","Kegg","gene_ontology_BLASTX","gene_ontology_BLASTP","gene_ontology_Pfam")]
-
-genes.in.B.strict.transcriptome$transcript_id <- gsub("\\..*","", genes.in.B.strict.transcriptome$protein_id)
-genes.in.B.strict.transcriptome.expr <- merge(genes.in.B.strict.transcriptome, overexpressed.B.transcripts.cat, by = "transcript_id")
-
-count(unique(genes.in.B.strict.transcriptome$gene))
-count(unique(genes.in.B.strict.transcriptome.expr$gene))
-
-table(genes.in.B.strict.transcriptome.expr$info)
-
-# export lists
-# write.csv(B.strict,"/Users/agarcia/Documents/genomics/B_viburni_ross_lab/data/coverage_analysis/B.strict.primary.reads.mapped.no.mismatches.csv", row.names = FALSE)
-# write.csv(genes.in.B.strict.anno,"/Users/agarcia/Documents/genomics/B_viburni_ross_lab/data/coverage_analysis/genes.in.B.strict.anno.csv", row.names = FALSE)
 
 # get alignments of SPAdes assemblies to the Pacbio reference
 
