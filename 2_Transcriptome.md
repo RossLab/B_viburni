@@ -306,6 +306,8 @@ Checking number of lines in each file
 wc -l *.genes.results
 ```
 
+```
+
    23630 04F_1.genes.results
    23630 04F_2.genes.results
    23630 04F_3.genes.results
@@ -333,7 +335,7 @@ wc -l *.genes.results
    23630 21M_3.genes.results
    23630 21M_4.genes.results
   614380 total
-
+```
 
 
 
@@ -556,6 +558,7 @@ group2=c("F2B","F2B","F2B","M2B","M2B","M2B","F1B","F1B","F1B","M1B","M1B","M1B"
 `
 ```
 
+NB: will change the paths of files on Rmd script later
 
 
 ========================================================
