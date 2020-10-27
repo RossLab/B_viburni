@@ -436,11 +436,11 @@ Before filtering, we had 23629 gene counts, after filtering 17160 gene counts ar
 
 3. Distribution normalization
 
-![](misc/rsem_gene_genomebased_prepostnormalization.pdf)
+![](misc/rsem_gene_genomebased_prepostnormalization.jpg)
 
 4. MDS plots
 
-![](misc/rsem_gene_genomebased_MDSplot-per-factor.pdf)
+![](misc/rsem_gene_genomebased_MDSplot-per-factor.jpg)
 
 Based on the groupings, male and female expression profiles are definitely different regardless of genotype of B presence. Additionally, if we group by B and no B, we see separation of groups by sex and B presence. Finally, if we group by genotype, 15 and 21 are together, which seems logical since they come from the same original population RBGE25. Female samples of 04 and 13 are together but separated when we look at males. This could indicate that in 04 and 13, we have different numbers of B and that this difference in B number only affects expression profile of males. 
 
@@ -448,7 +448,7 @@ Given this, I think the model (design2) should take into account the overall dif
 
 5. Hierachical clustering heatmap of 1000 most variable gene expression
 
-![](misc/rsem_gene_genomebased_heatmapbyB.pdf)
+![](misc/rsem_gene_genomebased_heatmapbyB.jpg)
 
 
 6. Model design
@@ -474,7 +474,7 @@ cont.matrix1 <- makeContrasts(BmalevnoBmale = group1MB - group1MnoB, Bmalevsfema
 ```
 
 8. Mean variance trend plots
-![](misc/rsem_gene_genomebased_meanvariancetrends.pdf)
+![](misc/rsem_gene_genomebased_meanvariancetrends.jpg)
 
 
 9. DE only in male with B
@@ -491,12 +491,12 @@ length(de.common)
 ```
 There are 45 genes left
 
-![](misc/rsem_gene_genomebased_vennDEcommon.pdf)
+![](misc/rsem_gene_genomebased_vennDEcommon.jpg)
 
 List of the 45 genes specific to males with B
 
 After adding annotation which includes transcripts, I had 65 rows in the dataframe and after removing the gene ids without annotation, I had 46 rows left:
-```
+
 
 |FIELD1|gene  |tid      |V2                              |V3  |V4         |V5          |V6                                                  |V7 |V8 |V9     |V10 |V11       |V12      |V13                                                |V14                                        |
 |------|------|---------|--------------------------------|----|-----------|------------|----------------------------------------------------|---|---|-------|----|----------|---------|---------------------------------------------------|-------------------------------------------|
@@ -550,8 +550,7 @@ After adding annotation which includes transcripts, I had 65 rows in the datafra
 
 
 
-```
-
+========================================================
 
 
 
