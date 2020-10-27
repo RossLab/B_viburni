@@ -1,0 +1,341 @@
+---
+title: "B viburni genome based - identify B transcripts expressed in males"
+author: "Isabelle Vea"
+date: "21/10/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+```{r}
+#packages
+#if (!requireNamespace("BiocManager", quietly = TRUE))
+ #   install.packages("BiocManager")
+library(edgeR)
+library(methods)
+library(dplyr)
+library(tidyverse)
+library(limma)
+
+#BiocManager::install("Glimma")
+library(Glimma)
+library(gplots)
+#BiocManager::install("org.Mm.eg.db")
+library(org.Mm.eg.db)
+```
+
+# Step 1: Annotation file
+```{r}
+genetotranscript<-read.delim("Downloads/p.viburni.freeze.v0.braker.transcripts.to.genes.txt", header=FALSE)
+
+genetotranscript <-genetotranscript[order(genetotranscript$V1),]
+
+interpro<-read.delim("Downloads/p.viburni.freeze.v0.braker.interproscan.tsv", header = FALSE) #GO terms with transcript id but no gene id
+
+interpro <-interpro[order(interpro$V1),]
+
+sampleinfo<-read.csv("Downloads/sampleinfoPviburniB.csv") #sample group info
+
+head(genetotranscript,2) #col1 is gene id, col 2 is transcript id
+names(genetotranscript)<-c("gid","tid") #gid=gene id, tig = transcript id
+
+head(interpro,2) #column V1 is transcript id
+names(interpro)[names(interpro) == 'V1'] <- 'tid'
+head(interpro,2)
+
+annot = merge(genetotranscript,interpro,by.x="tid", by.y="tid",all=TRUE)
+head(annot)
+```
+
+
+# GENE LEVEL
+## Step 2: Count file from all samples
+```{r}
+#need a dataframe containing all gene info per gene id
+a<-read.delim("Downloads/RSEM_digi.counts.matrix",header=TRUE) #matrix generated from rsem
+head(a,2) 
+
+colnames(a) <- substr(colnames(a),start=1,stop=6) #removing ".genes.results" in colnames
+colnames(a)
+
+#first column X is the gene id, this needs to be removed but has the order of gene id has to match when merging with gene info
+
+a1 <- a[,-1]
+head(a1)
+
+rownames(a1) <- a[,1]
+head(a1)
+a<-a1
+
+#adding replicate information
+replicate = as.factor(c("X04F","X04F","X04F","X04M","X04M","X04M","X13F","X13F","X13F","X13M","X13M","X13M","X13M","X15F","X15F","X15F","X15M","X15M","X15M","X21F","X21F","X21F","X21M","X21M","X21M","X21M"))
+
+#create the DGE object including all count matrix, replicate info and annotations when available
+x<-DGEList(counts=round(a),genes=rownames(a), group = replicate)
+head(x)
+```
+
+### Step 3: Filter out low count
+```{r}
+dim(x)
+keep.exprs <- filterByExpr(x, group=x$samples$group) 
+x <- x[keep.exprs,, keep.lib.sizes=FALSE]
+dim(x)
+```
+
+### Step 4: Normalize distribution
+
+####  MD plot for individual samples pre normalization
+```{r}
+pdf("mdplot-prenorm.pdf", width=10, height=10, pointsize=12)
+par(mfrow = c(1, 1)) # 2 rows, 2 columns
+for (i in 1:ncol(x)) {
+	plotMD(cpm(x, log=TRUE), column=i, xlab = "Average log-expression", ylab = "Expression log-ratio (this sample vs others)", main = colnames(x)[i])
+	abline(h=0, col="red", lty=2, lwd=2)
+}
+dev.off()
+
+```
+
+
+####  4: Normalize distribution
+```{r}
+# Apply  TMM normalization
+x <- calcNormFactors(x, method = "TMM")
+x$samples$norm.factors
+x2 <- x
+x2$samples$norm.factors <- 1
+x2$counts[,1] <- ceiling(x2$counts[,1]*0.05)
+x2$counts[,2] <- x2$counts[,2]*5
+
+```
+
+#### Plots comparing pre and post normalized data
+```{r}
+pdf("rsem_gene_genomebased_prepostnormalization.pdf", width=10, height=10, pointsize=12)
+par(mfrow=c(1,2))
+lcpm <- cpm(x2, log=TRUE)
+boxplot(lcpm, las=2, col=col, main="")
+title(main="A. Example: Unnormalised data",ylab="Log-cpm")
+x2 <- calcNormFactors(x2)  
+x2$samples$norm.factors
+lcpm <- cpm(x2, log=TRUE)
+boxplot(lcpm, las=2, col=col, main="")
+title(main="B. Example: Normalised data",ylab="Log-cpm")
+dev.off()
+```
+
+####  MD plot for individual samples post normalization
+```{r}
+pdf("mdplot-postnorm.pdf", width=10, height=10, pointsize=12)
+par(mfrow = c(1, 1)) # 2 rows, 2 columns
+for (i in 1:ncol(x)) {
+	plotMD(cpm(x, log=TRUE), column=i, xlab = "Average log-expression", ylab = "Expression log-ratio (this sample vs others)", main = colnames(x)[i])
+	abline(h=0, col="red", lty=2, lwd=2)
+}
+
+dev.off()
+
+```
+
+
+#### Quality control
+More plots to check distribution
+```{r}
+pdf("qualitycontrol.pdf", width=10, height=10, pointsize=12)
+par(mfrow = c(1, 2)) 
+
+x$samples$lib.size
+barplot(x$samples$lib.size,names=colnames(x),las=2)
+title("Barplot of library sizes")
+
+logcounts <- cpm(x,log=TRUE)
+boxplot(logcounts, xlab="", ylab="Log2 counts per million",las=2)
+abline(h=median(logcounts),col="blue")
+title("Boxplots of logCPMs (normalized)")
+dev.off()
+```
+
+
+## Step 4: MDS plot to check for grouping
+```{r}
+# checking grouping by sex, and by B presence
+
+pdf("rsem_gene_genomebased_MDSplot-per-factor.pdf", width=10, height=10, pointsize=12)
+par(mfrow=c(2,2))
+
+sampleinfo2 <- sampleinfo %>% mutate(Sex = as.factor(Sex))
+levels(sampleinfo2$Sex)
+col.sex <- c("red","blue")[sampleinfo2$Sex]
+data.frame(sampleinfo2$Sex,col.sex)
+#Plot by sex
+plotMDS(x,col=col.sex, main="Sex")
+legend("top",fill=c("red","blue"),legend=levels(sampleinfo2$Sex))
+
+
+# plot by B presence
+sampleinfo2 <- sampleinfo %>% mutate(Bpresence = as.factor(Bpresence))
+
+levels(sampleinfo2$Bpresence)
+col.B <- c("grey","red")[sampleinfo2$Bpresence]
+data.frame(sampleinfo2$Bpresence,col.B)
+#Plot by sex
+plotMDS(x,col=col.B, main="B presence")
+legend("top",fill=c("grey","red"),legend=levels(sampleinfo2$Bpresence))
+
+
+#plot by genotype
+sampleinfo2 <- sampleinfo %>% mutate(Geno = as.factor(Geno))
+
+levels(sampleinfo2$Geno)
+col.geno <- c("green","red","blue","black")[sampleinfo2$Geno]
+data.frame(sampleinfo2$Geno,col.geno)
+#Plot by sex
+plotMDS(x,col=col.geno, main="Genotype")
+legend("top",fill=c("green","red","blue","black"),legend=levels(sampleinfo2$Geno))
+dev.off()
+```
+
+
+Based on the groupings, male and female expression profiles are definitely different regardless of genotype of B presence. Additionally, if we group by B and no B, we see separation of groups by sex and B presence. Finally, if we group by genotype, 15 and 21 are together, which seems logical since they come from the same original population RBGE25. Female samples of 04 and 13 are together but separated when we look at males. This could indicate that in 04 and 13, we have different numbers of B and that this difference in B number only affects expression profile of males. 
+
+Given this, I think the model (design2) should take into account the overall difference in expression profiles between male 04 and male 13 samples, and see if this would help increase power of B transcript detection?
+
+
+
+## Step 5: Hierarchical clustering
+```{r}
+var_genes <- apply(logcounts, 1, var)
+head(var_genes)
+select_var <- names(sort(var_genes, decreasing=TRUE))[1:1000]
+head(select_var)
+highly_variable_lcpm <- logcounts[select_var,]
+dim(highly_variable_lcpm)
+head(highly_variable_lcpm)
+
+
+## Get some nicer colours
+library(RColorBrewer)
+mypalette <- brewer.pal(11,"RdYlBu")
+
+#mapping by Sex
+morecols <- colorRampPalette(mypalette)
+
+pdf("rsem_gene_genomebased__heatmapbysex.pdf", width=10, height=10, pointsize=12)
+
+# Plot the heatmap by sex
+heatmap.2(highly_variable_lcpm,col=rev(morecols(50)),trace="none", main="Top 1000 most variable genes across samples",ColSideColors=col.sex,scale="row")
+
+dev.off()
+  
+# Plot the heatmap by B presence
+  
+pdf("rsem_gene_genomebased_heatmapbyB.pdf", width=10, height=10, pointsize=12)
+heatmap.2(highly_variable_lcpm,col=rev(morecols(50)),trace="none", main="Top 1000 most variable genes across samples",ColSideColors=col.B,scale="row")
+dev.off()
+```
+
+
+## Step 6: Model design
+First, I defined groups that I want to compare. The first one is carrying out DE analysis using sex and B presence or absence only, that means that genotype 04 and 13 are put together (Group1). In group 2, I want to compare DE with the number of Bs, so if we assume that 04 has 2B, 04 and 13 are then separated. This scenario might be more tricky since we are not 100% sure about the numbers of B in these samples but also, we don't know if that would matter. If having different numbers of B changes the expression profiles of the samples, then this would be taken into account.
+
+NB: separating samples into groups is the same as considering the factors (sex, b presence) separately and fitting the model with interaction between sex and B presence.
+
+## setting up the model as design 1 and design 2
+### Grouping by sex and B presence or absence
+```{r}
+group1=c("FB","FB","FB","MB","MB","MB","FB","FB","FB","MB","MB","MB","MB","FnoB","FnoB","FnoB","MnoB","MnoB","MnoB","FnoB","FnoB","FnoB","MnoB","MnoB","MnoB","MnoB")
+```
+
+
+### Analysis design 1
+```{r}
+design1 <- model.matrix(~0 + group1)
+colnames(design1)
+rownames(design1) = rownames(x$samples)
+```
+
+
+### Removing heteroscedascity from count data
+
+Voom plot
+```{r}
+par(mfrow=c(1,1))
+v1 <- voom(x,design1,plot = TRUE)
+v1
+```
+
+
+#limma lm fit
+```{r}
+fit1 <- lmFit(v1)
+
+```
+
+# creating the contrast matrix 
+```{r}
+colnames(design1)
+par(mfrow=c(1,1))
+# I only want transcripts differentially expressed in male B samples.
+cont.matrix1 <- makeContrasts(BmalevnoBmale = group1MB - group1MnoB, BmalevsfemaleB = group1MB - group1FB, BmalevsfemalenoB = group1MB - group1FnoB, levels=design1)
+
+cont.matrix1
+
+fit.cont1 <- contrasts.fit(fit1, cont.matrix1)
+fit.cont1 <- eBayes(fit.cont1)
+
+```
+
+##Compare mean variance trend
+
+```{r}
+pdf("rsem_gene_genomebased_meanvariancetrends.pdf", width=10, height=10, pointsize=12)
+par(mfrow=c(1,2))
+v1 <- voom(x,design1,plot = TRUE)
+plotSA(fit.cont1, main="Final model: Mean-variance trend")
+dev.off()
+```
+
+
+## Examine the number of DE genes
+
+
+```{r}
+tfit <- treat(fit.cont1, lfc=1)
+dt <- decideTests(tfit)
+summary(dt)
+de.common <- which(dt[,1]!=0 & dt[,2]!=0 &dt[,3]!=0)
+length(de.common)
+
+pdf("rsem_gene_genomebased_vennDEcommon.pdf", width=10, height=10, pointsize=12)
+vennDiagram(dt[,1:3], circle.col=c("turquoise", "salmon","orange"))
+dev.off()
+fit.cont1$genes[de.common,]
+
+```
+
+
+```{r}
+#retrieving p val
+
+maleB.noB<-topTable(fit.cont1, coef=1) # 
+maleB.femaleB<-topTable(fit.cont1, coef=2) #
+maleB.femalenoB<-topTable(fit.cont1, coef=3)# 
+
+```
+
+add gene annotation to de.common
+
+```{r}
+Bmale = data.frame(fit.cont1$genes[de.common,])
+colnames(Bmale) =  "gene"
+nrow(Bmale)
+Bmale_annot = merge(Bmale,annot, by.x='gene', by.y='gid',all.x=TRUE)
+Bmale_annot
+
+Bmale_annot2<-Bmale_annot[!is.na(Bmale_annot$V2), ]
+write.csv(Bmale_annot2,"Downloads/Bmale_annot2.csv")
+
+```
+
+
+
