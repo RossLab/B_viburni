@@ -366,7 +366,7 @@ From here, I used the following files that I ran in RStudio (see R script for pa
 - /data/ross/mealybugs/analyses/B_viburni_2020/3_RNA_seq/4_genome_based/freeze_v0/p.viburni.freeze.v0.braker.transcripts.to.genes.txt
 
 - /data/ross/mealybugs/analyses/B_viburni_2020/3_RNA_seq/4_genome_based/RSEM_results/RSEM_digi.counts.matrix: gene level matrix count
-- sampleinfoPviburniB.csv[add github link]: file containing grouping
+- [https://github.com/RossLab/B_viburni/blob/master/R_scripts/sampleinfoPviburniB.csv](sampleinfoPviburniB.csv): file containing grouping
 
 
 Steps:
