@@ -337,5 +337,22 @@ write.csv(Bmale_annot2,"Downloads/Bmale_annot2.csv")
 
 ```
 
+```{r}
+pdf("rsem_gene_genomebased_MDplots.pdf", width=20, height=10, pointsize=12)
+par(mfrow=c(1,3))
+plotMD(fit.cont1, column=1, status=dt[,1], main=colnames(fit.cont1)[1], 
+       xlim=c(-8,13),cex=0.5)
+
+plotMD(fit.cont1, column=2, status=dt[,2], main=colnames(fit.cont1)[2], 
+       xlim=c(-8,13),cex=0.5)
+
+plotMD(fit.cont1, column=3, status=dt[,3], main=colnames(fit.cont1)[3], 
+       xlim=c(-8,13),cex=0.5)
+dev.off()
+```
 
 
+```{r}
+colnames(fit.cont1)[2]
+
+```

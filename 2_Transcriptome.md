@@ -366,7 +366,7 @@ From here, I used the following files that I ran in RStudio (see R script for pa
 - /data/ross/mealybugs/analyses/B_viburni_2020/3_RNA_seq/4_genome_based/freeze_v0/p.viburni.freeze.v0.braker.transcripts.to.genes.txt
 
 - /data/ross/mealybugs/analyses/B_viburni_2020/3_RNA_seq/4_genome_based/RSEM_results/RSEM_digi.counts.matrix: gene level matrix count
-- [https://github.com/RossLab/B_viburni/blob/master/R_scripts/sampleinfoPviburniB.csv](sampleinfoPviburniB.csv): file containing grouping
+- [sampleinfoPviburniB.csv](https://github.com/RossLab/B_viburni/blob/master/R_scripts/sampleinfoPviburniB.csv): file containing grouping
 
 
 Steps:
@@ -479,7 +479,15 @@ cont.matrix1 <- makeContrasts(BmalevnoBmale = group1MB - group1MnoB, Bmalevsfema
 ![](misc/rsem_gene_genomebased_meanvariancetrends.jpg)
 
 
-9. DE only in male with B
+
+9. MD plots for each comparison defined in the contrast matrix
+
+![](misc/rsem_gene_genomebased_MDplots.jpg)
+
+
+10. DE only in male with B
+
+To obtain the transcript only expressed in male with B, I selected all the differentially expressed genes that are found in all the three comparisons.
 
 ```{r}
 tfit <- treat(fit.cont1, lfc=1)
@@ -487,8 +495,6 @@ dt <- decideTests(tfit)
 summary(dt)
 de.common <- which(dt[,1]!=0 & dt[,2]!=0 &dt[,3]!=0)
 length(de.common)
-
-
 
 ```
 There are 45 genes left
