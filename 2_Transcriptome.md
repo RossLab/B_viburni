@@ -287,4 +287,328 @@ We have TruSeq stranded mRNA-seq, so the orientation must be "reverse". However,
 
 ### 4. Calculate differentially expressed genes (fdr<0.05)
 
-Let's try a new pipelineL edgeR + limma
+
+From here Isabelle 
+
+Working directory
+```
+/data/ross/mealybugs/analyses/B_viburni_2020/3_RNA_seq/4_genome_based/
+```
+
+Copied results (.gene.results and .isoform.results) from RSEM expression to wd in this folder
+
+```
+/data/ross/mealybugs/analyses/B_viburni_2020/3_RNA_seq/4_genome_based/RSEM_results/
+```
+
+Checking number of lines in each file
+```
+wc -l *.genes.results
+```
+
+```
+
+   23630 04F_1.genes.results
+   23630 04F_2.genes.results
+   23630 04F_3.genes.results
+   23630 04M_1.genes.results
+   23630 04M_2.genes.results
+   23630 04M_3.genes.results
+   23630 13F_1.genes.results
+   23630 13F_2.genes.results
+   23630 13F_3.genes.results
+   23630 13M_1.genes.results
+   23630 13M_2.genes.results
+   23630 13M_3.genes.results
+   23630 13M_4.genes.results
+   23630 15F_1.genes.results
+   23630 15F_2.genes.results
+   23630 15F_3.genes.results
+   23630 15M_1.genes.results
+   23630 15M_2.genes.results
+   23630 15M_3.genes.results
+   23630 21F_1.genes.results
+   23630 21F_2.genes.results
+   23630 21F_3.genes.results
+   23630 21M_1.genes.results
+   23630 21M_2.genes.results
+   23630 21M_3.genes.results
+   23630 21M_4.genes.results
+  614380 total
+```
+
+
+
+#### Generate matrix with RSEM that will be used for edgeR Limma DE analysis
+Ran in afilia_trinity env
+
+wd /data/ross/mealybugs/analyses/B_viburni_2020/3_RNA_seq/4_genome_based/RSEM_results/
+```
+rsem-generate-data-matrix 04F_1.genes.results 04F_2.genes.results 04F_3.genes.results 04M_1.genes.results 04M_2.genes.results 04M_3.genes.results 13F_1.genes.results 13F_2.genes.results 13F_3.genes.results 13M_1.genes.results 13M_2.genes.results 13M_3.genes.results 13M_4.genes.results 15F_1.genes.results 15F_2.genes.results 15F_3.genes.results 15M_1.genes.results 15M_2.genes.results 15M_3.genes.results 21F_1.genes.results 21F_2.genes.results 21F_3.genes.results 21M_1.genes.results 21M_2.genes.results 21M_3.genes.results 21M_4.genes.results  >RSEM_digi.counts.matrix
+```
+
+the matrix generated from RSEM uses expected counts and looks like this:
+
+```
+"04F_1.genes.results"	"04F_2.genes.results"	"04F_3.genes.results"	"04M_1.genes.results"	"04M_2.genes.results"	"04M_3.genes.results"	"13F_1.genes.results"	"13F_2.genes.results"	"13F_3.genes.results"	"13M_1.genes.results"	"13M_2.genes.results"	"13M_3.genes.results"	"13M_4.genes.results"	"15F_1.genes.results"	"15F_2.genes.results"	"15F_3.genes.results"	"15M_1.genes.results"	"15M_2.genes.results"	"15M_3.genes.results"	"21F_1.genes.results"	"21F_2.genes.results"	"21F_3.genes.results"	"21M_1.genes.results"	"21M_2.genes.results"	"21M_3.genes.results"	"21M_4.genes.results"
+"g1"	0.00	19.00	2.66	0.00	0.00	0.00	1.72	0.00	6.17	0.00	0.00	5.41	0.00	0.00	4.00	3.34	0.00	0.00	0.00	1.24	9.00	3.33	0.00	0.00	0.00	0.00
+"g10"	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00
+"g100"	220.35	243.72	175.32	318.32	220.37	187.48	90.45	231.73	164.25	173.39	260.54	214.72	205.74	104.47	93.12	219.31	149.21	135.14	207.42	59.34	94.38	84.40	105.56	93.56	93.71	93.07
+"g1000"	1.00	0.00	2.00	2.00	1.00	4.00	0.00	0.00	5.00	2.00	4.00	3.00	4.00	3.00	1.00	0.00	4.00	3.00	2.00	1.00	2.00	1.00	8.00	6.00	5.00	3.00
+"g10000"	1247.00	1572.00	1242.00	314.00	166.00	137.00	1577.00	1681.00	1633.00	457.00	1077.00	340.00	445.00	1062.00	711.00	1883.00	454.00	300.00	331.00	1443.00	1293.00	1472.00	415.00	542.00	341.00	365.00
+"g10001"	3.00	0.00	1.00	1.00	5.00	0.00	5.00	2.00	9.00	0.00	3.00	9.00	2.00	2.00	1.00	0.00	7.00	1.00	0.00	0.00	3.00	3.00	4.00	3.00	3.00	0.00
+
+```
+
+From here, I used the following files that I ran in RStudio (see R script for packages here [add link]):
+
+- /data/ross/mealybugs/analyses/B_viburni_2020/3_RNA_seq/4_genome_based/freeze_v0/p.viburni.freeze.v0.braker.interproscan.tsv
+- /data/ross/mealybugs/analyses/B_viburni_2020/3_RNA_seq/4_genome_based/freeze_v0/p.viburni.freeze.v0.braker.transcripts.to.genes.txt
+
+- /data/ross/mealybugs/analyses/B_viburni_2020/3_RNA_seq/4_genome_based/RSEM_results/RSEM_digi.counts.matrix: gene level matrix count
+- [sampleinfoPviburniB.csv](https://github.com/RossLab/B_viburni/blob/master/R_scripts/sampleinfoPviburniB.csv): file containing grouping
+
+
+Steps:
+1. prepared annotation dataframe and added the gene annotation after the analysis. I first tried to add it to the EdgeR object containing count matrix and sample names but something goes wrong during the model fit and the gene id don't match after.
+
+The annotation dataframe looks like this
+```{r}
+        tid    gid                               V2  V3   V4      V5                   V6  V7
+1     g1.t1     g1                             <NA>  NA <NA>    <NA>                 <NA>  NA
+2    g10.t1    g10                             <NA>  NA <NA>    <NA>                 <NA>  NA
+3   g100.t1   g100                             <NA>  NA <NA>    <NA>                 <NA>  NA
+4  g1000.t1  g1000                             <NA>  NA <NA>    <NA>                 <NA>  NA
+5 g10000.t1 g10000 0890440f5444913ec3431ae8f284a864 961 Pfam PF09820 Predicted AAA-ATPase 498
+6 g10000.t1 g10000 0890440f5444913ec3431ae8f284a864 961 Pfam PF09820 Predicted AAA-ATPase  34
+   V8      V9  V10        V11       V12                    V13  V14
+1  NA    <NA>   NA       <NA>      <NA>                   <NA> <NA>
+2  NA    <NA>   NA       <NA>      <NA>                   <NA> <NA>
+3  NA    <NA>   NA       <NA>      <NA>                   <NA> <NA>
+4  NA    <NA>   NA       <NA>      <NA>                   <NA> <NA>
+5 820 1.8E-22 TRUE 27-07-2020 IPR018631 AAA-ATPase-like domain     
+6 348 2.0E-22 TRUE 27-07-2020 IPR018631 AAA-ATPase-like domain  
+```
+
+
+2. Prepared the count matrix from rsem RSEM_digi.counts.matrix to create an EdgeR object using the function DGEList and called the object x. It looks like this:
+
+```{r}
+An object of class "DGEList"
+$counts
+       X04F_1 X04F_2 X04F_3 X04M_1 X04M_2 X04M_3 X13F_1 X13F_2 X13F_3 X13M_1 X13M_2 X13M_3 X13M_4 X15F_1 X15F_2 X15F_3 X15M_1
+g1          0     19      3      0      0      0      2      0      6      0      0      5      0      0      4      3      0
+g10         0      0      0      0      0      0      0      0      0      0      0      0      0      0      0      0      0
+g100      220    244    175    318    220    187     90    232    164    173    261    215    206    104     93    219    149
+g1000       1      0      2      2      1      4      0      0      5      2      4      3      4      3      1      0      4
+g10000   1247   1572   1242    314    166    137   1577   1681   1633    457   1077    340    445   1062    711   1883    454
+g10001      3      0      1      1      5      0      5      2      9      0      3      9      2      2      1      0      7
+       X15M_2 X15M_3 X21F_1 X21F_2 X21F_3 X21M_1 X21M_2 X21M_3 X21M_4
+g1          0      0      1      9      3      0      0      0      0
+g10         0      0      0      0      0      0      0      0      0
+g100      135    207     59     94     84    106     94     94     93
+g1000       3      2      1      2      1      8      6      5      3
+g10000    300    331   1443   1293   1472    415    542    341    365
+g10001      1      0      0      3      3      4      3      3      0
+
+$samples
+       group lib.size norm.factors
+X04F_1  X04F 37142198            1
+X04F_2  X04F 32411693            1
+X04F_3  X04F 33852367            1
+X04M_1  X04M 29580152            1
+X04M_2  X04M 28103293            1
+21 more rows ...
+
+$genes
+        genes
+g1         g1
+g10       g10
+g100     g100
+g1000   g1000
+g10000 g10000
+g10001 g10001
+
+
+```
+
+3. Filtered out low counts
+
+Before filtering, we had 23629 gene counts, after filtering 17160 gene counts are left.
+
+3. Distribution normalization
+
+![](misc/rsem_gene_genomebased_prepostnormalization.jpg)
+
+4. MDS plots
+
+![](misc/rsem_gene_genomebased_MDSplot-per-factor.jpg)
+
+Based on the groupings, male and female expression profiles are definitely different regardless of genotype of B presence. Additionally, if we group by B and no B, we see separation of groups by sex and B presence. Finally, if we group by genotype, 15 and 21 are together, which seems logical since they come from the same original population RBGE25. Female samples of 04 and 13 are together but separated when we look at males. This could indicate that in 04 and 13, we have different numbers of B and that this difference in B number only affects expression profile of males. 
+
+Given this, I think the model (design2) should take into account the overall difference in expression profiles between male 04 and male 13 samples, and see if this would help increase power of B transcript detection?
+
+5. Hierachical clustering heatmap of 1000 most variable gene expression
+
+![](misc/rsem_gene_genomebased_heatmapbyB.jpg)
+
+
+6. Model design
+
+First, I defined groups that I want to compare. The first one is carrying out DE analysis using sex and B presence or absence only, that means that genotype 04 and 13 are put together (Group1). In group 2, I want to compare DE with the number of Bs, so if we assume that 04 has 2B, 04 and 13 are then separated. This scenario might be more tricky since we are not 100% sure about the numbers of B in these samples but also, we don't know if that would matter. If having different numbers of B changes the expression profiles of the samples, then this would be taken into account.
+
+NB: separating samples into groups is the same as considering the factors (sex, b presence) separately and fitting the model with interaction between sex and B presence.
+
+Design 1
+
+```{r}
+group1=c("FB","FB","FB","MB","MB","MB","FB","FB","FB","MB","MB","MB","MB","FnoB","FnoB","FnoB","MnoB","MnoB","MnoB","FnoB","FnoB","FnoB","MnoB","MnoB","MnoB","MnoB")
+
+design1 <- model.matrix(~0 + group1)
+
+```
+
+7. limma fit and contrast matrix
+
+```{r}
+cont.matrix1 <- makeContrasts(BmalevnoBmale = group1MB - group1MnoB, BmalevsfemaleB = group1MB - group1FB, BmalevsfemalenoB = group1MB - group1FnoB, levels=design1)
+
+```
+
+8. Mean variance trend plots
+![](misc/rsem_gene_genomebased_meanvariancetrends.jpg)
+
+
+
+9. MD plots for each comparison defined in the contrast matrix
+
+![](misc/rsem_gene_genomebased_MDplots.jpg)
+
+
+10. DE only in male with B
+
+To obtain the transcript only expressed in male with B, I selected all the differentially expressed genes that are found in all the three comparisons.
+
+```{r}
+tfit <- treat(fit.cont1, lfc=1)
+dt <- decideTests(tfit)
+summary(dt)
+de.common <- which(dt[,1]!=0 & dt[,2]!=0 &dt[,3]!=0)
+length(de.common)
+
+```
+There are 45 genes left
+
+![](misc/rsem_gene_genomebased_vennDEcommon.jpg)
+
+List of the 45 genes specific to males with B
+
+After adding annotation which includes transcripts, I had 65 rows in the dataframe and after removing the gene ids without annotation, I had 46 rows left:
+
+
+|FIELD1|gene  |tid      |V2                              |V3  |V4         |V5          |V6                                                  |V7 |V8 |V9     |V10 |V11       |V12      |V13                                                |V14                                        |
+|------|------|---------|--------------------------------|----|-----------|------------|----------------------------------------------------|---|---|-------|----|----------|---------|---------------------------------------------------|-------------------------------------------|
+|2     |g1124 |g1124.t1 |e9eb5953ddbc66014bb41a03d9787572|145 |SignalP_EUK|SignalP-noTM|                                                    |1  |27 |-      |TRUE|27-07-2020|         |                                                   |                                           |
+|3     |g1125 |g1125.t1 |709f0aa99384952687240585480e1b8b|107 |SignalP_EUK|SignalP-noTM|                                                    |1  |36 |-      |TRUE|27-07-2020|         |                                                   |                                           |
+|6     |g11727|g11727.t1|d7d06c5fe30dc874329785d56ea1cecb|578 |Pfam       |PF13843     |Transposase IS4                                     |111|465|9.2E-71|TRUE|27-07-2020|IPR029526|PiggyBac transposable element-derived protein      |                                           |
+|7     |g11911|g11911.t1|5db1fb730b4e3f95a3dd797ef0a42f6d|443 |SignalP_EUK|SignalP-noTM|                                                    |1  |23 |-      |TRUE|27-07-2020|         |                                                   |                                           |
+|8     |g12210|g12210.t1|381d2bb2d0a016deecc182ebdd7cbc0c|387 |Pfam       |PF09820     |Predicted AAA-ATPase                                |1  |273|2.5E-57|TRUE|27-07-2020|IPR018631|AAA-ATPase-like domain                             |                                           |
+|9     |g13191|g13191.t1|6a05b99f30c14885f53042d97e569a0b|318 |SignalP_EUK|SignalP-noTM|                                                    |1  |16 |-      |TRUE|27-07-2020|         |                                                   |                                           |
+|10    |g13953|g13953.t3|a2532918e694ed470b678668bb26b225|494 |Pfam       |PF08214     |Histone acetylation protein                         |116|270|4.2E-12|TRUE|27-07-2020|IPR013178|Histone acetyltransferase Rtt109/CBP               |GO:0004402&#124;GO:0006355&#124;GO:0016573           |
+|11    |g13953|g13953.t2|9206601204061ab3b79f8bc25291c098|495 |Pfam       |PF08214     |Histone acetylation protein                         |116|271|3.8E-12|TRUE|27-07-2020|IPR013178|Histone acetyltransferase Rtt109/CBP               |GO:0004402&#124;GO:0006355&#124;GO:0016573           |
+|12    |g13953|g13953.t1|5053671a42897424faca29dc5af3aeb1|498 |Pfam       |PF08214     |Histone acetylation protein                         |116|270|4.8E-12|TRUE|27-07-2020|IPR013178|Histone acetyltransferase Rtt109/CBP               |GO:0004402&#124;GO:0006355&#124;GO:0016573           |
+|13    |g14433|g14433.t1|3d0750ffb224ef3450c2f06195c78c4f|475 |Pfam       |PF04500     |FLYWCH zinc finger domain                           |7  |66 |1.7E-11|TRUE|27-07-2020|IPR007588|Zinc finger, FLYWCH-type                           |                                           |
+|14    |g14433|g14433.t1|3d0750ffb224ef3450c2f06195c78c4f|475 |Pfam       |PF10551     |MULE transposase domain                             |236|305|6.7E-11|TRUE|27-07-2020|IPR018289|MULE transposase domain                            |                                           |
+|15    |g1484 |g1484.t1 |c2851c2984bd08694cb88f4fb66ab486|655 |Pfam       |PF07722     |Peptidase C26                                       |33 |250|2.4E-17|TRUE|27-07-2020|IPR011697|Peptidase C26                                      |GO:0016787                                 |
+|16    |g1484 |g1484.t1 |c2851c2984bd08694cb88f4fb66ab486|655 |Pfam       |PF07722     |Peptidase C26                                       |365|582|1.2E-18|TRUE|27-07-2020|IPR011697|Peptidase C26                                      |GO:0016787                                 |
+|17    |g15418|g15418.t1|ddf940a790f741a98c7deca5ea86aa40|264 |SignalP_EUK|SignalP-noTM|                                                    |1  |23 |-      |TRUE|27-07-2020|         |                                                   |                                           |
+|18    |g15418|g15418.t2|82d6c54ab02040c22dd90776d920ac3f|264 |Pfam       |PF00194     |Eukaryotic-type carbonic anhydrase                  |96 |238|7.7E-7 |TRUE|27-07-2020|IPR001148|Alpha carbonic anhydrase domain                    |                                           |
+|19    |g15418|g15418.t1|ddf940a790f741a98c7deca5ea86aa40|264 |Pfam       |PF00194     |Eukaryotic-type carbonic anhydrase                  |96 |238|7.5E-7 |TRUE|27-07-2020|IPR001148|Alpha carbonic anhydrase domain                    |                                           |
+|20    |g1752 |g1752.t1 |5076d4af268071262c779d80305627e8|354 |Pfam       |PF14223     |gag-polypeptide of LTR copia-type                   |78 |204|6.1E-12|TRUE|27-07-2020|         |                                                   |                                           |
+|21    |g1752 |g1752.t1 |5076d4af268071262c779d80305627e8|354 |Pfam       |PF00098     |Zinc knuckle                                        |312|326|1.0E-4 |TRUE|27-07-2020|IPR001878|Zinc finger, CCHC-type                             |GO:0003676&#124;GO:0008270                      |
+|22    |g17908|g17908.t1|ad109c9f9aa9548f8319f98691c5a4f0|455 |Pfam       |PF00067     |Cytochrome P450                                     |24 |418|2.0E-66|TRUE|27-07-2020|IPR001128|Cytochrome P450                                    |GO:0005506&#124;GO:0016705&#124;GO:0020037&#124;GO:0055114|
+|25    |g19773|g19773.t1|375c4af4f4251343adfba5c4c02b6e89|842 |Pfam       |PF00003     |7 transmembrane sweet-taste receptor of 3 GCPR      |544|779|1.0E-47|TRUE|27-07-2020|IPR017978|GPCR family 3, C-terminal                          |GO:0004930&#124;GO:0007186&#124;GO:0016021           |
+|26    |g19773|g19773.t1|375c4af4f4251343adfba5c4c02b6e89|842 |Pfam       |PF01094     |Receptor family ligand binding region               |193|407|2.7E-19|TRUE|27-07-2020|IPR001828|Receptor, ligand binding region                    |                                           |
+|27    |g19773|g19773.t1|375c4af4f4251343adfba5c4c02b6e89|842 |Pfam       |PF01094     |Receptor family ligand binding region               |77 |178|7.5E-10|TRUE|27-07-2020|IPR001828|Receptor, ligand binding region                    |                                           |
+|28    |g19773|g19773.t1|375c4af4f4251343adfba5c4c02b6e89|842 |Pfam       |PF07562     |Nine Cysteines Domain of family 3 GPCR              |459|510|7.8E-11|TRUE|27-07-2020|IPR011500|GPCR, family 3, nine cysteines domain              |GO:0004930&#124;GO:0007186                      |
+|29    |g19773|g19773.t1|375c4af4f4251343adfba5c4c02b6e89|842 |SignalP_EUK|SignalP-noTM|                                                    |1  |20 |-      |TRUE|27-07-2020|         |                                                   |                                           |
+|30    |g20279|g20279.t1|08f8412d4c0a351f5b60b9086926e288|472 |Pfam       |PF00083     |Sugar (and other) transporter                       |47 |455|1.2E-47|TRUE|27-07-2020|IPR005828|Major facilitator,  sugar transporter-like         |GO:0016021&#124;GO:0022857&#124;GO:0055085           |
+|31    |g20279|g20279.t2|08f8412d4c0a351f5b60b9086926e288|472 |Pfam       |PF00083     |Sugar (and other) transporter                       |47 |455|1.2E-47|TRUE|27-07-2020|IPR005828|Major facilitator,  sugar transporter-like         |GO:0016021&#124;GO:0022857&#124;GO:0055085           |
+|32    |g20946|g20946.t1|748d98a2d244dc4dc9a21aedab862a99|514 |Pfam       |PF04500     |FLYWCH zinc finger domain                           |9  |68 |2.6E-11|TRUE|27-07-2020|IPR007588|Zinc finger, FLYWCH-type                           |                                           |
+|33    |g20946|g20946.t1|748d98a2d244dc4dc9a21aedab862a99|514 |Pfam       |PF10551     |MULE transposase domain                             |214|319|2.4E-15|TRUE|27-07-2020|IPR018289|MULE transposase domain                            |                                           |
+|34    |g21055|g21055.t1|1e1364229b05eb8086874f3bbf2379bc|250 |Pfam       |PF14223     |gag-polypeptide of LTR copia-type                   |32 |107|3.2E-7 |TRUE|27-07-2020|         |                                                   |                                           |
+|36    |g22019|g22019.t1|ea7f181f061009eb902b19244d12a485|1025|SignalP_EUK|SignalP-TM  |                                                    |1  |20 |-      |TRUE|27-07-2020|         |                                                   |                                           |
+|37    |g22863|g22863.t1|2c13f42216962d4352a8d5449695a61b|366 |Pfam       |PF00651     |BTB/POZ domain                                      |193|303|2.1E-21|TRUE|27-07-2020|IPR000210|BTB/POZ domain                                     |GO:0005515                                 |
+|38    |g23373|g23373.t1|efcd7dc1208b5db2751f62cbc335c353|669 |Pfam       |PF00083     |Sugar (and other) transporter                       |34 |138|2.6E-9 |TRUE|27-07-2020|IPR005828|Major facilitator,  sugar transporter-like         |GO:0016021&#124;GO:0022857&#124;GO:0055085           |
+|41    |g3239 |g3239.t1 |9cf32fc67f9bf3cef71df16addac3442|499 |Pfam       |PF07993     |Male sterility protein                              |18 |287|7.2E-65|TRUE|27-07-2020|IPR013120|Male sterility, NAD-binding                        |                                           |
+|42    |g3239 |g3239.t1 |9cf32fc67f9bf3cef71df16addac3442|499 |Pfam       |PF03015     |Male sterility protein                              |361|454|3.2E-26|TRUE|27-07-2020|IPR033640|Fatty acyl-CoA reductase, C-terminal               |                                           |
+|43    |g4426 |g4426.t1 |99eb30a2bf65d290546aab1452505137|334 |Pfam       |PF13843     |Transposase IS4                                     |1  |110|1.6E-24|TRUE|27-07-2020|IPR029526|PiggyBac transposable element-derived protein      |                                           |
+|44    |g4593 |g4593.t1 |cee2e29cd82b68fc3799b8696eac0597|220 |Pfam       |PF00194     |Eukaryotic-type carbonic anhydrase                  |5  |137|2.0E-8 |TRUE|27-07-2020|IPR001148|Alpha carbonic anhydrase domain                    |                                           |
+|46    |g5312 |g5312.t1 |9f36cb5071e30728da7be23248f7110f|294 |Pfam       |PF13843     |Transposase IS4                                     |100|162|1.5E-9 |TRUE|27-07-2020|IPR029526|PiggyBac transposable element-derived protein      |                                           |
+|48    |g5653 |g5653.t1 |0d240413892bba261044ce79d1251e17|895 |Pfam       |PF07727     |Reverse transcriptase (RNA-dependent DNA polymerase)|429|648|4.8E-41|TRUE|27-07-2020|IPR013103|Reverse transcriptase, RNA-dependent DNA polymerase|                                           |
+|49    |g5653 |g5653.t1 |0d240413892bba261044ce79d1251e17|895 |Pfam       |PF00665     |Integrase core domain                               |117|233|1.5E-19|TRUE|27-07-2020|IPR001584|Integrase, catalytic core                          |GO:0015074                                 |
+|50    |g5671 |g5671.t1 |e82237911f357a862be7f6987a1167ec|707 |Pfam       |PF13843     |Transposase IS4                                     |97 |298|7.6E-39|TRUE|27-07-2020|IPR029526|PiggyBac transposable element-derived protein      |                                           |
+|51    |g5671 |g5671.t1 |e82237911f357a862be7f6987a1167ec|707 |Pfam       |PF13843     |Transposase IS4                                     |390|561|6.3E-24|TRUE|27-07-2020|IPR029526|PiggyBac transposable element-derived protein      |                                           |
+|55    |g6828 |g6828.t2 |aa767126a6f707e70c172ab047b3b9f4|874 |Pfam       |PF05699     |hAT family C-terminal dimerisation region           |762|838|2.1E-7 |TRUE|27-07-2020|IPR008906|HAT, C-terminal dimerisation domain                |GO:0046983                                 |
+|56    |g6828 |g6828.t2 |aa767126a6f707e70c172ab047b3b9f4|874 |Pfam       |PF14291     |Domain of unknown function (DUF4371)                |320|552|7.8E-35|TRUE|27-07-2020|IPR025398|Domain of unknown function DUF4371                 |                                           |
+|57    |g6828 |g6828.t1 |6bf247a97ae565e921d5bb2e8058903e|663 |Pfam       |PF14291     |Domain of unknown function (DUF4371)                |320|552|4.6E-35|TRUE|27-07-2020|IPR025398|Domain of unknown function DUF4371                 |                                           |
+|60    |g864  |g864.t1  |fa910916a14a0fd8cd8a882f82f1c867|148 |Pfam       |PF15868     |Transcription activator MBF2                        |55 |145|8.9E-10|TRUE|27-07-2020|IPR031734|Transcription activator MBF2                       |                                           |
+|64    |g9431 |g9431.t1 |d13b551746dc22580756e2493a698df1|483 |SignalP_EUK|SignalP-noTM|                                                    |1  |19 |-      |TRUE|27-07-2020|         |                                                   |                                           |
+
+
+I can also test Design 2 which separates genotype 04 (2Bs) and 13(1B) to account for number of Bs but I need to think about the contrast matrix. 
+The design would look like this:
+
+```{r}
+group2=c("F2B","F2B","F2B","M2B","M2B","M2B","F1B","F1B","F1B","M1B","M1B","M1B","M1B","FnoB","FnoB","FnoB","MnoB","MnoB","MnoB","FnoB","FnoB","FnoB","MnoB","MnoB","MnoB","MnoB")
+`
+```
+
+NB: will change the paths of files on Rmd script later
+
+
+========================================================
+
+
+
+
+Created matrix for isoform count
+```
+wc -l *.isoforms.results
+
+```
+25678 04F_1.isoforms.results
+   25678 04F_2.isoforms.results
+   25678 04F_3.isoforms.results
+   25678 04M_1.isoforms.results
+   25678 04M_2.isoforms.results
+   25678 04M_3.isoforms.results
+   25678 13F_1.isoforms.results
+   25678 13F_2.isoforms.results
+   25678 13F_3.isoforms.results
+   25678 13M_1.isoforms.results
+   25678 13M_2.isoforms.results
+   25678 13M_3.isoforms.results
+   25678 13M_4.isoforms.results
+   25678 15F_1.isoforms.results
+   25678 15F_2.isoforms.results
+   25678 15F_3.isoforms.results
+   25678 15M_1.isoforms.results
+   25678 15M_2.isoforms.results
+   25678 15M_3.isoforms.results
+   25678 21F_1.isoforms.results
+   25678 21F_2.isoforms.results
+   25678 21F_3.isoforms.results
+   25678 21M_1.isoforms.results
+   25678 21M_2.isoforms.results
+   25678 21M_3.isoforms.results
+   25678 21M_4.isoforms.results
+  667628 total
+
+
+
+```
+rsem-generate-data-matrix 04F_1.isoforms.results 04F_2.isoforms.results 04F_3.isoforms.results 04M_1.isoforms.results 04M_2.isoforms.results 04M_3.isoforms.results 13F_1.isoforms.results 13F_2.isoforms.results 13F_3.isoforms.results 13M_1.isoforms.results 13M_2.isoforms.results 13M_3.isoforms.results 13M_4.isoforms.results 15F_1.isoforms.results 15F_2.isoforms.results 15F_3.isoforms.results 15M_1.isoforms.results 15M_2.isoforms.results 15M_3.isoforms.results 21F_1.isoforms.results 21F_2.isoforms.results 21F_3.isoforms.results 21M_1.isoforms.results 21M_2.isoforms.results 21M_3.isoforms.results 21M_4.isoforms.results  >RSEM_digi_isoform.counts.matrix
+```
+
+
