@@ -548,6 +548,14 @@ After adding annotation which includes transcripts, I had 65 rows in the datafra
 |64    |g9431 |g9431.t1 |d13b551746dc22580756e2493a698df1|483 |SignalP_EUK|SignalP-noTM|                                                    |1  |19 |-      |TRUE|27-07-2020|         |                                                   |                                           |
 
 
+I can also test Design 2 which separates genotype 04 (2Bs) and 13(1B) to account for number of Bs but I need to think about the contrast matrix. 
+The design would look like this:
+
+```{r}
+group2=c("F2B","F2B","F2B","M2B","M2B","M2B","F1B","F1B","F1B","M1B","M1B","M1B","M1B","FnoB","FnoB","FnoB","MnoB","MnoB","MnoB","FnoB","FnoB","FnoB","MnoB","MnoB","MnoB","MnoB")
+`
+```
+
 
 
 ========================================================
