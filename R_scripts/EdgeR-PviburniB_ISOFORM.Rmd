@@ -1,5 +1,5 @@
 ---
-title: "B viburni genome based -  GENE LEVEL DIFFERENTIAL EXPRESSION ANALYSIS"
+title: "B viburni genome based -  ISOFORM LEVEL DIFFERENTIAL EXPRESSION ANALYSIS"
 author: "Isabelle Vea"
 date: "21/10/2020"
 output: html_document
@@ -48,7 +48,7 @@ head(annot)
 # Step 2: Count file from all samples
 ```{r}
 #need a dataframe containing all gene info per gene id
-a<-read.delim("Downloads/RSEM_digi.counts.matrix",header=TRUE) #matrix generated from rsem
+a<-read.delim("RSEM_digi_isoform.counts.matrix",header=TRUE) #matrix generated from rsem
 head(a,2) 
 
 colnames(a) <- substr(colnames(a),start=1,stop=6) #removing ".genes.results" in colnames
@@ -75,10 +75,10 @@ head(x)
 ```{r}
 rowSums(x$counts==0) # for each sample where the count is 0, then sums the samples that have counts = 0 for a gene
 table(rowSums(x$counts==0) == 26) #number of genes that have all samples with 0 counts
-proportion_0_count= 21236/2393
+proportion_0_count= 23194/2483
 proportion_0_count
 ```
-About 9% of samples have 0 counts across all samples => these can be easily filtered out.
+About 9% of samples have 0 transcript counts across all samples => these can be easily filtered out.
 Additionally, we need to filter out the genes that have less than 5 counts for in at least 20% of samples
 
 To do: check filtering options in filterByExpr
@@ -86,8 +86,6 @@ To do: check filtering options in filterByExpr
 #They cluster as expected (sex -> B status -> line). We see a clear clustering by sex in the PCA of estimated counts running sleuth, but no clear clustering by B status (note that the default threshold to filter out transcripts in sleuth has been lowered to at least 5 counts in 20% of samples)
 
 dim(x)
-
-
 
 #compare filtering options
 keep.exprs.group <- filterByExpr(x, group=x$samples$group,min.count=5, min.prop = 20) 
@@ -111,7 +109,7 @@ x<-x2
 
 ####  MD plot for individual samples pre normalization
 ```{r}
-pdf("rsem_gene_mdplot-prenorm.pdf", width=10, height=10, pointsize=12)
+pdf("rsem_isoform_mdplot-prenorm.pdf", width=10, height=10, pointsize=12)
 par(mfrow = c(1, 1)) # 2 rows, 2 columns
 for (i in 1:ncol(x)) {
 	plotMD(cpm(x, log=TRUE), column=i, xlab = "Average log-expression", ylab = "Expression log-ratio (this sample vs others)", main = colnames(x)[i])
@@ -132,7 +130,7 @@ x$samples$norm.factors
 
 ####  MD plot for individual samples post normalization
 ```{r}
-pdf("rsem_gene_mdplot-postnorm.pdf", width=10, height=10, pointsize=12)
+pdf("rsem_isoform_mdplot-postnorm.pdf", width=10, height=10, pointsize=12)
 par(mfrow = c(1, 1)) # 2 rows, 2 columns
 for (i in 1:ncol(x)) {
 	plotMD(cpm(x, log=TRUE), column=i, xlab = "Average log-expression", ylab = "Expression log-ratio (this sample vs others)", main = colnames(x)[i])
@@ -147,7 +145,7 @@ dev.off()
 #### Quality control
 More plots to check distribution
 ```{r}
-pdf("rsem_gene_qualitycontrol.pdf", width=10, height=5, pointsize=12)
+pdf("rsem_isoform_qualitycontrol.pdf", width=10, height=5, pointsize=12)
 par(mfrow = c(1, 2)) 
 
 x$samples$lib.size
@@ -166,7 +164,7 @@ dev.off()
 ```{r}
 # checking grouping by sex, and by B presence
 
-pdf("rsem_gene_genomebased_MDSplot-per-factor.pdf", width=10, height=10, pointsize=12)
+pdf("rsem_isoform_genomebased_MDSplot-per-factor.pdf", width=10, height=10, pointsize=12)
 par(mfrow=c(2,2))
 
 sampleinfo2 <- sampleinfo %>% mutate(Sex = as.factor(Sex))
@@ -201,9 +199,7 @@ legend("top",fill=c("green","red","blue","black"),legend=levels(sampleinfo2$Geno
 dev.off()
 ```
 
-
-Based on the groupings, male and female expression profiles are definitely different regardless of genotype of B presence. Additionally, if we group by B and no B, we see separation of groups by sex and B presence. Finally, if we group by genotype, 15 and 21 are together, which seems logical since they come from the same original population RBGE25. Female samples of 04 and 13 are together but separated when we look at males. This could indicate that in 04 and 13, we have different numbers of B and that this difference in B number only affects expression profile of males. 
-
+Groupings look the same at the isoform level
 
 
 ## Step 5: Hierarchical clustering
@@ -224,7 +220,7 @@ mypalette <- brewer.pal(11,"RdYlBu")
 #mapping by Sex
 morecols <- colorRampPalette(mypalette)
 
-pdf("rsem_gene_genomebased_heatmapbysex.pdf", width=10, height=10, pointsize=12)
+pdf("rsem_isoform_genomebased_heatmapbysex.pdf", width=10, height=10, pointsize=12)
 
 # Plot the heatmap by sex
 heatmap.2(highly_variable_lcpm,col=rev(morecols(50)),trace="none", main="Top 1000 most variable genes across samples",ColSideColors=col.sex,scale="row")
@@ -233,11 +229,10 @@ dev.off()
   
 # Plot the heatmap by B presence
   
-pdf("rsem_gene_genomebased_heatmapbyB.pdf", width=10, height=10, pointsize=12)
+pdf("rsem_isoform_genomebased_heatmapbyB.pdf", width=10, height=10, pointsize=12)
 heatmap.2(highly_variable_lcpm,col=rev(morecols(50)),trace="none", main="Top 1000 most variable genes across samples",ColSideColors=col.B,scale="row")
 dev.off()
 ```
-
 
 
 
@@ -295,7 +290,7 @@ fit.cont1 <- eBayes(fit.cont1)
 #### Compare mean variance trend
 
 ```{r}
-pdf("rsem_gene_genomebased_meanvariancetrends.pdf", width=10, height=5, pointsize=12)
+pdf("rsem_isoform_genomebased_meanvariancetrends.pdf", width=10, height=5, pointsize=12)
 par(mfrow=c(1,2))
 v1 <- voom(x,design1,plot = TRUE)
 plotSA(fit.cont1, main="Final model: Mean-variance trend")
@@ -314,7 +309,7 @@ summary(dt)
 de.common <- which(dt[,1]!=0 & dt[,2]!=0 &dt[,3]!=0)
 length(de.common) # B transcripts
 
-pdf("rsem_gene_genomebased_vennDEcommon.pdf", width=10, height=10, pointsize=12)
+pdf("rsem_isoform_genomebased_vennDEcommon.pdf", width=10, height=10, pointsize=12)
 par(mfrow=c(2,2))
 
 #Venn Diagram for B vs no B in males
@@ -324,6 +319,8 @@ vennDiagram(dt[,1], circle.col=c("turquoise", "salmon","orange"),include=c("up",
 vennDiagram(dt[,4], circle.col=c("turquoise", "salmon","orange"),include=c("up","down"))
 
 #Venn Diagram for Bmale
+vennDiagram(dt[,1:3], circle.col=c("turquoise", "salmon","orange"))
+
 vennDiagram(dt[,1:3], circle.col=c("turquoise", "salmon","orange"),include=c("up","down"))
 dev.off()
 
@@ -344,42 +341,46 @@ maleB.femalenoB<-topTable(fit.cont1, coef=3, number = summary(dt)[7]+summary(dt)
 femaleB.femalenoB<-topTable(fit.cont1, coef=4, number = summary(dt)[10]+summary(dt)[12]) 
 malenoB.femalenoB<-topTable(fit.cont1, coef=5, summary(dt)[13]+summary(dt)[15]) 
 
+
 #add annotation for each list and save to csv
 maleB.noB_df<-data.frame(maleB.noB)
-maleB.noB_annot = merge(maleB.noB,annot, by.x='genes', by.y='gid',all.x=TRUE)
-write.csv(maleB.noB_annot,"rsem_gene_maleB.noB_annot.csv")
+maleB.noB_annot = merge(maleB.noB,annot, by.x='genes', by.y='tid',all.x=TRUE)
+write.csv(maleB.noB_annot,"rsem_isoform_maleB.noB_annot.csv")
 
 maleB.femaleB_df<-data.frame(maleB.femaleB)
-maleB.femaleB_annot = merge(maleB.femaleB,annot, by.x='genes', by.y='gid',all.x=TRUE)
-write.csv(maleB.femaleB_annot,"rsem_gene_maleB.femaleB.csv")
+maleB.femaleB_annot = merge(maleB.femaleB,annot, by.x='genes', by.y='tid',all.x=TRUE)
+write.csv(maleB.femaleB_annot,"rsem_isoform_maleB.femaleB.csv")
 
 maleB.femalenoB_df<-data.frame(maleB.femalenoB)
-maleB.femalenoB_annot = merge(maleB.femalenoB,annot, by.x='genes', by.y='gid',all.x=TRUE)
-write.csv(maleB.femalenoB_annot,"rsem_gene_maleB.femalenoB.csv")
+maleB.femalenoB_annot = merge(maleB.femalenoB,annot, by.x='genes', by.y='tid',all.x=TRUE)
+write.csv(maleB.femalenoB_annot,"rsem_isoform_maleB.femalenoB.csv")
 
 femaleB.femalenoB_df<-data.frame(femaleB.femalenoB)
-femaleB.femalenoB_annot = merge(femaleB.femalenoB,annot, by.x='genes', by.y='gid',all.x=TRUE)
-write.csv(femaleB.femalenoB_annot,"rsem_gene_femaleB.femalenoB.csv")
+femaleB.femalenoB_annot = merge(femaleB.femalenoB,annot, by.x='genes', by.y='tid',all.x=TRUE)
+write.csv(femaleB.femalenoB_annot,"rsem_isoform_femaleB.femalenoB.csv")
 
 malenoB.femalenoB_df<-data.frame(malenoB.femalenoB)
-malenoB.femalenoB_annot = merge(malenoB.femalenoB,annot, by.x='genes', by.y='gid',all.x=TRUE)
-write.csv(malenoB.femalenoB_annot,"rsem_gene_malenoB.femalenoB.csv")
+malenoB.femalenoB_annot = merge(malenoB.femalenoB,annot, by.x='genes', by.y='tid',all.x=TRUE)
+write.csv(malenoB.femalenoB_annot,"rsem_isoform_malenoB.femalenoB.csv")
 
 ```
 
 #### add gene annotation to de.common
 ```{r}
 Bmale = data.frame(fit.cont1$genes[de.common,])
-colnames(Bmale) =  "gene"
-Bmale_annot = merge(Bmale,annot, by.x='gene', by.y='gid',all.x=TRUE)
+
+colnames(Bmale) = "transcript"
+
+
+Bmale_annot = merge(Bmale,annot, by.x='transcript', by.y='tid',all.x=TRUE)
 
 Bmale_annot2<-Bmale_annot[!is.na(Bmale_annot$V2), ]
-write.csv(Bmale_annot2,"rsem_gene_Bmale_annot2.csv")
+write.csv(Bmale_annot2,"rsem_isoform_Bmale_annot2.csv")
 ```
 
 #### MDplots for fit.cont1
 ```{r}
-pdf("rsem_gene_genomebased_MDplots.pdf", width=20, height=10, pointsize=12)
+pdf("rsem_isoform_genomebased_MDplots.pdf", width=20, height=10, pointsize=12)
 par(mfrow=c(2,3))
 plotMD(fit.cont1, column=1, status=dt[,1], main=colnames(fit.cont1)[1], 
        xlim=c(-8,13),cex=0.5)
