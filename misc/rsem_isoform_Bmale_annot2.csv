@@ -1,4 +1,4 @@
-"","gene","gid","V2","V3","V4","V5","V6","V7","V8","V9","V10","V11","V12","V13","V14"
+"","transcript","gid","V2","V3","V4","V5","V6","V7","V8","V9","V10","V11","V12","V13","V14"
 "1","g10773.t1","g10773","a474ee5107eb75e01255fefdf126e581",348,"Pfam","PF00135","Carboxylesterase family",102,338,"1.4E-16",TRUE,"27-07-2020","IPR002018","Carboxylesterase, type B",""
 "2","g10773.t1","g10773","a474ee5107eb75e01255fefdf126e581",348,"Pfam","PF00135","Carboxylesterase family",3,83,"1.0E-14",TRUE,"27-07-2020","IPR002018","Carboxylesterase, type B",""
 "4","g1124.t1","g1124","e9eb5953ddbc66014bb41a03d9787572",145,"SignalP_EUK","SignalP-noTM","",1,27,"-",TRUE,"27-07-2020","","",""

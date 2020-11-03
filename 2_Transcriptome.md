@@ -444,7 +444,7 @@ Before filtering, we had 23629 gene counts, after filtering 18749 gene counts ar
 
 3. Distribution normalization
 
-![](misc/rsem_gene_genomebased_prepostnormalization.jpg)
+![](rsem_gene_qualitycontrol.jpg)
 
 4. MDS plots
 
@@ -518,6 +518,60 @@ Not sure why the Venn diagram show 43 DE genes that are B male.
 
 List of annotated Bmale only transcripts are in misc/rsem_gene__Bmale_annot2.csv
 
+Here is the top 50 from the cvs file
+
+| gene   | tid       | V4          | V5           | V6                                             | V13                                             | V14                                            |
+|--------|-----------|-------------|--------------|------------------------------------------------|-------------------------------------------------|------------------------------------------------|
+| g10773 | g10773.t1 | Pfam        | PF00135      | Carboxylesterase family                        | Carboxylesterase, type B                        |                                                |
+| g10773 | g10773.t2 | Pfam        | PF00135      | Carboxylesterase family                        | Carboxylesterase, type B                        |                                                |
+| g10773 | g10773.t1 | Pfam        | PF00135      | Carboxylesterase family                        | Carboxylesterase, type B                        |                                                |
+| g10773 | g10773.t2 | Pfam        | PF00135      | Carboxylesterase family                        | Carboxylesterase, type B                        |                                                |
+| g10968 | g10968.t1 | SignalP_EUK | SignalP-noTM |                                                |                                                 |                                                |
+| g1124  | g1124.t1  | SignalP_EUK | SignalP-noTM |                                                |                                                 |                                                |
+| g11244 | g11244.t1 | Pfam        | PF13873      | Myb/SANT-like DNA-binding domain               | Myb/SANT-like DNA-binding domain                |                                                |
+| g1125  | g1125.t1  | SignalP_EUK | SignalP-noTM |                                                |                                                 |                                                |
+| g11727 | g11727.t1 | Pfam        | PF13843      | Transposase IS4                                | PiggyBac transposable   element-derived protein |                                                |
+| g11901 | g11901.t1 | SignalP_EUK | SignalP-noTM |                                                |                                                 |                                                |
+| g11911 | g11911.t1 | SignalP_EUK | SignalP-noTM |                                                |                                                 |                                                |
+| g12210 | g12210.t1 | Pfam        | PF09820      | Predicted AAA-ATPase                           | AAA-ATPase-like domain                          |                                                |
+| g13191 | g13191.t1 | SignalP_EUK | SignalP-noTM |                                                |                                                 |                                                |
+| g13773 | g13773.t1 | Pfam        | PF06109      | Haemolysin E (HlyE)                            | Hemolysin E                                     | GO:0009405\|GO:0044179                         |
+| g13773 | g13773.t1 | SignalP_EUK | SignalP-noTM |                                                |                                                 |                                                |
+| g13953 | g13953.t1 | Pfam        | PF08214      | Histone acetylation protein                    | Histone acetyltransferase Rtt109/CBP            | GO:0004402\|GO:0006355\|GO:0016573             |
+| g13953 | g13953.t2 | Pfam        | PF08214      | Histone acetylation protein                    | Histone acetyltransferase Rtt109/CBP            | GO:0004402\|GO:0006355\|GO:0016573             |
+| g13953 | g13953.t3 | Pfam        | PF08214      | Histone acetylation protein                    | Histone acetyltransferase Rtt109/CBP            | GO:0004402\|GO:0006355\|GO:0016573             |
+| g14433 | g14433.t1 | Pfam        | PF10551      | MULE transposase domain                        | MULE transposase domain                         |                                                |
+| g14433 | g14433.t1 | Pfam        | PF04500      | FLYWCH zinc finger domain                      | Zinc finger, FLYWCH-type                        |                                                |
+| g1484  | g1484.t1  | Pfam        | PF07722      | Peptidase C26                                  | Peptidase C26                                   | GO:0016787                                     |
+| g1484  | g1484.t1  | Pfam        | PF07722      | Peptidase C26                                  | Peptidase C26                                   | GO:0016787                                     |
+| g14861 | g14861.t1 | Pfam        | PF01728      | FtsJ-like methyltransferase                    | Ribosomal RNA methyltransferase FtsJ domain     | GO:0008168\|GO:0032259                         |
+| g15418 | g15418.t2 | Pfam        | PF00194      | Eukaryotic-type carbonic anhydrase             | Alpha carbonic anhydrase domain                 |                                                |
+| g15418 | g15418.t1 | Pfam        | PF00194      | Eukaryotic-type carbonic anhydrase             | Alpha carbonic anhydrase domain                 |                                                |
+| g15418 | g15418.t1 | SignalP_EUK | SignalP-noTM |                                                |                                                 |                                                |
+| g1592  | g1592.t1  | Pfam        | PF05585      | Putative peptidase (DUF1758)                   | Peptidase aspartic, putative                    |                                                |
+| g17216 | g17216.t1 | Pfam        | PF07690      | Major Facilitator Superfamily                  | Major facilitator superfamily                   | GO:0016021\|GO:0055085                         |
+| g1752  | g1752.t1  | Pfam        | PF00098      | Zinc knuckle                                   | Zinc finger, CCHC-type                          | GO:0003676\|GO:0008270                         |
+| g1752  | g1752.t1  | Pfam        | PF14223      | gag-polypeptide of LTR copia-type              |                                                 |                                                |
+| g17634 | g17634.t1 | SignalP_EUK | SignalP-noTM |                                                |                                                 |                                                |
+| g17634 | g17634.t1 | Pfam        | PF13895      | Immunoglobulin domain                          | Immunoglobulin-like domain                      |                                                |
+| g17634 | g17634.t1 | Pfam        | PF07679      | Immunoglobulin I-set domain                    | Immunoglobulin I-set                            |                                                |
+| g17869 | g17869.t1 | Pfam        | PF00067      | Cytochrome P450                                | Cytochrome P450                                 | GO:0005506\|GO:0016705\|GO:0020037\|GO:0055114 |
+| g17908 | g17908.t1 | Pfam        | PF00067      | Cytochrome P450                                | Cytochrome P450                                 | GO:0005506\|GO:0016705\|GO:0020037\|GO:0055114 |
+| g18500 | g18500.t1 | SignalP_EUK | SignalP-noTM |                                                |                                                 |                                                |
+| g18500 | g18500.t1 | Pfam        | PF00194      | Eukaryotic-type carbonic anhydrase             | Alpha carbonic anhydrase domain                 |                                                |
+| g19261 | g19261.t1 | Pfam        | PF09820      | Predicted AAA-ATPase                           | AAA-ATPase-like domain                          |                                                |
+| g19773 | g19773.t1 | SignalP_EUK | SignalP-noTM |                                                |                                                 |                                                |
+| g19773 | g19773.t1 | Pfam        | PF01094      | Receptor family ligand binding region          | Receptor, ligand binding region                 |                                                |
+| g19773 | g19773.t1 | Pfam        | PF07562      | Nine Cysteines Domain of family 3 GPCR         | GPCR, family 3, nine cysteines domain           | GO:0004930\|GO:0007186                         |
+| g19773 | g19773.t1 | Pfam        | PF01094      | Receptor family ligand binding region          | Receptor, ligand binding region                 |                                                |
+| g19773 | g19773.t1 | Pfam        | PF00003      | 7 transmembrane sweet-taste receptor of 3 GCPR | GPCR family 3, C-terminal                       | GO:0004930\|GO:0007186\|GO:0016021             |
+| g19949 | g19949.t1 | Pfam        | PF13843      | Transposase IS4                                | PiggyBac transposable   element-derived protein |                                                |
+| g19949 | g19949.t1 | Pfam        | PF13843      | Transposase IS4                                | PiggyBac transposable   element-derived protein |                                                |
+| g2001  | g2001.t1  | Pfam        | PF07690      | Major Facilitator Superfamily                  | Major facilitator superfamily                   | GO:0016021\|GO:0055085                         |
+| g20017 | g20017.t1 | Pfam        | PF00118      | TCP-1/cpn60 chaperonin family                  | Chaperonin Cpn60/TCP-1 family                   | GO:0005524                                     |
+| g20018 | g20018.t1 | Pfam        | PF00118      | TCP-1/cpn60 chaperonin family                  | Chaperonin Cpn60/TCP-1 family                   | GO:0005524                                     |
+| g20279 | g20279.t2 | Pfam        | PF00083      | Sugar (and other) transporter                  | Major facilitator,  sugar   transporter-like    | GO:0016021\|GO:0022857\|GO:0055085             |
+
 
 
 
@@ -577,14 +631,14 @@ Before filtering, we had 25677 transcript counts, after filtering 20610 transcri
 
 3. Distribution normalization
 
-![](misc/rsem_isoform_genomebased_prepostnormalization.jpg)
+![](misc/rsem_gene_qualitycontrol.jpg)
 
 4. MDS plots
 
 ![](misc/rsem_isoform_genomebased_MDSplot-per-factor.jpg)
 
 
-5. Hierachical clustering heatmap of 1000 most variable gene expression
+5. Hierachical clustering heatmap of 1000 most variable transcript expression
 
 ![](misc/rsem_isoform_genomebased_heatmapbyB.jpg)
 
@@ -651,6 +705,65 @@ Venn diagram doesn't show all the DE genes or transcripts if I add the option th
 
 List of annotated Bmale only transcripts are in misc/rsem_isoform_Bmale_annot2.csv
 
+| transcript | V4          | V5           | V6                                                   | V13                                                 | V14                                            |
+|------------|-------------|--------------|------------------------------------------------------|-----------------------------------------------------|------------------------------------------------|
+| g10773.t1  | Pfam        | PF00135      | Carboxylesterase family                              | Carboxylesterase, type B                            |                                                |
+| g10773.t1  | Pfam        | PF00135      | Carboxylesterase family                              | Carboxylesterase, type B                            |                                                |
+| g1124.t1   | SignalP_EUK | SignalP-noTM |                                                      |                                                     |                                                |
+| g1125.t1   | SignalP_EUK | SignalP-noTM |                                                      |                                                     |                                                |
+| g11727.t1  | Pfam        | PF13843      | Transposase IS4                                      | PiggyBac transposable element-derived protein       |                                                |
+| g11901.t1  | SignalP_EUK | SignalP-noTM |                                                      |                                                     |                                                |
+| g11911.t1  | SignalP_EUK | SignalP-noTM |                                                      |                                                     |                                                |
+| g12210.t1  | Pfam        | PF09820      | Predicted AAA-ATPase                                 | AAA-ATPase-like domain                              |                                                |
+| g13191.t1  | SignalP_EUK | SignalP-noTM |                                                      |                                                     |                                                |
+| g13773.t1  | Pfam        | PF06109      | Haemolysin E (HlyE)                                  | Hemolysin E                                         | GO:0009405\|GO:0044179                         |
+| g13773.t1  | SignalP_EUK | SignalP-noTM |                                                      |                                                     |                                                |
+| g13953.t2  | Pfam        | PF08214      | Histone acetylation protein                          | Histone acetyltransferase Rtt109/CBP                | GO:0004402\|GO:0006355\|GO:0016573             |
+| g14433.t1  | Pfam        | PF10551      | MULE transposase domain                              | MULE transposase domain                             |                                                |
+| g14433.t1  | Pfam        | PF04500      | FLYWCH zinc finger domain                            | Zinc finger, FLYWCH-type                            |                                                |
+| g1484.t1   | Pfam        | PF07722      | Peptidase C26                                        | Peptidase C26                                       | GO:0016787                                     |
+| g1484.t1   | Pfam        | PF07722      | Peptidase C26                                        | Peptidase C26                                       | GO:0016787                                     |
+| g14861.t1  | Pfam        | PF01728      | FtsJ-like methyltransferase                          | Ribosomal RNA methyltransferase FtsJ domain         | GO:0008168\|GO:0032259                         |
+| g17216.t1  | Pfam        | PF07690      | Major Facilitator Superfamily                        | Major facilitator superfamily                       | GO:0016021\|GO:0055085                         |
+| g1752.t1   | Pfam        | PF14223      | gag-polypeptide of LTR copia-type                    |                                                     |                                                |
+| g1752.t1   | Pfam        | PF00098      | Zinc knuckle                                         | Zinc finger, CCHC-type                              | GO:0003676\|GO:0008270                         |
+| g17908.t1  | Pfam        | PF00067      | Cytochrome P450                                      | Cytochrome P450                                     | GO:0005506\|GO:0016705\|GO:0020037\|GO:0055114 |
+| g19773.t1  | Pfam        | PF01094      | Receptor family ligand binding region                | Receptor, ligand binding region                     |                                                |
+| g19773.t1  | Pfam        | PF00003      | 7 transmembrane sweet-taste receptor of 3 GCPR       | GPCR family 3, C-terminal                           | GO:0004930\|GO:0007186\|GO:0016021             |
+| g19773.t1  | Pfam        | PF07562      | Nine Cysteines Domain of family 3 GPCR               | GPCR, family 3, nine cysteines domain               | GO:0004930\|GO:0007186                         |
+| g19773.t1  | SignalP_EUK | SignalP-noTM |                                                      |                                                     |                                                |
+| g19773.t1  | Pfam        | PF01094      | Receptor family ligand binding region                | Receptor, ligand binding region                     |                                                |
+| g20279.t1  | Pfam        | PF00083      | Sugar (and other) transporter                        | Major facilitator,  sugar   transporter-like        | GO:0016021\|GO:0022857\|GO:0055085             |
+| g20279.t2  | Pfam        | PF00083      | Sugar (and other) transporter                        | Major facilitator,  sugar   transporter-like        | GO:0016021\|GO:0022857\|GO:0055085             |
+| g20946.t1  | Pfam        | PF04500      | FLYWCH zinc finger domain                            | Zinc finger, FLYWCH-type                            |                                                |
+| g20946.t1  | Pfam        | PF10551      | MULE transposase domain                              | MULE transposase domain                             |                                                |
+| g21055.t1  | Pfam        | PF14223      | gag-polypeptide of LTR copia-type                    |                                                     |                                                |
+| g22863.t1  | Pfam        | PF00651      | BTB/POZ domain                                       | BTB/POZ domain                                      | GO:0005515                                     |
+| g23072.t1  | Pfam        | PF01833      | IPT/TIG domain                                       | IPT domain                                          |                                                |
+| g23072.t1  | SignalP_EUK | SignalP-noTM |                                                      |                                                     |                                                |
+| g23072.t1  | Pfam        | PF01833      | IPT/TIG domain                                       | IPT domain                                          |                                                |
+| g23373.t1  | Pfam        | PF00083      | Sugar (and other) transporter                        | Major facilitator,  sugar   transporter-like        | GO:0016021\|GO:0022857\|GO:0055085             |
+| g2460.t2   | Pfam        | PF00406      | Adenylate kinase                                     |                                                     |                                                |
+| g2571.t1   | Pfam        | PF03184      | DDE superfamily endonuclease                         | DDE superfamily endonuclease domain                 | GO:0003676                                     |
+| g2938.t1   | Pfam        | PF03221      | Tc5 transposase DNA-binding domain                   | HTH CenpB-type DNA-binding domain                   |                                                |
+| g2938.t1   | Pfam        | PF05225      | helix-turn-helix, Psq domain                         | DNA binding HTH domain, Psq-type                    | GO:0003677                                     |
+| g3239.t1   | Pfam        | PF07993      | Male sterility protein                               | Male sterility, NAD-binding                         |                                                |
+| g3239.t1   | Pfam        | PF03015      | Male sterility protein                               | Fatty acyl-CoA reductase, C-terminal                |                                                |
+| g4426.t1   | Pfam        | PF13843      | Transposase IS4                                      | PiggyBac transposable element-derived protein       |                                                |
+| g4593.t1   | Pfam        | PF00194      | Eukaryotic-type carbonic anhydrase                   | Alpha carbonic anhydrase domain                     |                                                |
+| g5036.t1   | Pfam        | PF02958      | Ecdysteroid kinase                                   | Ecdysteroid kinase-like                             |                                                |
+| g507.t1    | Pfam        | PF11838      | ERAP1-like C-terminal domain                         | ERAP1-like C-terminal domain                        |                                                |
+| g5248.t1   | Pfam        | PF00199      | Catalase                                             | Catalase core domain                                | GO:0004096\|GO:0020037\|GO:0055114             |
+| g5248.t1   | Pfam        | PF06628      | Catalase-related immune-responsive                   | Catalase immune-responsive domain                   |                                                |
+| g5312.t1   | Pfam        | PF13843      | Transposase IS4                                      | PiggyBac transposable element-derived protein       |                                                |
+| g5653.t1   | Pfam        | PF07727      | Reverse transcriptase (RNA-dependent DNA polymerase) | Reverse transcriptase, RNA-dependent DNA polymerase |                                                |
+| g5653.t1   | Pfam        | PF00665      | Integrase core domain                                | Integrase, catalytic core                           | GO:0015074                                     |
+| g5671.t1   | Pfam        | PF13843      | Transposase IS4                                      | PiggyBac transposable element-derived protein       |                                                |
+| g5671.t1   | Pfam        | PF13843      | Transposase IS4                                      | PiggyBac transposable element-derived protein       |                                                |
+| g6828.t2   | Pfam        | PF05699      | hAT family C-terminal dimerisation region            | HAT, C-terminal dimerisation domain                 | GO:0046983                                     |
+| g6828.t2   | Pfam        | PF14291      | Domain of unknown function (DUF4371)                 | Domain of unknown function DUF4371                  |                                                |
+| g864.t1    | Pfam        | PF15868      | Transcription activator MBF2                         | Transcription activator MBF2                        |                                                |
+| g9431.t1   | SignalP_EUK | SignalP-noTM |                                                      |                                                     |                                                |
 
 
 
