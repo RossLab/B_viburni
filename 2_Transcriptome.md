@@ -698,7 +698,7 @@ length(de.common)
 ```
 
 
-![](misc/rsem_gene_genomebased_vennDEcommon.jpg)
+![](misc/rsem_isoform_genomebased_vennDEcommon.jpg)
 
 
 Venn diagram doesn't show all the DE genes or transcripts if I add the option that shows up and down regulated.
