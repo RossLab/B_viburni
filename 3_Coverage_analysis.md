@@ -222,6 +222,38 @@ Of course, some of these contigs may be highly repetitive sequences, which shoul
 | B loose  | 1.04                            | 0.72 |
 | B strict | 2.64                            | 1.13 |
 
+### 4.1. A detour with an alternative assemblies
+
+Some B chromosomal contigs/scaffolds could have been misassembled during the assembly/correction process due to repetitive structure etc. Before proceeding with more sophisticated assignments, let's take a moment and see if we get a higher fraction of B-linked contigs using:
+
+- the raw Pacbio assembly (quick dirty check; very similar profile to freeze.v0. Not worth pursuing this.) # /data/ross/mealybugs/analyses/B_viburni_2020/4_cov_analysis/cov/to_raw
+- an alternative assembly (with flye) # /data/ross/mealybugs/analyses/B_viburni_2020/4_cov_analysis/cov/to_flye
+
+This will simply follow the steps in sections 3 and 4, but let's not bother with filtering out reads with mismatches for now (commands below for the flye assembly)
+
+	bwa index ../../1_pacbio_assembly/9_alternative/raw_flye/assembly.fasta
+	bwa mem -M -t 32 ../../1_pacbio_assembly/9_alternative/raw_flye/assembly.fasta ../../../2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_	18-13.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-13.to_flye.350.sorted.bam
+	bwa mem -M -t 32 ../../1_pacbio_assembly/9_alternative/raw_flye/assembly.fasta ../../../2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_	18-13.Illumina.550.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-13.to_flye.550.sorted.bam
+	bwa mem -M -t 32 ../../1_pacbio_assembly/9_alternative/raw_flye/assembly.fasta ../../../2_short_read_DNA_seq/0_reads/PV_18-04.Illumina.350.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_	18-04.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-04.to_flye.sorted.bam
+	bwa mem -M -t 32 ../../1_pacbio_assembly/9_alternative/raw_flye/assembly.fasta ../../../2_short_read_DNA_seq/0_reads/PV_18-21.Illumina.350.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_	18-21.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-21.to_flye.sorted.bam
+	bwa mem -M -t 32 ../../1_pacbio_assembly/9_alternative/raw_flye/assembly.fasta ../../../2_short_read_DNA_seq/0_reads/PV_18-23.Illumina.350.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_	18-23.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-23.to_flye.sorted.bam
+	samtools merge /scratch/afilia/PV_18-13.to_flye.sorted.bam /scratch/afilia/PV_18-13.to_flye.350.sorted.bam /scratch/afilia/PV_18-13.to_flye.550.sorted.bam
+	rsync -av /scratch/afilia/*to_flye.sorted.bam .
+	samtools index PV_18-04.to_flye.sorted.bam
+	samtools index PV_18-13.to_flye.sorted.bam
+	samtools index PV_18-21.to_flye.sorted.bam
+	samtools index PV_18-23.to_flye.sorted.bam
+	samtools flagstat PV_18-04.to_flye.sorted.bam > PV_18-04.to_flye.sorted.stats
+	samtools flagstat PV_18-13.to_flye.sorted.bam > PV_18-13.to_flye.sorted.stats
+	samtools flagstat PV_18-21.to_flye.sorted.bam > PV_18-21.to_flye.sorted.stats
+	samtools flagstat PV_18-23.to_flye.sorted.bam > PV_18-23.to_flye.sorted.stats
+	samtools idxstats PV_18-04.to_flye.sorted.bam > PV_18-04.to_flye.sorted.mapped.count
+	samtools idxstats PV_18-13.to_flye.sorted.bam > PV_18-13.to_flye.sorted.mapped.count
+	samtools idxstats PV_18-21.to_flye.sorted.bam > PV_18-21.to_flye.sorted.mapped.count
+	samtools idxstats PV_18-23.to_flye.sorted.bam > PV_18-23.to_flye.sorted.mapped.count
+
+Mapping to the new assembly gives a slightly bigger set of putative B chromosomal contigs is recovered (2.2Mb v 1.95Mb strict), but since the flye assembly is bigger the fraction is very similar. It doesn't seem worth pursuing further with this.
+
 ## 5. Mapping Illumina assemblies to reference
 
 Let's build assemblies from the Illumina data and map them to the PacBio reference.
@@ -284,7 +316,7 @@ Same results using the m-to-m alignments. Only 57 scaffolds are present in B+ li
 	awk '{ a[$12]++ } END { for (b in a) { print b } }' 21.spades.v.freeze.v0.dnadiff.1coords > 21.spades.v.freeze.v0.dnadiff.1coords.list # 2074
 	awk '{ a[$12]++ } END { for (b in a) { print b } }' 23.spades.v.freeze.v0.dnadiff.1coords > 23.spades.v.freeze.v0.dnadiff.1coords.list # 2141
 
-107 scaffolds are unique to the PV04 and PV13 assemblies, of which 72 (0.68Mb) correspond to B strict candidates. If we incorporate this to our coverage based analysis, we get:
+107 scaffolds (1.03Mb) are unique to the PV04 and PV13 assemblies, of which 72 (0.68Mb) correspond to B strict candidates. If we incorporate this to our coverage based analysis, we get:
 
 | Scaffolds              | Count| Size (Mb) |
 |------------------------|------|-----------|
@@ -349,7 +381,7 @@ And run genomescope again with cov up to 1e5:
 
 The new genome estimate is closer to the assembly -- that's good. ALSO -- only the 18-13 library comes from a pool of 3 individuals! 18-4, 18-21 and 18-23 are from single females -- Isabelle needs to confirm this. Now this makes sense: the heterozygosity peak is broader in 18-13 (rather corresponding to minor allele freq!)
 
-### 6.1 2d histograms of sample pairs
+### 6.1. 2d histograms of sample pairs
 
 	# conda install -c bioconda/label/cf201901 kat (v2.4.1)
 	kat comp -n -t 24 -o /scratch/afilia/04_vs_21_kat ../PV_18-04.Illumina.trimmed_merged.fq.gz ../PV_18-21.Illumina.trimmed_merged.fq.gz && rsync -av /scratch/afilia/04_vs_21_kat
@@ -441,54 +473,6 @@ Almost all scaffolds have kmers from both sets. The resolution is a bit crap -- 
 
 ### 6.3. kmer coverage (improved)
 
-Instead of defining A/B kmer as above, we can try with coverage ratios. As above, we can speculate that a B kmer may be unique to Bs or shared between A and B. Therefore, we could expect anything with a log2(B lines/non-B lines) >= 0.58 to be a putative B kmer. We can also define a stricter thresfold of >= 2. Therefore, we can generate this set. To do so, we need to normalise the kmer data (Kamil suggested haploid coverage estimated by genomescope, which sounds good) and establish a threshold of kmer coverage.
-
-- PV04 = 42.5
-- PV13 = 40.1
-- PV21 = 22.7
-- PV23 = 24.7
-
-Since we set our lower threshold to 5, anything with normalised coverage < 5 can be assigned a value of 4 before estimating the ratios. We can discard all kmers with norm cov < 5 in all four lines. After doing that and calculating coverages, these are our sets:
-
- - a.candidates.loose.tsv = 507336789 
- - b.candidates.loose.tsv = 47347191 
- - a.candidates.strict.tsv = 535347275 
- - b.candidates.strict.tsv = 19336705
-
-## 7. A detour with an alternative assemblies
-
-Some B chromosomal contigs/scaffolds could have been misassembled during the assembly/correction process due to repetitive structure etc. Before proceeding with more sophisticated assignments, let's take a moment and see if we get a higher fraction of B-linked contigs using:
-
-- the raw Pacbio assembly (quick dirty check; very similar profile to freeze.v0. Not worth pursuing this.) # /data/ross/mealybugs/analyses/B_viburni_2020/4_cov_analysis/cov/to_raw
-- an alternative assembly (with flye) # /data/ross/mealybugs/analyses/B_viburni_2020/4_cov_analysis/cov/to_flye
-
-This will simply follow the steps in sections 3 and 4, but let's not bother with filtering out reads with mismatches for now (commands below for the flye assembly)
-
-	bwa index ../../1_pacbio_assembly/9_alternative/raw_flye/assembly.fasta
-	bwa mem -M -t 32 ../../1_pacbio_assembly/9_alternative/raw_flye/assembly.fasta ../../../2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_	18-13.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-13.to_flye.350.sorted.bam
-	bwa mem -M -t 32 ../../1_pacbio_assembly/9_alternative/raw_flye/assembly.fasta ../../../2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_	18-13.Illumina.550.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-13.to_flye.550.sorted.bam
-	bwa mem -M -t 32 ../../1_pacbio_assembly/9_alternative/raw_flye/assembly.fasta ../../../2_short_read_DNA_seq/0_reads/PV_18-04.Illumina.350.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_	18-04.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-04.to_flye.sorted.bam
-	bwa mem -M -t 32 ../../1_pacbio_assembly/9_alternative/raw_flye/assembly.fasta ../../../2_short_read_DNA_seq/0_reads/PV_18-21.Illumina.350.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_	18-21.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-21.to_flye.sorted.bam
-	bwa mem -M -t 32 ../../1_pacbio_assembly/9_alternative/raw_flye/assembly.fasta ../../../2_short_read_DNA_seq/0_reads/PV_18-23.Illumina.350.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_	18-23.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-23.to_flye.sorted.bam
-	samtools merge /scratch/afilia/PV_18-13.to_flye.sorted.bam /scratch/afilia/PV_18-13.to_flye.350.sorted.bam /scratch/afilia/PV_18-13.to_flye.550.sorted.bam
-	rsync -av /scratch/afilia/*to_flye.sorted.bam .
-	samtools index PV_18-04.to_flye.sorted.bam
-	samtools index PV_18-13.to_flye.sorted.bam
-	samtools index PV_18-21.to_flye.sorted.bam
-	samtools index PV_18-23.to_flye.sorted.bam
-	samtools flagstat PV_18-04.to_flye.sorted.bam > PV_18-04.to_flye.sorted.stats
-	samtools flagstat PV_18-13.to_flye.sorted.bam > PV_18-13.to_flye.sorted.stats
-	samtools flagstat PV_18-21.to_flye.sorted.bam > PV_18-21.to_flye.sorted.stats
-	samtools flagstat PV_18-23.to_flye.sorted.bam > PV_18-23.to_flye.sorted.stats
-	samtools idxstats PV_18-04.to_flye.sorted.bam > PV_18-04.to_flye.sorted.mapped.count
-	samtools idxstats PV_18-13.to_flye.sorted.bam > PV_18-13.to_flye.sorted.mapped.count
-	samtools idxstats PV_18-21.to_flye.sorted.bam > PV_18-21.to_flye.sorted.mapped.count
-	samtools idxstats PV_18-23.to_flye.sorted.bam > PV_18-23.to_flye.sorted.mapped.count
-
-Mapping to the new assembly gives a slightly bigger set of putative B chromosomal contigs is recovered (2.2Mb v 1.95Mb strict), but since the flye assembly is bigger the fraction is very similar. It doesn't seem worth pursuing further with this.
-
-### 8. Kmers revisited
-
 Let's generate everything again (genomescope, 2d histograms, dumps) but this time after filtering out reads that map to contaminants. 
 
 	# /data/ross/mealybugs/analyses/B_viburni_2020/4_cov_analysis/kmer/decon_kmers
@@ -538,5 +522,66 @@ Let's dump the kmers with a lower threshold of 3 and a upper threshold of 100,00
 	qsub -cwd -N kmc -V -pe smp64 20 -b yes 'L=3; U=100000; kmc_tools transform PV21_decon_kmer_counts -ci$L -cx$U dump -s /scratch/afilia/PV21_decon_kmer.dump && rsync /scratch/afilia/PV21_decon_kmer.dump .'
 	qsub -cwd -N kmc -V -pe smp64 20 -b yes 'L=3; U=100000; kmc_tools transform PV23_decon_kmer_counts -ci$L -cx$U dump -s /scratch/afilia/PV23_decon_kmer.dump && rsync /scratch/afilia/PV23_decon_kmer.dump .'
 
-	
+Instead of defining A/B kmer as above, we can try with coverage ratios. As above, we can speculate that a B kmer may be unique to Bs or shared between A and B. Therefore, we could expect anything with a log2(B lines/non-B lines) >= 0.58 to be a putative B kmer. We can also define a stricter thresfold of >= 2. Therefore, we can generate this set. To do so, we need to normalise the kmer data (Kamil suggested haploid coverage estimated by genomescope, which sounds good) and establish a threshold of kmer coverage.
 
+- PV04 = 42.5
+- PV13 = 40.1
+- PV21 = 22.7
+- PV23 = 24.7
+
+Since we set our lower threshold to 3, anything with normalised coverage < 3 can be assigned a value of 3 before estimating the ratios. We can discard all kmers with norm cov < 5 in all four lines. This leaves 553,816,347 kmers. After doing that and calculating coverages, these are our sets:
+
+ - a.candidates.loose.tsv = 504040879 
+ - b.candidates.loose.tsv = 49775468 
+ - a.candidates.strict.tsv = 529588545 
+ - b.candidates.strict.tsv = 24227802
+
+Let's map:
+
+	awk '{print $1}' a.candidates.loose.tsv | awk '{ print ">A_"NR"\n"$0 }' > a.candidates.loose.fasta
+	awk '{print $1}' b.candidates.loose.tsv | awk '{ print ">B_"NR"\n"$0 }' > b.candidates.loose.fasta
+	awk '{print $1}' a.candidates.strict.tsv | awk '{ print ">A_"NR"\n"$0 }' > a.candidates.strict.fasta
+	awk '{print $1}' b.candidates.strict.tsv | awk '{ print ">B_"NR"\n"$0 }' > b.candidates.strict.fasta
+	bwa mem -t 24 -k 27 -T 27 -a /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa a.candidates.loose.fasta | samtools sort -@24 -O bam - > /scratch/afilia/a.candidates.loose.bam
+	bwa mem -t 24 -k 27 -T 27 -a /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa a.candidates.strict.fasta | samtools sort -@24 -O bam - > /scratch/afilia/a.candidates.strict.bam
+	bwa mem -t 24 -k 27 -T 27 -a /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa b.candidates.loose.fasta | samtools sort -@24 -O bam - > /scratch/afilia/b.candidates.loose.bam
+	bwa mem -t 24 -k 27 -T 27 -a /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa b.candidates.strict.fasta | samtools sort -@24 -O bam - > /scratch/afilia/b.candidates.strict.bam
+
+ - a.candidates.loose.stats: 391725014 + 0 mapped (66.56% : N/A)
+ - a.candidates.strict.stats: 409470537 + 0 mapped (66.51% : N/A)
+ - b.candidates.loose.stats: 32425150 + 0 mapped (62.60% : N/A)
+ - b.candidates.strict.stats: 14679627 + 0 mapped (59.40% : N/A)
+
+58 scaffolds have a log2(B loose / A loose) >= 0. I am not super convinced this is the best approach but it will have to do for now.
+
+### 7. Final assignment
+
+We can use evidence from the three approaches (mapping coverage, Illumina assemblies, kmers) to assign B status to candidate scaffolds with decreasing degrees of confidence. WB-linked sequences should be present in higher coverage in PV04 than in PV13, although we can't incorporate this as a formalised rule due to the lack of direct karyotyping. Our assignment criteria could be the following:
+
+	scaffolds.final.assignment$b.status.final <- ifelse(scaffolds.final.assignment$cov.04v13 > 0 &
+                                                      (scaffolds.final.assignment$b.status == "B.strict") &
+                                                      (scaffolds.final.assignment$b.status.asn == "B" | scaffolds.final.assignment$b.status.kmer == "B"),
+                                                      "B1", scaffolds.final.assignment$b.status.final)
+	scaffolds.final.assignment$b.status.final <- ifelse(scaffolds.final.assignment$b.status.final == "A" & scaffolds.final.assignment$cov.04v13 > 0 &
+                                                      ((scaffolds.final.assignment$b.status != "A" & scaffolds.final.assignment$b.status.asn == "B") |
+                                                      (scaffolds.final.assignment$b.status != "A" & scaffolds.final.assignment$b.status.kmer == "B") |
+                                                      (scaffolds.final.assignment$b.status.asn == "B" & scaffolds.final.assignment$b.status.kmer == "B")),
+                                                    "B2", scaffolds.final.assignment$b.status.final)
+	scaffolds.final.assignment$b.status.final <- ifelse(scaffolds.final.assignment$b.status.final == "A" & scaffolds.final.assignment$cov.04v13 > 0 &
+                                                      (scaffolds.final.assignment$b.status != "A" |
+                                                         scaffolds.final.assignment$b.status.asn == "B" |
+                                                         scaffolds.final.assignment$b.status.kmer == "B"),
+                                                    "B3", scaffolds.final.assignment$b.status.final)
+	scaffolds.final.assignment$b.status.final <- ifelse(scaffolds.final.assignment$b.status.final == "A" &
+                                                      (scaffolds.final.assignment$b.status != "A" |
+                                                         scaffolds.final.assignment$b.status.asn == "B" |
+                                                         scaffolds.final.assignment$b.status.kmer == "B"),
+                                                    "B4", scaffolds.final.assignment$b.status.final)
+
+ - A: 2085, 428.3Mb
+ - B1 set: 103, 1.37Mb
+ - B2 set: 8, 0.09Mb
+ - B3 set: 97, 3.08Mb
+ - B4 set: 99, 2.58Mb
+
+![](misc/b.assignment.final.jpeg)
