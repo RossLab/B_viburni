@@ -283,6 +283,8 @@ cont.matrix1 <- makeContrasts(BmalevnoBmale = group1MB - group1MnoB, Bmalevsfema
 
 cont.matrix1
 
+
+
 fit.cont1 <- contrasts.fit(fit1, cont.matrix1)
 fit.cont1 <- eBayes(fit.cont1)
 
@@ -303,8 +305,7 @@ dev.off()
 
 #### Examine the number of DE genes
 ```{r}
-tfit <- treat(fit.cont1, lfc=log2(1.5))
-#In practice, modest values for lfc such as log2(1.1), log2(1.2) or log2(1.5) are usually the most useful. In practice, setting lfc=log2(1.2) or lfc=log2(1.5) will usually cause most differentially expressed genes to have estimated fold-changes of 2-fold or greater, depending on the sample size and precision of the experiment.
+tfit <- treat(fit.cont1, lfc=1) 
 
 dt <- decideTests(tfit)
 summary(dt)
@@ -373,7 +374,7 @@ colnames(Bmale) =  "gene"
 Bmale_annot = merge(Bmale,annot, by.x='gene', by.y='gid',all.x=TRUE)
 
 Bmale_annot2<-Bmale_annot[!is.na(Bmale_annot$V2), ]
-write.csv(Bmale_annot2,"rsem_gene__Bmale_annot2.csv")
+write.csv(Bmale_annot2,"rsem_gene_Bmale_annot2.csv")
 ```
 
 #### MDplots for fit.cont1
