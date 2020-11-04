@@ -10,4 +10,4 @@ We now have: 1) a genome assembly with an annotation (from blast, diamond, inter
 
 ## 1. Review our master annotation
 
-Let's prepare a master file with annotated genes. For now, we are going to collapse transcripts into genes and add what we know from the different annotation sources. [link to Google!](https://github.com/RossLab/B_viburni/blob/master/R_scripts/Gene_annotation.R)
+Let's prepare a master file with annotated genes. For now, we are going to collapse transcripts into genes and add what we know from the different annotation sources[(R script here)](https://github.com/RossLab/B_viburni/blob/master/R_scripts/Gene_annotation.R)
