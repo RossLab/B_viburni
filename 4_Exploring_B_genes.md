@@ -14,4 +14,4 @@ Let's prepare a master file with annotated genes. For now, we are going to colla
 
 ## 2. Genes on the B scaffolds
 
-R script [(here)](https://github.com/RossLab/B_viburni/blob/master/R_scripts/Exploring_AB_genes.R)
+The R script is [here](https://github.com/RossLab/B_viburni/blob/master/R_scripts/Exploring_AB_genes.R). Let's start by exploring which genes fall in B candidate regions.
