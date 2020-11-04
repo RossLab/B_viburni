@@ -79,7 +79,5 @@ nrow(freeze.v0.blast.interproscan.dedup.nona.collapsed)
 freeze.v0.genes <- merge(freeze.v0.genes.mapped, freeze.v0.blast.uniprot.best.dedup.nona.collapsed, by="gene", all=TRUE)
 freeze.v0.genes <- merge(freeze.v0.genes, freeze.v0.diamond.refprot.best.dedup.nona.collapsed,by="gene",all=TRUE)
 freeze.v0.genes <- merge(freeze.v0.genes, freeze.v0.blast.interproscan.dedup.nona.collapsed,by="gene",all=TRUE)
-head(freeze.v0.genes)
-(nrow(freeze.v0.genes) - nrow(freeze.v0.genes[is.na(freeze.v0.genes$blast) & is.na(freeze.v0.genes$diamond) & is.na(freeze.v0.genes$interpro),])) / nrow(freeze.v0.genes)
-
+freeze.v0.genes$anno <- ifelse((!is.na(freeze.v0.genes$blast) | !is.na(freeze.v0.genes$diamond) | !is.na(freeze.v0.genes$interpro)),"Y","N")
 write.table(freeze.v0.genes, file = "output/freeze.v0.genes.anno.csv",row.names = F,sep = ",")
