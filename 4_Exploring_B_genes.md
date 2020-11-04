@@ -10,8 +10,17 @@ We now have: 1) a genome assembly with an annotation (from blast, diamond, inter
 
 ## 1. Review our master annotation
 
-Let's prepare a master file with annotated genes. For now, we are going to collapse transcripts into genes and add what we know from the different annotation sources [(R script here)](https://github.com/RossLab/B_viburni/blob/master/R_scripts/Gene_annotation.R). 8,914 genes have BLAST annotations, 10,915 have diamond annotations and 12,524 have a function assigned by interproscan (ignoring for now GO annotations, etc). In total, 13,515 genes are annotated, which is 57% of the predicted genes.
+Let's prepare a master file with annotated genes. For now, we are going to collapse transcripts into genes and add what we know from the different annotation sources [(R script here)](https://github.com/RossLab/B_viburni/blob/master/R_scripts/Gene_annotation.R). 8,914 genes have BLAST annotations, 10,915 have diamond annotations and 12,524 have a function assigned by interproscan (ignoring for now GO annotations, etc). In total, 13,515 genes are annotated, which is 57% of the 23,629 predicted genes.
 
 ## 2. Genes on the B scaffolds
 
 The R script is [here](https://github.com/RossLab/B_viburni/blob/master/R_scripts/Exploring_AB_genes.R). Let's start by exploring which genes fall in B candidate regions.
+
+| Status | Genes | Of which annotated |
+|--------|-------|--------------------|
+| A      | 23143 | 13309 (58%)        |
+| B1     | 78    | 32 (41%)           |
+| B2     | 7     | 4 (57%)            |
+| B3     | 290   | 108 (37%)          |
+| B4     | 111   | 62 (56%)           |
+
