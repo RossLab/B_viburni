@@ -572,8 +572,22 @@ Here is the top 50 from the cvs file
 | g20018 | g20018.t1 | Pfam        | PF00118      | TCP-1/cpn60 chaperonin family                  | Chaperonin Cpn60/TCP-1 family                   | GO:0005524                                     |
 | g20279 | g20279.t2 | Pfam        | PF00083      | Sugar (and other) transporter                  | Major facilitator,  sugar   transporter-like    | GO:0016021\|GO:0022857\|GO:0055085             |
 
+Andrés taking over here: this looks very promising and I have replicated the analysis up to here. Above Isabelle has extracted the genes that *are differentially expressed* between B males and the other three groups, but not necessarily overexpressed or only expressed in B males. If we do:
 
+	de.over.B.males <- which(dt[,1]==1 & dt[,2]==1 &dt[,3]==1)
+	de.under.B.males <- which(dt[,1]==-1 & dt[,2]==-1 &dt[,3]==-1)
+	length(de.over.B.males) # B genes overexpressed in B males compared to the rest of the groups (40)
+	length(de.under.B.males) # B genes underexpressed in B males compared to the rest of the groups (3)
 
+This makes sense now -- these are the 43 genes that Isabelle got in the 3-way intersection.
+
+Also, there is a problem with extracting differentially expressed genes. Inspecting the files Isabelle produced, things don't add out.  For example, if we do:
+
+	maleB.noB<-topTable(fit.cont1, coef=1, n = summary(dt)[1]+summary(dt)[3])
+
+This gives us a list of 247 genes (as given by n = summary(dt)[1]+summary(dt)[3])) that should correspond to the 168 overexpressed genes + 79 underexpressed in B males with FDR < 0.05 and abs(logFC) > 1. However, by doing the above we get a list of differentially expressed genes ordered by increasing FDR (up to 0.0002). Some of these genes, however, have logFC < 1, and only 155 have positive fold changes (instead of the expected 168). So the line of code above will just give us the top 168 DE genes based on FDR only.
+
+I am sure there is a clever way to extract the genes we want but what I'll do is generate a list of all genes, DE or not, and extract the genes myself.
 
 ### 5. Calculate differentially expressed isoforms (fdr<0.05)
 
