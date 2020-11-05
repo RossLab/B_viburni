@@ -587,7 +587,9 @@ Also, there is a problem with extracting differentially expressed genes. Inspect
 
 This gives us a list of 247 genes (as given by n = summary(dt)[1]+summary(dt)[3])) that should correspond to the 168 overexpressed genes + 79 underexpressed in B males with FDR < 0.05 and abs(logFC) > 1. However, by doing the above we get a list of differentially expressed genes ordered by increasing FDR (up to 0.0002). Some of these genes, however, have logFC < 1, and only 155 have positive fold changes (instead of the expected 168). So the line of code above will just give us the top 168 DE genes based on FDR only.
 
-I am sure there is a clever way to extract the genes we want but what I'll do is generate a list of all genes, DE or not, and extract the genes myself.
+What we have to do is use the topTreat function with the treat object:
+
+	maleB.noB<-topTreat(tfit, coef=1,number = summary(dt)[1]+summary(dt)[3])
 
 ### 5. Calculate differentially expressed isoforms (fdr<0.05)
 
