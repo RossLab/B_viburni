@@ -235,3 +235,55 @@ These are the genes with annotation features located on candidate B scaffolds:
 |g21426|B4            |scaffold_851 |353     |NA                              |NA                   |Carboxylesterase family                                                                                                                                                                                                                                                         |
 |g21425|B4            |scaffold_851 |1013    |NA                              |A0A2J7QKK3           |Carboxylesterase family                                                                                                                                                                                                                                                         |
 
+## 3. Examining differentially expressed genes
+
+# 3.1 Genes that are overexpressed in B males compared to the other three groups
+
+|gene  |seq          |gene_len|blast      |diamond   |interpro                                                                      |anno|length |b.status.final|cov.04v13   |b.status|b.status.asn|b.status.kmer|
+|------|-------------|--------|-----------|----------|------------------------------------------------------------------------------|----|-------|--------------|------------|--------|------------|-------------|
+|g11147|scaffold_751 |1109    |NA         |NA        |NA                                                                            |N   |61138  |A             |0.771599612 |A       |A           |A            |
+|g1124 |scaffold_605 |432     |NA         |NA        |NA                                                                            |N   |140797 |A             |-2.176244454|A       |A           |A            |
+|g1125 |scaffold_605 |317     |NA         |NA        |NA                                                                            |N   |140797 |A             |-2.176244454|A       |A           |A            |
+|g1126 |scaffold_605 |403     |NA         |NA        |NA                                                                            |N   |140797 |A             |-2.176244454|A       |A           |A            |
+|g1127 |scaffold_605 |394     |NA         |NA        |NA                                                                            |N   |140797 |A             |-2.176244454|A       |A           |A            |
+|g11727|scaffold_168 |1733    |NA         |X1WKK7    |Transposase IS4                                                               |Y   |815591 |A             |-0.735290715|A       |A           |A            |
+|g11911|scaffold_74  |1326    |NA         |NA        |NA                                                                            |N   |1279699|A             |-0.154455218|A       |A           |A            |
+|g12210|scaffold_449 |1160    |NA         |Q8A7P0    |Predicted AAA-ATPase                                                          |Y   |264459 |A             |0.417029838 |A       |A           |A            |
+|g13773|scaffold_1833|1288    |NA         |K7JKD4    |Haemolysin E (HlyE)                                                           |Y   |8794   |A             |-4.414532157|A       |A           |A            |
+|g13953|scaffold_2040|1483    |EP300_HUMAN|A0A3B3RK67|Histone acetylation protein                                                   |Y   |6888   |B1            |1.200707954 |B.strict|A           |B            |
+|g14433|scaffold_344 |1424    |NA         |A0A2P8XL08|FLYWCH zinc finger domain,MULE transposase domain                             |Y   |387431 |A             |-0.252070345|A       |A           |A            |
+|g14861|scaffold_33  |2292    |CMTR2_MOUSE|A0A2P8ZED2|FtsJ-like methyltransferase                                                   |Y   |1685622|A             |0.059508469 |A       |A           |A            |
+|g15418|scaffold_133 |786     |NA         |NA        |Eukaryotic-type carbonic anhydrase                                            |Y   |943319 |A             |0.10865628  |A       |A           |A            |
+|g1752 |scaffold_1732|1061    |NA         |NA        |gag-polypeptide of LTR copia-type,Zinc knuckle                                |Y   |9831   |A             |0.882163023 |A       |A           |A            |
+|g17908|scaffold_983 |1353    |CP4G1_DROME|J9JU30    |Cytochrome P450                                                               |Y   |25831  |A             |-4.409559887|A       |A           |A            |
+|g18037|scaffold_507 |368     |NA         |NA        |NA                                                                            |N   |218151 |A             |-0.0618825  |A       |A           |A            |
+|g18767|scaffold_114 |377     |NA         |NA        |NA                                                                            |N   |1045659|A             |-0.645627953|A       |A           |A            |
+|g20946|scaffold_91  |1541    |NA         |A0A2P8Z519|MULE transposase domain,FLYWCH zinc finger domain                             |Y   |1192111|A             |-0.163877476|A       |A           |A            |
+|g21055|scaffold_1221|748     |NA         |NA        |gag-polypeptide of LTR copia-type                                             |Y   |17992  |A             |-1.537302311|A       |A           |A            |
+|g2153 |scaffold_1275|1472    |NA         |NA        |NA                                                                            |N   |17055  |A             |1.280011468 |A       |A           |A            |
+|g22019|scaffold_124 |3066    |NA         |NA        |NA                                                                            |N   |971564 |A             |-0.484528007|A       |A           |A            |
+|g22863|scaffold_37  |1097    |SPOPB_XENLA|A0A1I8Q4G3|BTB/POZ domain                                                                |Y   |1648890|A             |-0.516653857|A       |A           |A            |
+|g23373|scaffold_470 |2003    |NA         |NA        |Sugar (and other) transporter                                                 |Y   |246332 |A             |-0.027164292|A       |A           |A            |
+|g2571 |scaffold_90  |1849    |NA         |E2A388    |DDE superfamily endonuclease                                                  |Y   |1197345|A             |-0.385385309|A       |A           |A            |
+|g2736 |scaffold_51  |890     |NA         |NA        |NA                                                                            |N   |1437107|A             |0.002536088 |A       |A           |A            |
+|g3147 |scaffold_338 |549     |NA         |NA        |NA                                                                            |N   |393854 |A             |-0.665897518|A       |A           |A            |
+|g4426 |scaffold_94  |1000    |NA         |A0A2P8XIJ0|Transposase IS4                                                               |Y   |1173942|A             |-0.107696948|A       |A           |A            |
+|g5181 |scaffold_504 |1548    |NA         |NA        |NA                                                                            |N   |220088 |A             |0.432675202 |A       |A           |A            |
+|g5312 |scaffold_1578|879     |NA         |NA        |Transposase IS4                                                               |Y   |11811  |B3            |0.222918895 |B.loose |A           |A            |
+|g5555 |scaffold_530 |1219    |NA         |NA        |NA                                                                            |N   |203235 |A             |0.179662059 |A       |A           |A            |
+|g5653 |scaffold_1013|2682    |POLX_TOBAC |A0A182GA29|Reverse transcriptase (RNA-dependent DNA polymerase),Integrase core domain    |Y   |24300  |A             |0.098713186 |A       |A           |A            |
+|g5671 |scaffold_555 |2120    |NA         |A0A2P8ZLW3|Transposase IS4                                                               |Y   |186860 |A             |-0.278887196|A       |A           |A            |
+|g627  |scaffold_132 |434     |NA         |NA        |NA                                                                            |N   |944065 |A             |0.057402153 |A       |A           |A            |
+|g6708 |scaffold_179 |217     |NA         |NA        |NA                                                                            |N   |784024 |A             |-0.047198937|A       |A           |A            |
+|g6828 |scaffold_81  |1985    |NA         |A0A1U8N8I4|Domain of unknown function (DUF4371),hAT family C-terminal dimerisation region|Y   |1225220|A             |0.215128866 |A       |A           |A            |
+|g7913 |scaffold_46  |666     |NA         |NA        |NA                                                                            |N   |1511820|A             |0.268979977 |A       |A           |A            |
+|g8501 |scaffold_543 |761     |NA         |NA        |NA                                                                            |N   |195591 |B4            |-0.047138547|B.loose |A           |A            |
+|g8748 |scaffold_194 |342     |NA         |NA        |NA                                                                            |N   |708625 |A             |0.044440522 |A       |A           |A            |
+|g8749 |scaffold_194 |721     |NA         |NA        |NA                                                                            |N   |708625 |A             |0.044440522 |A       |A           |A            |
+|g9431 |scaffold_434 |1442    |NA         |NA        |NA                                                                            |N   |283348 |A             |-0.046588825|A       |A           |A            |
+
+Only three of these genes fall in B candidate regions -- including a Histone acetylation protein which has a homolog in humans, EP300, which is a coactivator of gene expression. See also https://www.ebi.ac.uk/interpro/entry/InterPro/IPR013178/ This is potentially interesting!
+
+Only 3 genes are downregulated in B males compared to the rest of the groups. Of these only one is annotated: g4126 in scaffold_70: SH2B2_MOUSE/A0A482WUF0	SH2 domain,PH domain,Phenylalanine zipper.
+
+# 3.2 B males v non-B males
