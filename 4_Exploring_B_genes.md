@@ -316,7 +316,7 @@ The complete list of genes is [here.](https://github.com/RossLab/B_viburni/blob/
 |g8501 |3.277392   |scaffold_543 |761     |NA         |NA        |NA                                                        |N   |195591|B4            |-0.047138547|
 |g5232 |10.97762972|scaffold_2160|2567    |NA         |NA        |Transactive response DNA-binding protein N-terminal domain|Y   |5884  |B4            |-2.328269622|
 
-Under expressed genes in B males (list [here).](https://github.com/RossLab/B_viburni/blob/master/misc/de.under.B.males.vs.nonB.males.anno.csv). Of note, these are the overexpressed genes that are located on B scaffolds:
+Under expressed genes in B males (list [here)](https://github.com/RossLab/B_viburni/blob/master/misc/de.under.B.males.vs.nonB.males.anno.csv):
 
 | Status | Genes | Of which annotated |
 |--------|-------|--------------------|
@@ -326,3 +326,4 @@ Under expressed genes in B males (list [here).](https://github.com/RossLab/B_vib
 | B3     | 1     | 1                  |
 | B4     | 1     | 1                  |
 
+Of course we shouldn't expect any underexpressed genes to fall within B candidate regions. It would be good to explore the scaffolds and see what's going on there. The genes are g7421 (scaffold_526, B3; RCBT1_MOUSE - A0A232EN37 - BTB/POZ domain,Regulator of chromosome condensation (RCC1) repeat) and g5248 (scaffold_814, B4; CATA_ASCSU - A0A2J7REJ5 - Catalase-related immune-responsive,Catalase	Y)
