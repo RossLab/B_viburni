@@ -240,5 +240,5 @@ malenoB.femalenoB <- topTreat(tfit, coef=5, number = summary(dt)[13]+summary(dt)
 #write.csv(maleB.femaleB,"output/diff_expr/B.males.vs.B.females.de.treat.csv")
 #write.csv(maleB.femalenoB,"output/diff_expr/B.males.vs.nonB.females.de.treat.csv")
 #write.csv(femaleB.femalenoB,"output/diff_expr/B.females.vs.nonB.females.de.treat.csv")
-#write.csv(malenoB.femalenoB,"output/diff_expr/nonB.females.vs.nonB.females.de.treat.csv")
+#write.csv(malenoB.femalenoB,"output/diff_expr/nonB.males.vs.nonB.females.de.treat.csv")
 
