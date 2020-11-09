@@ -237,7 +237,7 @@ These are the genes with annotation features located on candidate B scaffolds:
 
 ## 3. Examining differentially expressed genes
 
-# 3.1 Genes that are overexpressed in B males compared to the other three groups
+### 3.1 Genes that are overexpressed in B males compared to the other three groups
 
 |gene  |seq          |gene_len|blast      |diamond   |interpro                                                                      |anno|length |b.status.final|cov.04v13   |b.status|b.status.asn|b.status.kmer|
 |------|-------------|--------|-----------|----------|------------------------------------------------------------------------------|----|-------|--------------|------------|--------|------------|-------------|
@@ -284,6 +284,6 @@ These are the genes with annotation features located on candidate B scaffolds:
 
 Only three of these genes fall in B candidate regions -- including a Histone acetylation protein which has a homolog in humans, EP300, which is a coactivator of gene expression. See also https://www.ebi.ac.uk/interpro/entry/InterPro/IPR013178/ This is potentially interesting!
 
-Only 3 genes are downregulated in B males compared to the rest of the groups. Of these only one is annotated: g4126 in scaffold_70: SH2B2_MOUSE/A0A482WUF0	SH2 domain,PH domain,Phenylalanine zipper.
+On the other hand, 3 genes are downregulated in B males compared to the rest of the groups. Of these only one is annotated: g4126 in scaffold_70: SH2B2_MOUSE/A0A482WUF0	SH2 domain,PH domain,Phenylalanine zipper.
 
-# 3.2 B males v non-B males
+### 3.2 B males v non-B males
