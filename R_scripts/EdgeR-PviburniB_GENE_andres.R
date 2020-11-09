@@ -196,7 +196,7 @@ plotSA(fit.cont1, main="Final model: Mean-variance trend")
 tfit <- treat(fit.cont1, lfc=1) 
 dt <- decideTests(tfit)
 summary(dt)
-write.fit(tfit, dt, file="results.txt")
+#write.fit(tfit, dt, file="results.txt")
 
 #Venn Diagram for B vs no B in males
 vennDiagram(dt[,1], circle.col=c("turquoise", "salmon","orange"),include=c("up","down"))
@@ -223,21 +223,22 @@ length(de.under.B.males) # B genes underexpressed in B males compared to the res
 fit.cont1$genes[de.over.B.males,]
 fit.cont1$genes[de.under.B.males,]
 
-# export overexpressed genes
+# export overexpressed genes in B+ males vs all
 de.over.B.males.genes <- data.frame(fit.cont1$genes[de.over.B.males,])
-colnames(de.over.B.males.genes) <- "gene"
-write.csv(de.over.B.males.genes,"output/diff_expr/over.Bmales.vs.all.csv")
+colnames(de.over.B.males.genes) <- "genes"
+#write.csv(de.over.B.males.genes,"output/diff_expr/over.Bmales.vs.all.csv")
+head(de.over.B.males.genes)
 
 # export all lists of genes 
+maleB.noB <- topTreat(tfit, coef=1,number = summary(dt)[1]+summary(dt)[3])
+maleB.femaleB <- topTreat(tfit, coef=2, number = summary(dt)[4]+summary(dt)[6]) 
+maleB.femalenoB <- topTreat(tfit, coef=3, number = summary(dt)[7]+summary(dt)[9] ) 
+femaleB.femalenoB <- topTreat(tfit, coef=4, number = summary(dt)[10]+summary(dt)[12]) 
+malenoB.femalenoB <- topTreat(tfit, coef=5, number = summary(dt)[13]+summary(dt)[15]) 
 
-maleB.noB <- topTable(fit.cont1, coef=1, n = Inf)
-nrow(maleB.noB_df)
-maleB.noB_df <- data.frame(maleB.noB) # 18749
+#write.csv(maleB.noB,"output/diff_expr/B.males.vs.nonB.males.de.treat.csv")
+#write.csv(maleB.femaleB,"output/diff_expr/B.males.vs.B.females.de.treat.csv")
+#write.csv(maleB.femalenoB,"output/diff_expr/B.males.vs.nonB.females.de.treat.csv")
+#write.csv(femaleB.femalenoB,"output/diff_expr/B.females.vs.nonB.females.de.treat.csv")
+#write.csv(malenoB.femalenoB,"output/diff_expr/nonB.females.vs.nonB.females.de.treat.csv")
 
-
-de_df <- which(dt[,1]!=0)
-fit.cont1$genes[de_df,]
-
-View(maleB.noB)
-maleB.noB<-topTreat(tfit, coef=1,number = summary(dt)[1]+summary(dt)[3])
-View(maleB.noB$genes)
