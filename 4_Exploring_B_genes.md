@@ -287,3 +287,27 @@ Only three of these 40 genes fall in B candidate regions -- including a Histone 
 On the other hand, 3 genes are downregulated in B males compared to the rest of the groups. Of these only one is annotated: g4126 in scaffold_70: SH2B2_MOUSE/A0A482WUF0	SH2 domain,PH domain,Phenylalanine zipper.
 
 ### 3.2 B males v non-B males
+
+Over expressed genes in B males:
+
+| Status | Genes | Of which annotated |
+|--------|-------|--------------------|
+| A      | 155   | 85                 |
+| B1     | 5     | 4                  |
+| B2     | 0     | 0                  |
+| B3     | 3     | 2                  |
+| B4     | 5     | 3                  |
+
+The complete list of genes is [here](https://github.com/RossLab/B_viburni/blob/master/misc/de.over.B.males.vs.nonB.males.anno.csv) 
+
+
+
+Under expressed genes in B males:
+
+| Status | Genes | Of which annotated |
+|--------|-------|--------------------|
+| A      | 77    | 35                 |
+| B1     | 0     | 0                  |
+| B2     | 0     | 0                  |
+| B3     | 1     | 1                  |
+| B4     | 1     | 1                  |
