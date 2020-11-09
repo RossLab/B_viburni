@@ -59,8 +59,37 @@ de.under.B.males.genes.anno <- left_join(de.under.B.males.genes,genes.AB,by="gen
 
 ###
 
-##### Examine differentially expressed genes in males with Bs and no Bs
+##### Examine differentially expressed genes between groups
 
-B.males.vs.nonB.males
+de.B.males.vs.nonB.males <- de.B.males.vs.nonB.males[c(-1)]
+de.B.males.vs.B.females <- de.B.males.vs.B.females[c(-1)]
+de.B.males.vs.nonB.females <- de.B.males.vs.nonB.females[c(-1)]
+de.B.females.vs.nonB.females <- de.B.females.vs.nonB.females[c(-1)]
+de.nonB.females.vs.nonB.females <- de.nonB.females.vs.nonB.females[c(-1)]
 
+colnames(de.B.males.vs.nonB.males)[1] <- "gene"
+colnames(de.B.males.vs.B.females)[1] <- "gene"
+colnames(de.B.males.vs.nonB.females)[1] <- "gene"
+colnames(de.B.females.vs.nonB.females)[1] <- "gene"
+colnames(de.nonB.females.vs.nonB.females)[1] <- "gene"
+
+de.B.males.vs.nonB.males.anno <- left_join(de.B.males.vs.nonB.males,genes.AB,by="gene")
+de.B.males.vs.B.females.anno <- left_join(de.B.males.vs.B.females,genes.AB,by="gene")
+de.B.males.vs.nonB.female.anno <- left_join(de.B.males.vs.nonB.females,genes.AB,by="gene")
+de.B.females.vs.nonB.females.anno <- left_join(de.B.females.vs.nonB.females,genes.AB,by="gene")
+de.nonB.females.vs.nonB.females.anno <- left_join(de.nonB.females.vs.nonB.females,genes.AB,by="gene")
+
+## B males v non B males
+
+de.over.B.males.vs.nonB.males.anno <- de.B.males.vs.nonB.males.anno[de.B.males.vs.nonB.males.anno$logFC > 1,]
+count(de.over.B.males.vs.nonB.males.anno$b.status.final)
+de.over.B.males.vs.nonB.males.anno.yes <- de.over.B.males.vs.nonB.males.anno[de.over.B.males.vs.nonB.males.anno$anno == "Y",]
+count(de.over.B.males.vs.nonB.males.anno.yes$b.status.final)
+write.csv(de.over.B.males.vs.nonB.males.anno,"output/diff_expr/de.over.B.males.vs.nonB.males.anno.csv")
+
+de.under.B.males.vs.nonB.males.anno <- de.B.males.vs.nonB.males.anno[de.B.males.vs.nonB.males.anno$logFC < 1,]
+count(de.under.B.males.vs.nonB.males.anno$b.status.final)
+de.under.B.males.vs.nonB.males.anno.yes <- de.under.B.males.vs.nonB.males.anno[de.under.B.males.vs.nonB.males.anno$anno == "Y",]
+count(de.under.B.males.vs.nonB.males.anno.yes$b.status.final)
+write.csv(de.under.B.males.vs.nonB.males.anno,"output/diff_expr/de.under.B.males.vs.nonB.males.anno.csv")
 
