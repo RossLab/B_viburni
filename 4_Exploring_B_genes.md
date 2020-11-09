@@ -361,3 +361,50 @@ Let's ignore for now the many differentially expressed genes between males and f
  - [B males vs B females](https://github.com/RossLab/B_viburni/blob/master/misc/de.B.males.vs.B.females.anno.csv)
  - [B males vs non B females](https://github.com/RossLab/B_viburni/blob/master/misc/de.B.males.vs.nonB.females.anno.csv)
  - [Non B males vs non B females](https://github.com/RossLab/B_viburni/blob/master/misc/de.nonB.males.vs.nonB.females.anno.csv)
+
+ Still, let's do something with this data. We can start by looking at the genes in putative B regions that are overexpressed in B-carrying males and females (again, positive logFC are overexpressed in males, negative in females). Our old friend g13953 is the only annotated gene in a high confidence B scaffold that differs between sexes.
+
+ |gene  |logFC       |seq          |gene_len|blast      |diamond   |interpro                                                    |anno|length|b.status.final|cov.04v13   |
+|------|------------|-------------|--------|-----------|----------|------------------------------------------------------------|----|------|--------------|------------|
+|g13953|6.950348098 |scaffold_2040|1483    |EP300_HUMAN|A0A3B3RK67|Histone acetylation protein                                 |Y   |6888  |B1            |1.200707954 |
+|g9552 |-3.525249076|scaffold_1388|1646    |NA         |NA        |NA                                                          |N   |14907 |B1            |0.602684262 |
+|g19187|6.642309779 |scaffold_1000|386     |NA         |NA        |NA                                                          |N   |25048 |B3            |0.387816031 |
+|g5309 |6.413330994 |scaffold_1578|398     |NA         |NA        |NA                                                          |N   |11811 |B3            |0.222918895 |
+|g6857 |6.320049976 |scaffold_1082|954     |NA         |J9LMH3    |Transposase IS4                                             |Y   |21822 |B3            |0.004122239 |
+|g5312 |6.304707425 |scaffold_1578|879     |NA         |NA        |Transposase IS4                                             |Y   |11811 |B3            |0.222918895 |
+|g5311 |5.737844319 |scaffold_1578|1420    |NA         |A0A087T137|Transposase IS4                                             |Y   |11811 |B3            |0.222918895 |
+|g113  |3.522231021 |scaffold_360 |1199    |NA         |NA        |NA                                                          |N   |372701|B3            |1.186245557 |
+|g114  |3.47837827  |scaffold_360 |551     |NA         |NA        |NA                                                          |N   |372701|B3            |1.186245557 |
+|g17806|2.515742651 |scaffold_295 |645     |BHE22_XENTR|A0A1S3D3L0|Helix-loop-helix DNA-binding domain                         |Y   |464503|B3            |0.445260929 |
+|g6318 |-2.35674744 |scaffold_1079|1126    |NA         |NA        |NA                                                          |N   |21898 |B3            |0.476592739 |
+|g13962|-2.591672845|scaffold_632 |337     |NA         |NA        |NA                                                          |N   |119487|B3            |0.302036305 |
+|g507  |-3.492535293|scaffold_816 |601     |NA         |NA        |ERAP1-like C-terminal domain                                |Y   |42994 |B3            |0.238502031 |
+|g506  |-3.641744567|scaffold_816 |905     |NA         |A0A2J7RAG5|Peptidase family M1 domain                                  |Y   |42994 |B3            |0.238502031 |
+|g149  |-3.785467503|scaffold_360 |607     |NA         |NA        |Zinc finger, C3HC4 type (RING finger)                       |Y   |372701|B3            |1.186245557 |
+|g163  |-3.932521953|scaffold_360 |248     |NA         |NA        |NA                                                          |N   |372701|B3            |1.186245557 |
+|g168  |-3.992395734|scaffold_360 |506     |NA         |NA        |NA                                                          |N   |372701|B3            |1.186245557 |
+|g153  |-4.037033233|scaffold_360 |821     |NA         |NA        |NA                                                          |N   |372701|B3            |1.186245557 |
+|g194  |-4.400058573|scaffold_360 |365     |NA         |NA        |NA                                                          |N   |372701|B3            |1.186245557 |
+|g157  |-4.60931545 |scaffold_360 |3449    |NA         |NA        |NA                                                          |N   |372701|B3            |1.186245557 |
+|g111  |-4.646106848|scaffold_360 |704     |NA         |NA        |NA                                                          |N   |372701|B3            |1.186245557 |
+|g226  |-4.729088813|scaffold_360 |2471    |NA         |NA        |NA                                                          |N   |372701|B3            |1.186245557 |
+|g127  |-4.786336961|scaffold_360 |1667    |NA         |NA        |NA                                                          |N   |372701|B3            |1.186245557 |
+|g990  |-4.79916007 |scaffold_1966|725     |4CLL7_ARATH|K7IVI9    |AMP-binding enzyme,AMP-binding enzyme C-terminal domain     |Y   |7531  |B3            |0.326443576 |
+|g215  |-4.898807395|scaffold_360 |569     |NA         |NA        |NA                                                          |N   |372701|B3            |1.186245557 |
+|g192  |-5.215766063|scaffold_360 |1736    |NA         |NA        |NA                                                          |N   |372701|B3            |1.186245557 |
+|g183  |-5.223573252|scaffold_360 |1457    |NA         |NA        |NA                                                          |N   |372701|B3            |1.186245557 |
+|g188  |-5.312836472|scaffold_360 |362     |NA         |NA        |NA                                                          |N   |372701|B3            |1.186245557 |
+|g173  |-5.505807588|scaffold_360 |815     |NA         |NA        |NA                                                          |N   |372701|B3            |1.186245557 |
+|g121  |-5.687330037|scaffold_360 |1523    |NA         |NA        |NA                                                          |N   |372701|B3            |1.186245557 |
+|g8501 |9.043806914 |scaffold_543 |761     |NA         |NA        |NA                                                          |N   |195591|B4            |-0.047138547|
+|g8513 |4.934868595 |scaffold_1484|1055    |MURF_BACSU |Q5GT47    |Mur ligase family, catalytic domain,Mur ligase middle domain|Y   |13285 |B4            |-0.069977655|
+|g23625|4.571505218 |scaffold_497 |1584    |MYRO1_BREBR|A0A067RC84|Glycosyl hydrolase family 1                                 |Y   |224833|B4            |-0.05530991 |
+|g12541|3.209432558 |scaffold_2066|1166    |RDX_DROME  |A0A484BP37|BTB/POZ domain                                              |Y   |6652  |B4            |-1.024965869|
+|g23629|2.709273262 |scaffold_497 |1468    |MYRO1_BREBR|A0A2J7PTJ0|Glycosyl hydrolase family 1                                 |Y   |224833|B4            |-0.05530991 |
+|g4587 |-1.615785794|scaffold_640 |292     |NA         |NA        |NA                                                          |N   |113869|B4            |-0.411955707|
+|g5248 |-2.689830335|scaffold_814 |1116    |CATA_ASCSU |A0A2J7REJ5|Catalase-related immune-responsive,Catalase                 |Y   |43109 |B4            |-0.131939348|
+|g4588 |-2.797195306|scaffold_640 |375     |NA         |NA        |NA                                                          |N   |113869|B4            |-0.411955707|
+|g9860 |-2.985628107|scaffold_423 |2813    |NA         |NA        |NA                                                          |N   |294159|B4            |-0.269610254|
+|g23628|-4.467369103|scaffold_497 |2865    |LPH_RAT    |A0A3Q0J5H8|Glycosyl hydrolase family 1                                 |Y   |224833|B4            |-0.05530991 |
+
+
