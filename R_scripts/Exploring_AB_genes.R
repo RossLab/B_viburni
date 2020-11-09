@@ -23,6 +23,7 @@ scaffolds.final.assignment <- read_delim("output/scaffolds.final.assignment.csv"
 # differentially expressed genes -- from Andrés' rerun of Isabelle's script (received 03.11.20, rerun completed 09.11.20)
 de.over.B.males.genes <- read_delim("output/diff_expr/over.Bmales.vs.all.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
 de.under.B.males.genes <- as.data.frame(c("g4126","g8486","g14550"))
+
 de.B.males.vs.nonB.males <- read_delim("output/diff_expr/B.males.vs.nonB.males.de.treat.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
 de.B.males.vs.B.females <- read_delim("output/diff_expr/B.males.vs.B.females.de.treat.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
 de.B.males.vs.nonB.females <- read_delim("output/diff_expr/B.males.vs.nonB.females.de.treat.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
@@ -85,11 +86,33 @@ de.over.B.males.vs.nonB.males.anno <- de.B.males.vs.nonB.males.anno[de.B.males.v
 count(de.over.B.males.vs.nonB.males.anno$b.status.final)
 de.over.B.males.vs.nonB.males.anno.yes <- de.over.B.males.vs.nonB.males.anno[de.over.B.males.vs.nonB.males.anno$anno == "Y",]
 count(de.over.B.males.vs.nonB.males.anno.yes$b.status.final)
-write.csv(de.over.B.males.vs.nonB.males.anno,"output/diff_expr/de.over.B.males.vs.nonB.males.anno.csv")
+#write.csv(de.over.B.males.vs.nonB.males.anno,"output/diff_expr/de.over.B.males.vs.nonB.males.anno.csv")
 
 de.under.B.males.vs.nonB.males.anno <- de.B.males.vs.nonB.males.anno[de.B.males.vs.nonB.males.anno$logFC < 1,]
 count(de.under.B.males.vs.nonB.males.anno$b.status.final)
 de.under.B.males.vs.nonB.males.anno.yes <- de.under.B.males.vs.nonB.males.anno[de.under.B.males.vs.nonB.males.anno$anno == "Y",]
 count(de.under.B.males.vs.nonB.males.anno.yes$b.status.final)
-write.csv(de.under.B.males.vs.nonB.males.anno,"output/diff_expr/de.under.B.males.vs.nonB.males.anno.csv")
+#write.csv(de.under.B.males.vs.nonB.males.anno,"output/diff_expr/de.under.B.males.vs.nonB.males.anno.csv")
 
+## B females vs non B females
+
+de.over.B.females.vs.nonB.females.anno <- de.B.females.vs.nonB.females.anno[de.B.females.vs.nonB.females.anno$logFC > 1,]
+count(de.over.B.females.vs.nonB.females.anno$b.status.final)
+de.over.B.females.vs.nonB.females.anno.yes <- de.over.B.females.vs.nonB.females.anno[de.over.B.females.vs.nonB.females.anno$anno == "Y",]
+count(de.over.B.females.vs.nonB.females.anno.yes$b.status.final)
+#write.csv(de.over.B.females.vs.nonB.females.anno,"output/diff_expr/de.over.B.females.vs.nonB.females.anno.csv")
+
+de.under.B.females.vs.nonB.females.anno <- de.B.females.vs.nonB.females.anno[de.B.females.vs.nonB.females.anno$logFC < 1,]
+count(de.under.B.females.vs.nonB.females.anno$b.status.final)
+de.under.B.females.vs.nonB.females.anno.yes <- de.under.B.females.vs.nonB.females.anno[de.under.B.females.vs.nonB.females.anno$anno == "Y",]
+count(de.under.B.females.vs.nonB.females.anno.yes$b.status.final)
+#write.csv(de.under.B.females.vs.nonB.females.anno,"output/diff_expr/de.under.B.females.vs.nonB.females.anno.csv")
+
+## B females vs non B females
+
+#write.csv(de.B.males.vs.B.females.anno,"output/diff_expr/de.B.males.vs.B.females.anno.csv")
+#write.csv(de.B.males.vs.nonB.female.anno,"output/diff_expr/de.B.males.vs.nonB.female.anno.csv")
+#write.csv(de.B.males.vs.B.females.anno,"output/diff_expr/de.B.males.vs.B.females.anno.csv")
+de.B.males.vs.nonB.female.anno <- left_join(de.B.males.vs.nonB.females,genes.AB,by="gene")
+de.B.females.vs.nonB.females.anno <- left_join(de.B.females.vs.nonB.females,genes.AB,by="gene")
+de.nonB.females.vs.nonB.females.anno <- left_join(de.nonB.females.vs.nonB.females,genes.AB,by="gene")
