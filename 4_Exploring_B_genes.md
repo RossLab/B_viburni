@@ -327,3 +327,37 @@ Under expressed genes in B males (list [here)](https://github.com/RossLab/B_vibu
 | B4     | 1     | 1                  |
 
 Of course we shouldn't expect any underexpressed genes to fall within B candidate regions. It would be good to explore the scaffolds and see what's going on there. The genes are g7421 (scaffold_526, B3; RCBT1_MOUSE - A0A232EN37 - BTB/POZ domain,Regulator of chromosome condensation (RCC1) repeat) and g5248 (scaffold_814, B4; CATA_ASCSU - A0A2J7REJ5 - Catalase-related immune-responsive,Catalase	Y)
+
+### 3.3 B females v non-B females
+
+Do we find any evidence of expression of B linked genes in females?
+
+Over expressed genes in B females (list [here)](https://github.com/RossLab/B_viburni/blob/master/misc/de.under.B.females.vs.nonB.females.anno.csv):
+
+| Status | Genes | Of which annotated |
+|--------|-------|--------------------|
+| A      | 124   | 68                 |
+| B1     | 7     | 4                  |
+| B2     | 0     | 0                  |
+| B3     | 3     | 3                  |
+| B4     | 4     | 3                  |
+
+Over expressed genes in B females (list [here)](https://github.com/RossLab/B_viburni/blob/master/misc/de.under.B.females.vs.nonB.females.anno.csv):
+
+| Status | Genes | Of which annotated |
+|--------|-------|--------------------|
+| A      | 81    | 31                 |
+| B1     | 0     | 0                  |
+| B2     | 0     | 0                  |
+| B3     | 1     | 1                  |
+| B4     | 0     | 0                  |
+
+The B3 gene is also g7421.
+
+### 3.4 Other comparisons
+
+Let's ignore for now the many differentially expressed genes between males and females that differ in their B status. The vast majority of these genes are predicted to be due to sex, so it doesn't make much sense to go through all these lists individually. Here they are:
+
+[B males vs B females](https://github.com/RossLab/B_viburni/blob/master/misc/de.B.males.vs.B.females.anno.csv)
+[B males vs non B females](https://github.com/RossLab/B_viburni/blob/master/misc/de.B.males.vs.nonB.females.anno.csv)
+[Non B males vs non B females](https://github.com/RossLab/B_viburni/blob/master/misc/de.nonB.males.vs.nonB.females.anno.csv)
