@@ -171,7 +171,7 @@ rownames(design1) = rownames(x$samples)
 # removing heteroscedascity from count data: voom plots
 v1 <- voom(x,design1,plot = TRUE)
 v1
-
+View(v1)
 # limma lm fit
 fit1 <- lmFit(v1)
 
@@ -242,3 +242,8 @@ malenoB.femalenoB <- topTreat(tfit, coef=5, number = summary(dt)[13]+summary(dt)
 #write.csv(femaleB.femalenoB,"output/diff_expr/B.females.vs.nonB.females.de.treat.csv")
 #write.csv(malenoB.femalenoB,"output/diff_expr/nonB.males.vs.nonB.females.de.treat.csv")
 
+#additional exports: complete list of contrasts
+
+dt_df <- as.data.frame(dt)
+dt_df$gene <- row.names(dt_df)
+#write.csv(dt_df,"output/diff_expr/dt_df.csv")
