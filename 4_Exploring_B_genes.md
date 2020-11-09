@@ -298,11 +298,25 @@ Over expressed genes in B males:
 | B3     | 3     | 2                  |
 | B4     | 5     | 3                  |
 
-The complete list of genes is [here](https://github.com/RossLab/B_viburni/blob/master/misc/de.over.B.males.vs.nonB.males.anno.csv) 
+The complete list of genes is [here.](https://github.com/RossLab/B_viburni/blob/master/misc/de.over.B.males.vs.nonB.males.anno.csv). Of note, these are the overexpressed genes that are located on B scaffolds:
 
+|gene  |logFC      |seq          |gene_len|blast      |diamond   |interpro                                                  |anno|length|b.status.final|cov.04v13   |
+|------|-----------|-------------|--------|-----------|----------|----------------------------------------------------------|----|------|--------------|------------|
+|g9061 |4.94156601 |scaffold_848 |1328    |NA         |NA        |Predicted AAA-ATPase                                      |Y   |36415 |B1            |1.388582994 |
+|g1208 |5.577602003|scaffold_2293|283     |FAS_CHICK  |A0A2J7PFW7|NA                                                        |Y   |4891  |B1            |0.31966567  |
+|g5582 |6.425348137|scaffold_897 |663     |FAS_ANSAN  |A0A158NZW8|Beta-ketoacyl synthase, N-terminal domain                 |Y   |31263 |B1            |0.421715689 |
+|g20085|6.287153573|scaffold_552 |1087    |NA         |NA        |NA                                                        |N   |189883|B1            |1.946634817 |
+|g13953|6.322935117|scaffold_2040|1483    |EP300_HUMAN|A0A3B3RK67|Histone acetylation protein                               |Y   |6888  |B1            |1.200707954 |
+|g5312 |3.456026577|scaffold_1578|879     |NA         |NA        |Transposase IS4                                           |Y   |11811 |B3            |0.222918895 |
+|g507  |6.593941871|scaffold_816 |601     |NA         |NA        |ERAP1-like C-terminal domain                              |Y   |42994 |B3            |0.238502031 |
+|g88   |4.351603979|scaffold_360 |1055    |NA         |NA        |NA                                                        |N   |372701|B3            |1.186245557 |
+|g18439|8.518124548|scaffold_1579|577     |CSN4_DANRE |A0A2J7R0G0|CSN4/RPN5/eIF3a helix turn helix domain,PCI domain        |Y   |11810 |B4            |-0.362880522|
+|g2645 |8.806049822|scaffold_1454|894     |NA         |J9K3D3    |Thioesterase domain                                       |Y   |13677 |B4            |-0.261317525|
+|g15527|6.359588098|scaffold_1202|446     |NA         |NA        |NA                                                        |N   |18321 |B4            |-1.547923918|
+|g8501 |3.277392   |scaffold_543 |761     |NA         |NA        |NA                                                        |N   |195591|B4            |-0.047138547|
+|g5232 |10.97762972|scaffold_2160|2567    |NA         |NA        |Transactive response DNA-binding protein N-terminal domain|Y   |5884  |B4            |-2.328269622|
 
-
-Under expressed genes in B males:
+Under expressed genes in B males (list [here).](https://github.com/RossLab/B_viburni/blob/master/misc/de.under.B.males.vs.nonB.males.anno.csv). Of note, these are the overexpressed genes that are located on B scaffolds:
 
 | Status | Genes | Of which annotated |
 |--------|-------|--------------------|
@@ -311,3 +325,4 @@ Under expressed genes in B males:
 | B2     | 0     | 0                  |
 | B3     | 1     | 1                  |
 | B4     | 1     | 1                  |
+
