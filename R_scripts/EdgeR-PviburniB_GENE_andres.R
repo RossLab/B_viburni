@@ -185,6 +185,7 @@ cont.matrix1
 
 fit.cont1 <- contrasts.fit(fit1, cont.matrix1)
 fit.cont1 <- eBayes(fit.cont1)
+summary(decideTests(fit.cont1))
 
 # compare mean-variance trend
 v1 <- voom(x,design1,plot = TRUE)
@@ -197,19 +198,6 @@ dt <- decideTests(tfit)
 summary(dt)
 write.fit(tfit, dt, file="results.txt")
 
-# extracting only the B male specific
-
-# these are all the genes that are DE between B males and all the others
-de.B.vs.all <- which(dt[,1]!=0 & dt[,2]!=0 &dt[,3]!=0)
-length(de.B.vs.all)
-
-# these are all the genes that are over expressed and underexpressed, respectively, between B males and all the others
-de.over.B.males <- which(dt[,1]==1 & dt[,2]==1 &dt[,3]==1)
-de.under.B.males <- which(dt[,1]==-1 & dt[,2]==-1 &dt[,3]==-1)
-
-length(de.over.B.males) # B genes overexpressed in B males compared to the rest of the groups
-length(de.under.B.males) # B genes underexpressed in B males compared to the rest of the groups
-
 #Venn Diagram for B vs no B in males
 vennDiagram(dt[,1], circle.col=c("turquoise", "salmon","orange"),include=c("up","down"))
 
@@ -219,71 +207,37 @@ vennDiagram(dt[,4], circle.col=c("turquoise", "salmon","orange"),include=c("up",
 #Venn Diagram for Bmale
 vennDiagram(dt[,1:3], circle.col=c("turquoise", "salmon","orange"),include=c("up","down"))
 
+# extracting only the B male specific
+
+# these are all the genes that are DE between B males and all the others
+de.B.vs.all <- which(dt[,1]!=0 & dt[,2]!=0 &dt[,3]!=0)
+length(de.B.vs.all)
+
+# these are all the genes that are over expressed and underexpressed, respectively, between B males and all the others
+de.over.B.males <- which(dt[,1]==1 & dt[,2]==1 &dt[,3]==1)
+de.under.B.males <- which(dt[,1]==-1 & dt[,2]==-1 &dt[,3]==-1)
+length(de.over.B.males) # B genes overexpressed in B males compared to the rest of the groups
+length(de.under.B.males) # B genes underexpressed in B males compared to the rest of the groups
+
 # list of genes from Bmale
 fit.cont1$genes[de.over.B.males,]
 fit.cont1$genes[de.under.B.males,]
 
-# export overexpressed genes in B males onlu
+# export overexpressed genes
 de.over.B.males.genes <- data.frame(fit.cont1$genes[de.over.B.males,])
 colnames(de.over.B.males.genes) <- "gene"
 write.csv(de.over.B.males.genes,"output/diff_expr/over.Bmales.vs.all.csv")
 
 # export all lists of genes 
 
-de.Bm.vs.non.Bm <- which(dt[,1]!=0)
-length(de.Bm.vs.non.Bm)
-de.B.males.genes <- data.frame(fit.cont1$genes[de.Bm.vs.non.Bm,])
-nrow(de.B.males.genes)
-colnames(de.B.males.genes)[1] <- "id"
-
-maleB.noB.all <- data.frame(topTreat(fit.cont1, coef=1, n = Inf))
-maleB.noB.all$de <- ifelse(maleB.noB.all$genes %in% de.B.males.genes$id == TRUE,"DE",NA)
-View(maleB.noB.all)
-
-maleB.noB.all <- data.frame(topTreat(fit.cont1, coef=1, n = Inf))
-
-
-
-colnames(de.B.vs.all)[1] <- "genes"
-over <- left_join(de.B.vs.all, maleB.noB.all, by = c("genes"))
-
-
+maleB.noB <- topTable(fit.cont1, coef=1, n = Inf)
 nrow(maleB.noB_df)
 maleB.noB_df <- data.frame(maleB.noB) # 18749
-View(maleB.noB_df)
-nrow(maleB.noB_df[(maleB.noB_df$adj.P.Val < 0.05 & maleB.noB_df$logFC >= 1),])
-
-View(maleB.noB_df)
 
 
+de_df <- which(dt[,1]!=0)
+fit.cont1$genes[de_df,]
 
-
-
-
-
-
-
-
-
-
-
-
-#### Make volcano plots
-
-pdf("rsem_gene_genomebased_MDplots.pdf", width=20, height=10, pointsize=12)
-par(mfrow=c(2,3))
-plotMD(fit.cont1, column=1, status=dt[,1], main=colnames(fit.cont1)[1], 
-       xlim=c(-8,13),cex=0.5)
-
-plotMD(fit.cont1, column=2, status=dt[,2], main=colnames(fit.cont1)[2], 
-       xlim=c(-8,13),cex=0.5)
-
-plotMD(fit.cont1, column=3, status=dt[,3], main=colnames(fit.cont1)[3], 
-       xlim=c(-8,13),cex=0.5)
-
-plotMD(fit.cont1, column=3, status=dt[,4], main=colnames(fit.cont1)[4], 
-       xlim=c(-8,13),cex=0.5)
-
-plotMD(fit.cont1, column=3, status=dt[,5], main=colnames(fit.cont1)[5], 
-       xlim=c(-8,13),cex=0.5)
-
+View(maleB.noB)
+maleB.noB<-topTreat(tfit, coef=1,number = summary(dt)[1]+summary(dt)[3])
+View(maleB.noB$genes)
