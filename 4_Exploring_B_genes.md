@@ -282,7 +282,7 @@ These are the genes with annotation features located on candidate B scaffolds:
 |g8749 |scaffold_194 |721     |NA         |NA        |NA                                                                            |N   |708625 |A             |0.044440522 |A       |A           |A            |
 |g9431 |scaffold_434 |1442    |NA         |NA        |NA                                                                            |N   |283348 |A             |-0.046588825|A       |A           |A            |
 
-Only three of these genes fall in B candidate regions -- including a Histone acetylation protein which has a homolog in humans, EP300, which is a coactivator of gene expression. See also https://www.ebi.ac.uk/interpro/entry/InterPro/IPR013178/ This is potentially interesting!
+Only three of these 40 genes fall in B candidate regions -- including a Histone acetylation protein which has a homolog in humans, EP300, which is a coactivator of gene expression. See also https://www.ebi.ac.uk/interpro/entry/InterPro/IPR013178/ This is potentially interesting!
 
 On the other hand, 3 genes are downregulated in B males compared to the rest of the groups. Of these only one is annotated: g4126 in scaffold_70: SH2B2_MOUSE/A0A482WUF0	SH2 domain,PH domain,Phenylalanine zipper.
 
