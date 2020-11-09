@@ -298,7 +298,7 @@ Over expressed genes in B males:
 | B3     | 3     | 2                  |
 | B4     | 5     | 3                  |
 
-The complete list of genes is [here.](https://github.com/RossLab/B_viburni/blob/master/misc/de.over.B.males.vs.nonB.males.anno.csv). Of note, these are the overexpressed genes that are located on B scaffolds:
+The complete list of genes is [here](https://github.com/RossLab/B_viburni/blob/master/misc/de.over.B.males.vs.nonB.males.anno.csv). Of note, these are the overexpressed genes that are located on B scaffolds:
 
 |gene  |logFC      |seq          |gene_len|blast      |diamond   |interpro                                                  |anno|length|b.status.final|cov.04v13   |
 |------|-----------|-------------|--------|-----------|----------|----------------------------------------------------------|----|------|--------------|------------|
@@ -356,8 +356,8 @@ The B3 gene is also g7421.
 
 ### 3.4 Other comparisons
 
-Let's ignore for now the many differentially expressed genes between males and females that differ in their B status. The vast majority of these genes are predicted to be due to sex, so it doesn't make much sense to go through all these lists individually. Here they are:
+Let's ignore for now the many differentially expressed genes between males and females that differ in their B status. The vast majority of these genes are predicted to be due to sex, so it doesn't make much sense to go through all these lists individually. Here they are (note that these lists of differentially expressed genes: overexpressed genes in the focal group are those with a positive logFC):
 
-[B males vs B females](https://github.com/RossLab/B_viburni/blob/master/misc/de.B.males.vs.B.females.anno.csv)
-[B males vs non B females](https://github.com/RossLab/B_viburni/blob/master/misc/de.B.males.vs.nonB.females.anno.csv)
-[Non B males vs non B females](https://github.com/RossLab/B_viburni/blob/master/misc/de.nonB.males.vs.nonB.females.anno.csv)
+ - [B males vs B females](https://github.com/RossLab/B_viburni/blob/master/misc/de.B.males.vs.B.females.anno.csv)
+ - [B males vs non B females](https://github.com/RossLab/B_viburni/blob/master/misc/de.B.males.vs.nonB.females.anno.csv)
+ - [Non B males vs non B females](https://github.com/RossLab/B_viburni/blob/master/misc/de.nonB.males.vs.nonB.females.anno.csv)
