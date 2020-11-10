@@ -20,7 +20,92 @@ freeze.v0.genes.anno <- read_delim("output/freeze.v0.genes.anno.csv",",", escape
 # B chromosome assignment
 scaffolds.final.assignment <- read_delim("output/scaffolds.final.assignment.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
 
+# expression data from RSEM
+X04F_1 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/04F_1.genes.results")
+X04F_2 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/04F_2.genes.results")
+X04F_3 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/04F_3.genes.results")
+X04M_1 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/04M_1.genes.results")
+X04M_2 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/04M_2.genes.results")
+X04M_3 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/04M_3.genes.results")
+X13F_1 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/13F_1.genes.results")
+X13F_2 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/13F_2.genes.results")
+X13F_3 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/13F_3.genes.results")
+X13M_1 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/13M_1.genes.results")
+X13M_2 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/13M_2.genes.results")
+X13M_3 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/13M_3.genes.results")
+X13M_4 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/13M_4.genes.results")
+X15F_1 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/15F_1.genes.results")
+X15F_2 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/15F_2.genes.results")
+X15F_3 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/15F_3.genes.results")
+X15M_1 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/15M_1.genes.results")
+X15M_2 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/15M_2.genes.results")
+X15M_3 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/15M_3.genes.results")
+X21F_1 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/21F_1.genes.results")
+X21F_2 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/21F_2.genes.results")
+X21F_3 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/21F_3.genes.results")
+X21M_1 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/21M_1.genes.results")
+X21M_2 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/21M_2.genes.results")
+X21M_3 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/21M_3.genes.results")
+X21M_4 <- read.delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/R_scripts/input/21M_4.genes.results")
+
+colnames(X04F_1)[6] <- "X04F_1"
+colnames(X04F_2)[6] <- "X04F_2"
+colnames(X04F_3)[6] <- "X04F_3"
+colnames(X04M_1)[6] <- "X04M_1"
+colnames(X04M_2)[6] <- "X04M_2"
+colnames(X04M_3)[6] <- "X04M_3"
+colnames(X13F_1)[6] <- "X13F_1"
+colnames(X13F_2)[6] <- "X13F_2"
+colnames(X13F_3)[6] <- "X13F_3"
+colnames(X13M_1)[6] <- "X13M_1"
+colnames(X13M_2)[6] <- "X13M_2"
+colnames(X13M_3)[6] <- "X13M_3"
+colnames(X13M_4)[6] <- "X13M_4"
+colnames(X15F_1)[6] <- "X15F_1"
+colnames(X15F_2)[6] <- "X15F_2"
+colnames(X15F_3)[6] <- "X15F_3"
+colnames(X15M_1)[6] <- "X15M_1"
+colnames(X15M_2)[6] <- "X15M_2"
+colnames(X15M_3)[6] <- "X15M_3"
+colnames(X21F_1)[6] <- "X21F_1"
+colnames(X21F_2)[6] <- "X21F_2"
+colnames(X21F_3)[6] <- "X21F_3"
+colnames(X21M_1)[6] <- "X21M_1"
+colnames(X21M_2)[6] <- "X21M_2"
+colnames(X21M_3)[6] <- "X21M_3"
+colnames(X21M_4)[6] <- "X21M_4"
+
+rsem.tpm <- X04F_1[c(1,6)]
+rsem.tpm <- merge(rsem.tpm, X04F_2[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X04F_3[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X04M_1[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X04M_2[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X04M_3[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X13F_1[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X13F_2[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X13F_3[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X13M_1[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X13M_2[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X13M_3[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X13M_4[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X15F_1[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X15F_2[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X15F_3[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X15M_1[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X15M_2[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X15M_3[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X21F_1[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X21F_2[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X21F_3[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X21M_1[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X21M_2[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X21M_3[c(1,6)], by="gene_id")
+rsem.tpm <- merge(rsem.tpm, X21M_4[c(1,6)], by="gene_id")
+head(X21M_2)
+
 # differentially expressed genes -- from Andrés' rerun of Isabelle's script (received 03.11.20, rerun completed 09.11.20)
+
+dt_df <- read_delim("output/diff_expr/dt_df.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE) # complete list of contrasts
 de.over.B.males.genes <- read_delim("output/diff_expr/over.Bmales.vs.all.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
 de.under.B.males.genes <- as.data.frame(c("g4126","g8486","g14550"))
 
@@ -127,3 +212,11 @@ de.nonB.males.vs.nonB.females.anno <- left_join(de.nonB.males.vs.nonB.females,ge
 # extract putative B genes that are differentially expressed between B-carrying males and females
 de.B.males.vs.B.females.anno.b <- de.B.males.vs.B.females.anno[de.B.males.vs.B.females.anno$b.status.final != "A",]
 #write.csv(de.B.males.vs.B.females.anno.b,"output/diff_expr/de.B.males.vs.B.females.anno.b.csv")
+
+###
+
+##### Re-evaluating genes in B scaffolds
+genes.B1.anno <- genes.AB[genes.AB$b.status.final == "B1",]
+genes.B1.anno.dt1 <- left_join(genes.B1.anno,dt_df[c(-1)],by="gene")
+genes.B1.anno.dt1.expr <- left_join(genes.B1.anno.dt1, rsem.counts, by = "gene")
+
