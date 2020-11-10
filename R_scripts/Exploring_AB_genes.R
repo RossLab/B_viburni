@@ -101,7 +101,6 @@ rsem.tpm <- merge(rsem.tpm, X21M_1[c(1,6)], by="gene_id")
 rsem.tpm <- merge(rsem.tpm, X21M_2[c(1,6)], by="gene_id")
 rsem.tpm <- merge(rsem.tpm, X21M_3[c(1,6)], by="gene_id")
 rsem.tpm <- merge(rsem.tpm, X21M_4[c(1,6)], by="gene_id")
-head(X21M_2)
 
 # differentially expressed genes -- from Andrés' rerun of Isabelle's script (received 03.11.20, rerun completed 09.11.20)
 
@@ -216,7 +215,85 @@ de.B.males.vs.B.females.anno.b <- de.B.males.vs.B.females.anno[de.B.males.vs.B.f
 ###
 
 ##### Re-evaluating genes in B scaffolds
-genes.B1.anno <- genes.AB[genes.AB$b.status.final == "B1",]
-genes.B1.anno.dt1 <- left_join(genes.B1.anno,dt_df[c(-1)],by="gene")
-genes.B1.anno.dt1.expr <- left_join(genes.B1.anno.dt1, rsem.counts, by = "gene")
+
+# merge B assignment with expression data
+rsem.tpm.B.males <- subset(rsem.tpm[c(1,5,6,7,11,12,13,14)])
+rsem.tpm.B.females <- subset(rsem.tpm[c(1,2,3,4,8,9,10)])
+rsem.tpm.nonB.males <- subset(rsem.tpm[c(1,18,19,20,24,25,26,27)])
+rsem.tpm.nonB.females <- subset(rsem.tpm[c(1,15,16,17,21,22,23)])
+
+gene <- rsem.tpm[1]
+B.males.tpm <- rowMeans(rsem.tpm.B.males[-1])
+B.females.tpm <- rowMeans(rsem.tpm.B.females[-1])
+nonB.males.tpm <- rowMeans(rsem.tpm.nonB.males[-1])
+nonB.females.tpm <- rowMeans(rsem.tpm.nonB.females[-1])
+
+rsem.tpm.avg <- data.frame(gene,B.males.tpm,B.females.tpm,nonB.males.tpm,nonB.females.tpm)
+colnames(rsem.tpm.avg)[1] <- "gene"
+genes.AB.tpm <- merge(rsem.tpm.avg, genes.AB, by ="gene")
+
+library(patchwork)
+
+genes.AB.tpm
+
+b.males.tpm <- ggplot(genes.AB.tpm, aes(b.status.final, log10(B.males.tpm+1e-3),fill=b.status.final)) + 
+  geom_jitter(data=genes.AB.tpm, aes(b.status.final, log10(B.males.tpm+1e-3), group=b.status.final),
+              size=0.5, width = 0.4, alpha=0.5, show.legend=FALSE) +
+  geom_boxplot(alpha=0.75,outlier.shape = NA,notch=TRUE,lwd=0.6) +
+  labs(title="B males",x="", y ="log10(Average TPM + 1e-4)") +
+  scale_fill_manual(values=c("gray85","royalblue4", "deepskyblue", "cadetblue", "lavenderblush4")) +
+  theme_bw()
+
+b.females.tpm <- ggplot(genes.AB.tpm, aes(b.status.final, log10(B.females.tpm+1e-3),fill=b.status.final)) + 
+  geom_jitter(data=genes.AB.tpm, aes(b.status.final, log10(B.females.tpm+1e-3), group=b.status.final),
+              size=0.5, width = 0.4, alpha=0.5, show.legend=FALSE) +
+  geom_boxplot(alpha=0.75,outlier.shape = NA,notch=TRUE,lwd=0.6) +
+  labs(title="B females",x="", y ="log10(Average TPM + 1e-4)") +
+  scale_fill_manual(values=c("gray85","royalblue4", "deepskyblue", "cadetblue", "lavenderblush4")) +
+  theme_bw()
+
+nonb.males.tpm <- ggplot(genes.AB.tpm, aes(b.status.final, log10(nonB.males.tpm+1e-3),fill=b.status.final)) + 
+  geom_jitter(data=genes.AB.tpm, aes(b.status.final, log10(nonB.males.tpm+1e-3), group=b.status.final),
+              size=0.5, width = 0.4, alpha=0.5, show.legend=FALSE) +
+  geom_boxplot(alpha=0.75,outlier.shape = NA,notch=TRUE,lwd=0.6) +
+  labs(title="Non B males",x="", y ="log10(Average TPM + 1e-4)") +
+  scale_fill_manual(values=c("gray85","royalblue4", "deepskyblue", "cadetblue", "lavenderblush4")) +
+  theme_bw()
+
+nonb.females.tpm <- ggplot(genes.AB.tpm, aes(b.status.final, log10(nonB.females.tpm+1e-3),fill=b.status.final)) + 
+  geom_jitter(data=genes.AB.tpm, aes(b.status.final, log10(nonB.females.tpm+1e-3), group=b.status.final),
+              size=0.5, width = 0.4, alpha=0.5, show.legend=FALSE) +
+  geom_boxplot(alpha=0.75,outlier.shape = NA,notch=TRUE,lwd=0.6) +
+  labs(title="Non B females",x="", y ="log10(Average TPM + 1e-4)",guide="Scaffolds") +
+  scale_fill_manual(values=c("gray85","royalblue4", "deepskyblue", "cadetblue", "lavenderblush4")) +
+  theme_bw()
+
+#library(patchwork)
+#jpeg("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/misc/gene.tpm.by.b.status.jpeg",
+#     width = 4200, height = 3800, units = 'px', res = 300)
+#b.males.tpm + b.females.tpm + nonb.males.tpm + nonb.females.tpm
+#dev.off()
+
+# examine B1 genes
+
+genes.B1.tpm <- genes.AB.tpm[genes.AB.tpm$b.status.final == "B1",]
+nrow(genes.B1.tpm)
+genes.B1.tpm.dt <- left_join(genes.B1.tpm[1:14], dt_df[-c(1)], by ="gene")
+#write.csv(genes.B1.tpm.dt,"output/diff_expr/genes.B1.tpm.dt.csv")
+
+genes.B2.tpm <- genes.AB.tpm[genes.AB.tpm$b.status.final == "B2",]
+nrow(genes.B2.tpm)
+genes.B2.tpm.dt <- left_join(genes.B2.tpm[1:14], dt_df[-c(1)], by ="gene")
+#write.csv(genes.B2.tpm.dt,"output/diff_expr/genes.B2.tpm.dt.csv")
+
+genes.B3.tpm <- genes.AB.tpm[genes.AB.tpm$b.status.final == "B3",]
+nrow(genes.B3.tpm)
+genes.B3.tpm.dt <- left_join(genes.B3.tpm[1:14], dt_df[-c(1)], by ="gene")
+#write.csv(genes.B3.tpm.dt,"output/diff_expr/genes.B3.tpm.dt.csv")
+
+genes.B4.tpm <- genes.AB.tpm[genes.AB.tpm$b.status.final == "B4",]
+nrow(genes.B4.tpm)
+genes.B4.tpm.dt <- left_join(genes.B4.tpm[1:14], dt_df[-c(1)], by ="gene")
+#write.csv(genes.B4.tpm.dt,"output/diff_expr/genes.B4.tpm.dt.csv")
+
 
