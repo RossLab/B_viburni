@@ -444,4 +444,6 @@ When we integrate expression data (I have taken the TPM estimates from RSEM -- w
 |g9551 |0.09       |0.218333333  |0.005714286   |0.026666667     |scaffold_1388|1631    |NA         |NA        |NA                                              |N   |14907 |B1            |0.602684262|0            |0             |0               |1                 |0                 |
 |g9552 |0.317142857|1.956666667  |0.002857143   |0.145           |scaffold_1388|1646    |NA         |NA        |NA                                              |N   |14907 |B1            |0.602684262|0            |-1            |0               |1                 |0                 |
 
+Moving on to the 7 B2 genes -- no differentially expressed genes between any of the pairs; all genes have very low TPMs. Not much to see here in terms of expression. Let's ignore the B3/B4 genes for now.	We can also look at the A genes and see which ones seem to behave consistently in response to presence of B. We have 18,421 that passed the filters (out of 23,143). Let's first select those that are differentially expressed in B samples regardless of sex:
+
 
