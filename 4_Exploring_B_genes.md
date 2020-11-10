@@ -362,6 +362,8 @@ Let's ignore for now the many differentially expressed genes between males and f
  - [B males vs non B females](https://github.com/RossLab/B_viburni/blob/master/misc/de.B.males.vs.nonB.females.anno.csv)
  - [Non B males vs non B females](https://github.com/RossLab/B_viburni/blob/master/misc/de.nonB.males.vs.nonB.females.anno.csv)
 
+ (Note: non B males v B females is missing -- are we interested in this one?)
+
  Still, let's do something with this data. We can start by looking at the genes in putative B regions that are overexpressed in B-carrying males and females (again, positive logFC are overexpressed in males, negative in females). Our old friend g13953 is the only annotated gene in a high confidence B scaffold that differs between sexes.
 
  |gene  |logFC       |seq          |gene_len|blast      |diamond   |interpro                                                    |anno|length|b.status.final|cov.04v13   |
@@ -407,4 +409,10 @@ Let's ignore for now the many differentially expressed genes between males and f
 |g9860 |-2.985628107|scaffold_423 |2813    |NA         |NA        |NA                                                          |N   |294159|B4            |-0.269610254|
 |g23628|-4.467369103|scaffold_497 |2865    |LPH_RAT    |A0A3Q0J5H8|Glycosyl hydrolase family 1                                 |Y   |224833|B4            |-0.05530991 |
 
+### 3.5 Re-evaluating genes in B scaffolds
 
+Now we should integrate the RSEM expression/differential expression data with our original list of putative linked genes. We have seen that B3 and B4 might not be very reliable assignments, since they are overexpressed in some non B samples. The few B1 genes that have surfaced, however, do seem to behave as we expect.
+
+When we integrate expression data (I have taken the TPM estimates from RSEM -- we cannot use the expression data estimates from voom because genes that didn't pass the filter won't be shown), this is what we see:
+
+![](misc/gene.tpm.by.b.status.jpeg)
