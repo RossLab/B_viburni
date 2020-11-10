@@ -72,7 +72,7 @@ proportion_0_count
 dim(x)
 
 # compare filtering options. By default, the function keeps genes with about 10 read counts or more in a minimum number of samples, where the number of samples is chosen according to the minimum group sample size. The actual filtering uses CPM values rather than counts in order to avoid giving preference to samples with large library sizes. For this dataset, the median library size is about 51 million and 10/51 approx. 0.2, so the filterByExpr
-keep.exprs.group <- filterByExpr(x, group=x$samples$group,min.count=5, min.prop = 20) 
+keep.exprs.group <- filterByExpr(x, group=x$samples$group,min.count=5, min.prop = ) 
 keep.exprs.sample <- filterByExpr(x, group=rownames(x$samples),min.count=5, min.prop = 20) # keep genes with min count of 5 in at least 20% of samples
 
 x1 <- x[keep.exprs.group, keep.lib.sizes=FALSE]
