@@ -190,8 +190,8 @@ Let's ignore for now the many differentially expressed genes between males and f
 
  Still, let's do something with this data. We can start by looking at the genes in putative B regions that are overexpressed in B-carrying males and females (again, positive logFC are overexpressed in males, negative in females). Our old friend g13953 is the only annotated gene in a high confidence B scaffold that differs between sexes.
 
- |gene  |logFC       |seq          |gene_len|blast      |diamond   |interpro                                                    |anno|length|b.status.final|
-|------|------------|-------------|--------|-----------|----------|------------------------------------------------------------|----|------|--------------|-
+|gene  |logFC       |seq          |gene_len|blast      |diamond   |interpro                                                    |anno|length|b.status.final|
+|------|------------|-------------|--------|-----------|----------|------------------------------------------------------------|----|------|--------------|
 |g13953|6.950348098 |scaffold_2040|1483    |EP300_HUMAN|A0A3B3RK67|Histone acetylation protein                                 |Y   |6888  |B1            |
 |g9552 |-3.525249076|scaffold_1388|1646    |NA         |NA        |NA                                                          |N   |14907 |B1            |
 |g19187|6.642309779 |scaffold_1000|386     |NA         |NA        |NA                                                          |N   |25048 |B2            |
