@@ -19,7 +19,7 @@ freeze.v0.genes.anno <- read_delim("output/freeze.v0.genes.anno.csv",",", escape
 
 # B chromosome assignment
 scaffolds.final.assignment <- read_delim("output/scaffolds.final.assignment.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
-
+table(scaffolds.final.assignment$b.status.final)
 # expression data from RSEM
 
 #this is how I obtained TPM values from RSEM
@@ -103,7 +103,7 @@ scaffolds.final.assignment <- read_delim("output/scaffolds.final.assignment.csv"
 #rsem.tpm <- merge(rsem.tpm, X21M_2[c(1,6)], by="gene_id")
 #rsem.tpm <- merge(rsem.tpm, X21M_3[c(1,6)], by="gene_id")
 #rsem.tpm <- merge(rsem.tpm, X21M_4[c(1,6)], by="gene_id")
-write.csv(rsem.tpm,"output/diff_expr/rsem.tpm.csv", row.names=FALSE)
+#write.csv(rsem.tpm,"output/diff_expr/rsem.tpm.csv", row.names=FALSE)
 
 # import the file
 rsem.tpm <- read_delim("output/diff_expr/rsem.tpm.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
@@ -130,9 +130,9 @@ genes.A <-  genes.AB[genes.AB$b.status.final == "A",]
 genes.B1 <- genes.AB[genes.AB$b.status.final == "B1",]
 genes.B2 <- genes.AB[genes.AB$b.status.final == "B2",]
 genes.B3 <- genes.AB[genes.AB$b.status.final == "B3",]
-genes.B4 <- genes.AB[genes.AB$b.status.final == "B4",]
-
-genes.in.Bs.anno <- rbind(genes.B1[genes.B1$anno == "Y",], genes.B2[genes.B2$anno == "Y",], genes.B3[genes.B3$anno == "Y",], genes.B4[genes.B4$anno == "Y",])[c(2,9,1,3,4,5,6)]
+table(genes.AB$b.status.final)
+genes.in.Bs.anno <- rbind(genes.B1[genes.B1$anno == "Y",], genes.B2[genes.B2$anno == "Y",], genes.B3[genes.B3$anno == "Y",])[c(2,9,1,3,4,5,6)]
+table(genes.in.Bs.anno$b.status.final)
 #write.table(genes.in.Bs.anno, file = "output/genes.in.Bs.anno.csv",row.names = F,sep = ",")
 
 ###
@@ -175,13 +175,13 @@ de.over.B.males.vs.nonB.males.anno <- de.B.males.vs.nonB.males.anno[de.B.males.v
 table(de.over.B.males.vs.nonB.males.anno$b.status.final)
 de.over.B.males.vs.nonB.males.anno.yes <- de.over.B.males.vs.nonB.males.anno[de.over.B.males.vs.nonB.males.anno$anno == "Y",]
 table(de.over.B.males.vs.nonB.males.anno.yes$b.status.final)
-#write.csv(de.over.B.males.vs.nonB.males.anno,"output/diff_expr/de.over.B.males.vs.nonB.males.anno.csv")
+write.csv(de.over.B.males.vs.nonB.males.anno,"output/diff_expr/de.over.B.males.vs.nonB.males.anno.csv")
 
 de.under.B.males.vs.nonB.males.anno <- de.B.males.vs.nonB.males.anno[de.B.males.vs.nonB.males.anno$logFC < 1,]
 table(de.under.B.males.vs.nonB.males.anno$b.status.final)
 de.under.B.males.vs.nonB.males.anno.yes <- de.under.B.males.vs.nonB.males.anno[de.under.B.males.vs.nonB.males.anno$anno == "Y",]
 table(de.under.B.males.vs.nonB.males.anno.yes$b.status.final)
-#write.csv(de.under.B.males.vs.nonB.males.anno,"output/diff_expr/de.under.B.males.vs.nonB.males.anno.csv")
+write.csv(de.under.B.males.vs.nonB.males.anno,"output/diff_expr/de.under.B.males.vs.nonB.males.anno.csv")
 
 ## B females vs non B females
 
@@ -189,13 +189,13 @@ de.over.B.females.vs.nonB.females.anno <- de.B.females.vs.nonB.females.anno[de.B
 table(de.over.B.females.vs.nonB.females.anno$b.status.final)
 de.over.B.females.vs.nonB.females.anno.yes <- de.over.B.females.vs.nonB.females.anno[de.over.B.females.vs.nonB.females.anno$anno == "Y",]
 table(de.over.B.females.vs.nonB.females.anno.yes$b.status.final)
-#write.csv(de.over.B.females.vs.nonB.females.anno,"output/diff_expr/de.over.B.females.vs.nonB.females.anno.csv")
+write.csv(de.over.B.females.vs.nonB.females.anno,"output/diff_expr/de.over.B.females.vs.nonB.females.anno.csv")
 
 de.under.B.females.vs.nonB.females.anno <- de.B.females.vs.nonB.females.anno[de.B.females.vs.nonB.females.anno$logFC < 1,]
 table(de.under.B.females.vs.nonB.females.anno$b.status.final)
 de.under.B.females.vs.nonB.females.anno.yes <- de.under.B.females.vs.nonB.females.anno[de.under.B.females.vs.nonB.females.anno$anno == "Y",]
 table(de.under.B.females.vs.nonB.females.anno.yes$b.status.final)
-#write.csv(de.under.B.females.vs.nonB.females.anno,"output/diff_expr/de.under.B.females.vs.nonB.females.anno.csv")
+write.csv(de.under.B.females.vs.nonB.females.anno,"output/diff_expr/de.under.B.females.vs.nonB.females.anno.csv")
 
 ## B females vs non B females
 
@@ -209,13 +209,13 @@ de.B.males.vs.B.females.anno <- left_join(de.B.males.vs.B.females,genes.AB,by="g
 de.B.males.vs.nonB.females.anno <- left_join(de.B.males.vs.nonB.females,genes.AB,by="gene")
 de.nonB.males.vs.nonB.females.anno <- left_join(de.nonB.males.vs.nonB.females,genes.AB,by="gene")
 
-#write.csv(de.B.males.vs.B.females.anno,"output/diff_expr/de.B.males.vs.B.females.anno.csv")
-#write.csv(de.B.males.vs.nonB.females.anno,"output/diff_expr/de.B.males.vs.nonB.females.anno.csv")
-#write.csv(de.nonB.males.vs.nonB.females.anno,"output/diff_expr/de.nonB.males.vs.nonB.females.anno.csv")
+write.csv(de.B.males.vs.B.females.anno,"output/diff_expr/de.B.males.vs.B.females.anno.csv")
+write.csv(de.B.males.vs.nonB.females.anno,"output/diff_expr/de.B.males.vs.nonB.females.anno.csv")
+write.csv(de.nonB.males.vs.nonB.females.anno,"output/diff_expr/de.nonB.males.vs.nonB.females.anno.csv")
 
 # extract putative B genes that are differentially expressed between B-carrying males and females
 de.B.males.vs.B.females.anno.b <- de.B.males.vs.B.females.anno[de.B.males.vs.B.females.anno$b.status.final != "A",]
-#write.csv(de.B.males.vs.B.females.anno.b,"output/diff_expr/de.B.males.vs.B.females.anno.b.csv")
+write.csv(de.B.males.vs.B.females.anno.b,"output/diff_expr/de.B.males.vs.B.females.anno.b.csv")
 
 ###
 
@@ -273,36 +273,31 @@ nonb.females.tpm <- ggplot(genes.AB.tpm, aes(b.status.final, log10(nonB.females.
   scale_fill_manual(values=c("gray85","royalblue4", "deepskyblue", "cadetblue", "lavenderblush4")) +
   theme_bw()
 
-#library(patchwork)
-#jpeg("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/misc/gene.tpm.by.b.status.jpeg",
-#     width = 4200, height = 3800, units = 'px', res = 300)
-#b.males.tpm + b.females.tpm + nonb.males.tpm + nonb.females.tpm
-#dev.off()
+library(patchwork)
+jpeg("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/misc/gene.tpm.by.b.status.jpeg",
+     width = 4200, height = 3800, units = 'px', res = 300)
+b.males.tpm + b.females.tpm + nonb.males.tpm + nonb.females.tpm
+dev.off()
 
 # examine classes of genes
 
 genes.B1.tpm <- genes.AB.tpm[genes.AB.tpm$b.status.final == "B1",]
 nrow(genes.B1.tpm)
 genes.B1.tpm.dt <- left_join(genes.B1.tpm[1:14], dt_df[-c(1)], by ="gene")
-#write.csv(genes.B1.tpm.dt,"output/diff_expr/genes.B1.tpm.dt.csv")
+write.csv(genes.B1.tpm.dt,"output/diff_expr/genes.B1.tpm.dt.csv")
 
 genes.B2.tpm <- genes.AB.tpm[genes.AB.tpm$b.status.final == "B2",]
 nrow(genes.B2.tpm)
 genes.B2.tpm.dt <- left_join(genes.B2.tpm[1:14], dt_df[-c(1)], by ="gene")
-#write.csv(genes.B2.tpm.dt,"output/diff_expr/genes.B2.tpm.dt.csv")
+write.csv(genes.B2.tpm.dt,"output/diff_expr/genes.B2.tpm.dt.csv")
 
 genes.B3.tpm <- genes.AB.tpm[genes.AB.tpm$b.status.final == "B3",]
 nrow(genes.B3.tpm)
 genes.B3.tpm.dt <- left_join(genes.B3.tpm[1:14], dt_df[-c(1)], by ="gene")
-#write.csv(genes.B3.tpm.dt,"output/diff_expr/genes.B3.tpm.dt.csv")
-
-genes.B4.tpm <- genes.AB.tpm[genes.AB.tpm$b.status.final == "B4",]
-nrow(genes.B4.tpm)
-genes.B4.tpm.dt <- left_join(genes.B4.tpm[1:14], dt_df[-c(1)], by ="gene")
-#write.csv(genes.B4.tpm.dt,"output/diff_expr/genes.B4.tpm.dt.csv")
+write.csv(genes.B3.tpm.dt,"output/diff_expr/genes.B3.tpm.dt.csv")
 
 genes.A.tpm <- genes.AB.tpm[genes.AB.tpm$b.status.final == "A",]
 nrow(genes.A.tpm.dt)
 genes.A.tpm.dt <- left_join(genes.A.tpm[1:14], dt_df[-c(1)], by ="gene")
-#write.csv(genes.B4.tpm.dt,"output/diff_expr/genes.A.tpm.dt.csv")
+write.csv(genes.B4.tpm.dt,"output/diff_expr/genes.A.tpm.dt.csv")
 head(genes.A.tpm.dt)
