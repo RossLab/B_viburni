@@ -80,12 +80,12 @@ median(cov.21v23_norm) # 0.94
 
 # normalised coverage differences 
 
-reads.all.lines$cov.13v21 <- log2(((reads.all.lines$PV13.mapped + 1)/(reads.all.lines$PV21.mapped + 1))/median(cov.13v21_norm))
-reads.all.lines$cov.13v23 <- log2(((reads.all.lines$PV13.mapped + 1)/(reads.all.lines$PV23.mapped + 1))/median(cov.13v23_norm))
-reads.all.lines$cov.04v21 <- log2(((reads.all.lines$PV04.mapped + 1)/(reads.all.lines$PV21.mapped + 1))/median(cov.04v21_norm))
-reads.all.lines$cov.04v23 <- log2(((reads.all.lines$PV04.mapped + 1)/(reads.all.lines$PV23.mapped + 1))/median(cov.04v23_norm))
-reads.all.lines$cov.04v13 <- log2(((reads.all.lines$PV04.mapped + 1)/(reads.all.lines$PV13.mapped + 1))/median(cov.04v13_norm))
-reads.all.lines$cov.21v23 <- log2(((reads.all.lines$PV21.mapped + 1)/(reads.all.lines$PV23.mapped + 1))/median(cov.21v23_norm))
+reads.all.lines$cov.13v21 <- log2((reads.all.lines$PV13.mapped/median(cov.13v21_norm) + 1)/(reads.all.lines$PV21.mapped + 1))
+reads.all.lines$cov.13v23 <- log2((reads.all.lines$PV13.mapped/median(cov.13v23_norm) + 1)/(reads.all.lines$PV23.mapped + 1))
+reads.all.lines$cov.04v21 <- log2((reads.all.lines$PV04.mapped/median(cov.04v21_norm) + 1)/(reads.all.lines$PV21.mapped + 1))
+reads.all.lines$cov.04v23 <- log2((reads.all.lines$PV04.mapped/median(cov.04v23_norm) + 1)/(reads.all.lines$PV23.mapped + 1))
+reads.all.lines$cov.04v13 <- log2((reads.all.lines$PV04.mapped/median(cov.04v13_norm) + 1)/(reads.all.lines$PV13.mapped + 1))
+reads.all.lines$cov.21v23 <- log2((reads.all.lines$PV21.mapped/median(cov.21v23_norm) + 1)/(reads.all.lines$PV23.mapped + 1))
 
 # plot again
 
@@ -105,12 +105,11 @@ reads.all.lines$b.status <- ifelse((reads.all.lines$cov.13v21 >= 2 & reads.all.l
 
 table(reads.all.lines$b.status)
 sum(reads.all.lines[reads.all.lines$b.status == "B.strict",]$length)
-sum(reads.all.lines[reads.all.lines$b.status != "A",]$length)
+sum(reads.all.lines[reads.all.lines$b.status == "B.loose",]$length)
 
 # let's look at B candidates
 
 reads.B.lines <- reads.all.lines[c(1,2,3,4,11,13)]
-
 reads.B.lines$PV13.read.cov <- reads.B.lines$PV13.mapped*median(cov.04v13_norm)/reads.B.lines$length
 reads.B.lines$PV04.read.cov <- reads.B.lines$PV04.mapped*1/reads.B.lines$length
 
@@ -150,7 +149,7 @@ ggplot(B.all, aes(length)) + geom_bar() + scale_x_binned(n.breaks = 20, limits =
 # get alignments of SPAdes assemblies to the Pacbio reference
 
 # import files: 1-to-1
-pviburni.freeze <- read_delim("p.viburni.freeze.v0.softmasked.fa.fai", 
+pviburni.freeze <- read_delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/data/annotation/p.viburni.freeze.v0.softmasked.fa.fai", 
                               "\t", escape_double = FALSE, col_names = FALSE, 
                               trim_ws = TRUE)
 
@@ -177,7 +176,6 @@ reads.spades.all.lines <- left_join(reads.spades.all.lines,spades.nucmer.21,by="
 reads.spades.all.lines <- left_join(reads.spades.all.lines,spades.nucmer.23,by="seq")
 
 # how many scaffolds are in the B+ lines and not in the B- lines?
-
 
 reads.spades.all.lines$b.status.asn <- ifelse(!is.na(reads.spades.all.lines$PV13.asn) & !is.na(reads.spades.all.lines$PV04.asn) &
                                                 is.na(reads.spades.all.lines$PV21.asn) & is.na(reads.spades.all.lines$PV23.asn),"B","A")
@@ -253,22 +251,16 @@ scaffolds.final.assignment$b.status.final <- ifelse(scaffolds.final.assignment$c
                                                       "B1", scaffolds.final.assignment$b.status.final)
 
 scaffolds.final.assignment$b.status.final <- ifelse(scaffolds.final.assignment$b.status.final == "A" & scaffolds.final.assignment$cov.04v13 > 0 &
-                                                      ((scaffolds.final.assignment$b.status != "A" & scaffolds.final.assignment$b.status.asn == "B") |
-                                                      (scaffolds.final.assignment$b.status != "A" & scaffolds.final.assignment$b.status.kmer == "B") |
-                                                      (scaffolds.final.assignment$b.status.asn == "B" & scaffolds.final.assignment$b.status.kmer == "B")),
-                                                    "B2", scaffolds.final.assignment$b.status.final)
-
-scaffolds.final.assignment$b.status.final <- ifelse(scaffolds.final.assignment$b.status.final == "A" & scaffolds.final.assignment$cov.04v13 > 0 &
                                                       (scaffolds.final.assignment$b.status != "A" |
                                                          scaffolds.final.assignment$b.status.asn == "B" |
                                                          scaffolds.final.assignment$b.status.kmer == "B"),
-                                                    "B3", scaffolds.final.assignment$b.status.final)
+                                                    "B2", scaffolds.final.assignment$b.status.final)
 
 scaffolds.final.assignment$b.status.final <- ifelse(scaffolds.final.assignment$b.status.final == "A" &
                                                       (scaffolds.final.assignment$b.status != "A" |
                                                          scaffolds.final.assignment$b.status.asn == "B" |
                                                          scaffolds.final.assignment$b.status.kmer == "B"),
-                                                    "B4", scaffolds.final.assignment$b.status.final)
+                                                    "B3", scaffolds.final.assignment$b.status.final)
 table(scaffolds.final.assignment$b.status.final)
 
 # collect some stats
@@ -381,8 +373,9 @@ fig2d <- ggplot(scaffolds.final.assignment.b) +
         axis.text = element_text(family = "Helvetica", size = (12)),
         legend.text = element_text(family = "Helvetica", size = (12)),
         legend.title = element_text(family = "Helvetica", size = (13))) + guides(size = FALSE)
+View(scaffolds.final.assignment)
 
-write.table(scaffolds.final.assignment, file = "scaffolds.final.assignment.csv",row.names = F,sep = ",")
+#write.table(scaffolds.final.assignment, file = "scaffolds.final.assignment.csv",row.names = F,sep = ",")
 
 library(patchwork)
 jpeg("/Users/agarcia/Desktop/b.assignment.final.jpeg",
