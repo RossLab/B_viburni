@@ -554,41 +554,25 @@ We can use evidence from the three approaches (mapping coverage, Illumina assemb
                                                       (scaffolds.final.assignment$b.status.asn == "B" | scaffolds.final.assignment$b.status.kmer == "B"),
                                                       "B1", scaffolds.final.assignment$b.status.final)
 	scaffolds.final.assignment$b.status.final <- ifelse(scaffolds.final.assignment$b.status.final == "A" & scaffolds.final.assignment$cov.04v13 > 0 &
-                                                      ((scaffolds.final.assignment$b.status != "A" & scaffolds.final.assignment$b.status.asn == "B") |
-                                                      (scaffolds.final.assignment$b.status != "A" & scaffolds.final.assignment$b.status.kmer == "B") |
-                                                      (scaffolds.final.assignment$b.status.asn == "B" & scaffolds.final.assignment$b.status.kmer == "B")),
-                                                    "B2", scaffolds.final.assignment$b.status.final)
-	scaffolds.final.assignment$b.status.final <- ifelse(scaffolds.final.assignment$b.status.final == "A" & scaffolds.final.assignment$cov.04v13 > 0 &
                                                       (scaffolds.final.assignment$b.status != "A" |
                                                          scaffolds.final.assignment$b.status.asn == "B" |
                                                          scaffolds.final.assignment$b.status.kmer == "B"),
-                                                    "B3", scaffolds.final.assignment$b.status.final)
+                                                    "B2", scaffolds.final.assignment$b.status.final)
 	scaffolds.final.assignment$b.status.final <- ifelse(scaffolds.final.assignment$b.status.final == "A" &
                                                       (scaffolds.final.assignment$b.status != "A" |
                                                          scaffolds.final.assignment$b.status.asn == "B" |
                                                          scaffolds.final.assignment$b.status.kmer == "B"),
-                                                    "B4", scaffolds.final.assignment$b.status.final)
+                                                    "B3", scaffolds.final.assignment$b.status.final)
 
- - A: 2084, 428.25Mb
+ - A: 2084, 428.2Mb
  - B1 set: 103, 1.37Mb
- - B2 set: 8, 0.09Mb
- - B3 set: 98, 3.08Mb
- - B4 set: 99, 2.58Mb
+ - B2 set: 106, 3.16Mb
+ - B3 set: 99, 2.58Mb
 
 ![](misc/b.assignment.final.jpeg)
 
 
-I will use sambamba v0.6.6 to compute coverage across 1kb windows
-#!/bin/bash
-
-#$ -V
-#$ -cwd
-#$ -j y
-#$ -o sambamba.$JOB_ID.log
- 
-# Submit using:
-# qsub -pe smp 12
 sambamba depth window --nthreads=8 --window-size=1000 ../cov/PV_18-04.initial.sorted.primary.only.no.mismatches.bam -o /scratch/afilia/PV_18-04.coverage.per.1kb.window && rsync -av /scratch/afilia/PV_18-04.coverage.per.1kb.window .
-#sambamba depth window --nthreads=8 --window-size=1000 ../cov/PV_18-13.initial.sorted.primary.only.no.mismatches.bam -o /scratch/afilia/PV_18-13.coverage.per.1kb.window && rsync -av /scratch/afilia/PV_18-13.coverage.per.1kb.window .
-#sambamba depth window --nthreads=8 --window-size=1000 ../cov/PV_18-21.initial.sorted.primary.only.no.mismatches.bam -o /scratch/afilia/PV_18-21.coverage.per.1kb.window && rsync -av /scratch/afilia/PV_18-21.coverage.per.1kb.window .
-#sambamba depth window --nthreads=8 --window-size=1000 ../cov/PV_18-23.initial.sorted.primary.only.no.mismatches.bam -o /scratch/afilia/PV_18-23.coverage.per.1kb.window && rsync -av /scratch/afilia/PV_18-23.coverage.per.1kb.window .
+sambamba depth window --nthreads=8 --window-size=1000 ../cov/PV_18-13.initial.sorted.primary.only.no.mismatches.bam -o /scratch/afilia/PV_18-13.coverage.per.1kb.window && rsync -av /scratch/afilia/PV_18-13.coverage.per.1kb.window .
+sambamba depth window --nthreads=8 --window-size=1000 ../cov/PV_18-21.initial.sorted.primary.only.no.mismatches.bam -o /scratch/afilia/PV_18-21.coverage.per.1kb.window && rsync -av /scratch/afilia/PV_18-21.coverage.per.1kb.window .
+sambamba depth window --nthreads=8 --window-size=1000 ../cov/PV_18-23.initial.sorted.primary.only.no.mismatches.bam -o /scratch/afilia/PV_18-23.coverage.per.1kb.window && rsync -av /scratch/afilia/PV_18-23.coverage.per.1kb.window .
