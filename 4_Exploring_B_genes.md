@@ -241,7 +241,7 @@ When we integrate expression data (I have taken the TPM estimates from RSEM -- w
 
 ![](misc/gene.tpm.by.b.status.jpeg)
 
-22 genes on B1 scaffold passed the filter -- indeed, for the remaining 56 TPM values are typically very low (<0.01). These would correspond to genes without expression in any of the samples at this stage. Let's look at expression data and differential expression from our dt contrast table (1 - overexpressed in focal group, -1 - underexpressed, 0 - no differential expression). The first gene is g13953; the next four genes show differential expression patterns consistent with expression from B in both males and females. For the others, TPM values are usually small and there is some moderate expression from the non B lines, which can be due to 1) incorrect scaffold assignment, 2) multimapping reads to paralogs, 3) A/B shared regions.
+22 genes on B1 scaffolds passed the filter -- indeed, for the remaining 56 TPM values are typically very low (<0.01). These would correspond to genes without expression in any of the samples at this stage. Let's look at expression data and differential expression from our dt contrast table (1 - overexpressed in focal group, -1 - underexpressed, 0 - no differential expression). The first gene is g13953; the next four genes show differential expression patterns consistent with expression from B in both males and females. For the others, TPM values are usually small and there is some moderate expression from the non B lines, which can be due to 1) incorrect scaffold assignment, 2) multimapping reads to paralogs, 3) A/B shared regions.
 
 |gene  |B.males.tpm|B.females.tpm|nonB.males.tpm|nonB.females.tpm|seq          |gene_len|blast      |diamond   |interpro                                        |anno|length|b.status.final|cov.04v13  |BmalevnoBmale|BmalevsfemaleB|BmalevsfemalenoB|BfemalevsnoBfemale|noBmalevsnoBfemale|
 |------|-----------|-------------|--------------|----------------|-------------|--------|-----------|----------|------------------------------------------------|----|------|--------------|-----------|-------------|--------------|----------------|------------------|------------------|
@@ -268,6 +268,7 @@ When we integrate expression data (I have taken the TPM estimates from RSEM -- w
 |g9551 |0.09       |0.218333333  |0.005714286   |0.026666667     |scaffold_1388|1631    |NA         |NA        |NA                                              |N   |14907 |B1            |0.602684262|0            |0             |0               |1                 |0                 |
 |g9552 |0.317142857|1.956666667  |0.002857143   |0.145           |scaffold_1388|1646    |NA         |NA        |NA                                              |N   |14907 |B1            |0.602684262|0            |-1            |0               |1                 |0                 |
 
-Let's ignore the B3/B4 genes for now. We can also look at the A genes and see which ones seem to behave consistently in response to presence of B. We have 18,421 that passed the filters (out of 23,143). Let's first select those that are differentially expressed in B samples regardless of sex:
+Let's ignore the B2/B3 genes for now (come back to them later). We can also look at the A genes and see which ones seem to behave consistently in response to presence of B. We have 18,421 that passed the filters (out of 23,143). Let's first select those that are differentially expressed in B samples regardless of sex:
+
 
 
