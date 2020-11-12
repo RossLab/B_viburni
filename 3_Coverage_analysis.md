@@ -208,7 +208,7 @@ We can define two preliminary sets of candidate B scaffolds based on coverage:
 	b.candidates <- reads.all.lines[reads.all.lines$cov.13v21 >= 0.58 & reads.all.lines$cov.13v23 >= 0.58 & reads.all.lines$cov.04v21 >= 0.58 & reads.all.lines$cov.04v23 >= 0.58,] # assuming 1 B copy + 2 A copies
 	b.candidates.strict <- reads.all.lines[reads.all.lines$cov.13v21 >= 2 & reads.all.lines$cov.13v23 >= 2 & reads.all.lines$cov.04v21 >= 2 & reads.all.lines$cov.04v23 >= 2,]
 
-which gives us 145 putative B scaffolds with the more strict filtering (2.03Mb) and 280 with the losser filtering (6.44Mb). 
+which gives us 145 putative B scaffolds with the more strict filtering (2.03Mb) and 136 with the looser filtering (4.42Mb). 
 
 Of course, some of these contigs may be highly repetitive sequences, which should show higher coverage. This is indeed what we see:
 
@@ -317,15 +317,6 @@ Same results using the m-to-m alignments. Only 57 scaffolds are present in B+ li
 	awk '{ a[$12]++ } END { for (b in a) { print b } }' 23.spades.v.freeze.v0.dnadiff.1coords > 23.spades.v.freeze.v0.dnadiff.1coords.list # 2141
 
 107 scaffolds (1.03Mb) are unique to the PV04 and PV13 assemblies, of which 72 (0.68Mb) correspond to B strict candidates. If we incorporate this to our coverage based analysis, we get:
-
-| Scaffolds              | Count| Size (Mb) |
-|------------------------|------|-----------|
-| B.strict.plus.assembly |   72 | 0.68      |
-|               B.strict |   73 | 1.35      |
-|  B.loose.plus.assembly |   14 | 0.14      |
-|                B.loose |  121 | 4.27      |
-|             B.assembly |   21 | 0.21      |
-|                      A | 2091 | 428.7     |
 
 ![](misc/depth.B.cov.assembly.plots.jpeg)
 
@@ -578,10 +569,10 @@ We can use evidence from the three approaches (mapping coverage, Illumina assemb
                                                          scaffolds.final.assignment$b.status.kmer == "B"),
                                                     "B4", scaffolds.final.assignment$b.status.final)
 
- - A: 2085, 428.3Mb
+ - A: 2084, 428.25Mb
  - B1 set: 103, 1.37Mb
  - B2 set: 8, 0.09Mb
- - B3 set: 97, 3.08Mb
+ - B3 set: 98, 3.08Mb
  - B4 set: 99, 2.58Mb
 
 ![](misc/b.assignment.final.jpeg)
