@@ -4,7 +4,7 @@
 	# working directory	
 	/data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads
 	qlogin -pe smp64 32 -N bwa -l h=bigwig
-    /ceph/software/utilities/sge/qlogin -pe smp64 32 -N bamfilter
+    /ceph/software/utilities/sge/qlogin -pe smp 1 -N QLOGIN
 
 ## 1. Raw reads
 
@@ -585,3 +585,19 @@ We can use evidence from the three approaches (mapping coverage, Illumina assemb
  - B4 set: 99, 2.58Mb
 
 ![](misc/b.assignment.final.jpeg)
+
+
+I will use sambamba v0.6.6 to compute coverage across 1kb windows
+#!/bin/bash
+
+#$ -V
+#$ -cwd
+#$ -j y
+#$ -o sambamba.$JOB_ID.log
+ 
+# Submit using:
+# qsub -pe smp 12
+sambamba depth window --nthreads=8 --window-size=1000 ../cov/PV_18-04.initial.sorted.primary.only.no.mismatches.bam -o /scratch/afilia/PV_18-04.coverage.per.1kb.window && rsync -av /scratch/afilia/PV_18-04.coverage.per.1kb.window .
+#sambamba depth window --nthreads=8 --window-size=1000 ../cov/PV_18-13.initial.sorted.primary.only.no.mismatches.bam -o /scratch/afilia/PV_18-13.coverage.per.1kb.window && rsync -av /scratch/afilia/PV_18-13.coverage.per.1kb.window .
+#sambamba depth window --nthreads=8 --window-size=1000 ../cov/PV_18-21.initial.sorted.primary.only.no.mismatches.bam -o /scratch/afilia/PV_18-21.coverage.per.1kb.window && rsync -av /scratch/afilia/PV_18-21.coverage.per.1kb.window .
+#sambamba depth window --nthreads=8 --window-size=1000 ../cov/PV_18-23.initial.sorted.primary.only.no.mismatches.bam -o /scratch/afilia/PV_18-23.coverage.per.1kb.window && rsync -av /scratch/afilia/PV_18-23.coverage.per.1kb.window .
