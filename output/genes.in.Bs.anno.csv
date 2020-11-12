@@ -1,207 +1,207 @@
-"gene","b.status.final","seq","gene_len","blast","diamond","interpro"
-"g16324","B1","scaffold_1148",797,"KIF23_HUMAN","K7J331","Kinesin motor domain"
-"g16323","B1","scaffold_1148",725,"KIF23_HUMAN","K7J331","Kinesin motor domain"
-"g12159","B1","scaffold_1269",1076,NA,"A0A226CTZ9",NA
-"g12160","B1","scaffold_1269",1038,NA,"A0A226DDY8","hAT family C-terminal dimerisation region"
-"g16455","B1","scaffold_1425",3374,"PAIN_DROME","A0A482WJY3","Ion transport protein,Ankyrin repeats (3 copies)"
-"g16456","B1","scaffold_1425",788,NA,"A0A2P8Z590","Ion transport protein"
-"g17664","B1","scaffold_1508",1238,"RM38_MOUSE","A0A067QJE0","Phosphatidylethanolamine-binding protein"
-"g17662","B1","scaffold_1508",1823,"SUCB2_COLLI","R4G3Z4","ATP-grasp domain"
-"g17661","B1","scaffold_1508",267,NA,"A0A482VIA6",NA
-"g15851","B1","scaffold_1514",2339,NA,"J9K4F9",NA
-"g23391","B1","scaffold_1768",2182,NA,"J9LQI3",NA
-"g13953","B1","scaffold_2040",1483,"EP300_HUMAN","A0A3B3RK67","Histone acetylation protein"
-"g1208","B1","scaffold_2293",283,"FAS_CHICK","A0A2J7PFW7",NA
-"g20100","B1","scaffold_552",3042,NA,"A0A087T926","Immunoglobulin I-set domain,MULE transposase domain"
-"g20092","B1","scaffold_552",2589,NA,"A0A0R3QBG2","Endonuclease-reverse transcriptase,Reverse transcriptase (RNA-dependent DNA polymerase)"
-"g20103","B1","scaffold_552",842,NA,"J9L5G6",NA
-"g20090","B1","scaffold_552",686,NA,NA,"Protein of unknown function (DUF1759)"
-"g20111","B1","scaffold_552",965,NA,NA,"Immunoglobulin I-set domain"
-"g20115","B1","scaffold_552",482,NA,"J9KK61",NA
-"g20084","B1","scaffold_552",1170,NA,"A0A0J7N8Y6","Integrase zinc binding domain"
-"g20112","B1","scaffold_552",971,NA,NA,"Immunoglobulin domain"
-"g20097","B1","scaffold_552",552,NA,"T1HLH9",NA
-"g20106","B1","scaffold_552",1316,"YMD2_CAEEL","A0A151IDY8",NA
-"g20110","B1","scaffold_552",641,NA,"D6WQK2",NA
-"g20108","B1","scaffold_552",2547,NA,"A0A0R3QAL5","Integrase core domain"
-"g2644","B1","scaffold_786",4614,"PGBD4_HUMAN","X1X046","Transposase IS4"
-"g9063","B1","scaffold_848",327,"TRET1_DROPS","A0A3Q0J369","Sugar (and other) transporter"
-"g9061","B1","scaffold_848",1328,NA,NA,"Predicted AAA-ATPase"
-"g9062","B1","scaffold_848",1025,NA,"A0A1H8D3N8","Predicted AAA-ATPase"
-"g2155","B1","scaffold_887",3164,NA,"J9KIL6",NA
-"g5582","B1","scaffold_897",663,"FAS_ANSAN","A0A158NZW8","Beta-ketoacyl synthase, N-terminal domain"
-"g19061","B1","scaffold_902",1061,NA,"K7JWY9","Reverse transcriptase (RNA-dependent DNA polymerase)"
-"g11624","B2","scaffold_1060",2894,"PAIN_DROME","A0A482WJY3","Ankyrin repeats (3 copies),Ankyrin repeat,Ion transport protein"
-"g11625","B2","scaffold_1060",2252,"PAIN_DROME","A0A482WJY3","Ion transport protein,Ankyrin repeats (3 copies),Ankyrin repeats (many copies)"
-"g5825","B2","scaffold_1469",797,NA,"A0A1S3DI71",NA
-"g5824","B2","scaffold_1469",952,NA,"J9LFV8","PIF1-like helicase"
-"g6860","B3","scaffold_1082",1371,NA,"J9M905",NA
-"g6857","B3","scaffold_1082",954,NA,"J9LMH3","Transposase IS4"
-"g6858","B3","scaffold_1082",328,NA,NA,"Transposase IS4"
-"g12490","B3","scaffold_1086",460,NA,"X1WIP7","Zona pellucida-like domain"
-"g12338","B3","scaffold_1097",987,NA,NA,"Leucine Rich Repeat,Leucine rich repeat,BspA type Leucine rich repeat region (6 copies)"
-"g12339","B3","scaffold_1097",1049,NA,NA,"Leucine rich repeat"
-"g17419","B3","scaffold_1288",1704,NA,"A0A087T1E7","DDE superfamily endonuclease"
-"g19186","B3","scaffold_1312",662,"MOODY_DROME","A0A0L0CB57","7 transmembrane receptor (rhodopsin family)"
-"g17650","B3","scaffold_1472",1800,NA,"A0A0R3Q943",NA
-"g17648","B3","scaffold_1472",803,NA,"A0A0R3Q550",NA
-"g17647","B3","scaffold_1472",1013,NA,"D7EID9","Parvovirus coat protein VP1"
-"g1206","B3","scaffold_1495",836,NA,NA,"Baculovirus FP protein"
-"g4894","B3","scaffold_1500",431,NA,NA,"IclR helix-turn-helix domain"
-"g5310","B3","scaffold_1578",2794,"THAP9_HUMAN","J9L0J1","Transposase protein,THAP domain"
-"g5311","B3","scaffold_1578",1420,NA,"A0A087T137","Transposase IS4"
-"g5312","B3","scaffold_1578",879,NA,NA,"Transposase IS4"
-"g18800","B3","scaffold_1581",1289,NA,"J9MAL5",NA
-"g8273","B3","scaffold_1773",1126,"EST6_APIME","A0A067QSW2","Carboxylesterase family"
-"g2151","B3","scaffold_1820",1965,"TOLL_DROME",NA,"Leucine rich repeat,Leucine rich repeat N-terminal domain,BspA type Leucine rich repeat region (6 copies)"
-"g990","B3","scaffold_1966",725,"4CLL7_ARATH","K7IVI9","AMP-binding enzyme,AMP-binding enzyme C-terminal domain"
-"g18651","B3","scaffold_2195",309,"PDK_DROME","A0A1S3DCA9","Histidine kinase-, DNA gyrase B-, and HSP90-like ATPase"
-"g17804","B3","scaffold_295",391,"LSM4_HUMAN","D6WJA0","LSM domain"
-"g17802","B3","scaffold_295",433,"CNI_DROME","A0A482X1C0","Cornichon protein"
-"g17798","B3","scaffold_295",1807,"YMD2_CAEEL","A0A151IDY8",NA
-"g17792","B3","scaffold_295",1241,NA,"A0A0R3Q943",NA
-"g17791","B3","scaffold_295",1933,NA,"A0A0R3Q549",NA
-"g17817","B3","scaffold_295",1903,NA,"A0A2J7QCN0",NA
-"g17806","B3","scaffold_295",645,"BHE22_XENTR","A0A1S3D3L0","Helix-loop-helix DNA-binding domain"
-"g17803","B3","scaffold_295",2832,"MCM4_DROME","A0A067R0Z3","MCM P-loop domain,MCM OB domain,MCM AAA-lid domain,MCM N-terminal domain"
-"g17818","B3","scaffold_295",1395,"NXF1_RAT","A0A2J7R106","Tap, RNA-binding,TAP C-terminal domain"
-"g17813","B3","scaffold_295",1666,"ARHGC_MOUSE","A0A151JPR7","RhoGEF domain,PH domain"
-"g17808","B3","scaffold_295",2723,NA,"A0A0L7RH29","Regulator of G protein signalling-like domain,Phorbol esters/diacylglycerol binding domain (C1 domain),PDZ domain"
-"g17801","B3","scaffold_295",4870,"DYH7_HUMAN","A0A482WYZ6","Microtubule-binding stalk of dynein motor,Dynein heavy chain AAA lid domain,Dynein heavy chain region D6 P-loop domain,Ligand-binding domain of nuclear hormone receptor,Dynein heavy chain C-terminal domain,ATP-binding dynein motor region,Zinc finger, C4 type (two domains)"
-"g17789","B3","scaffold_295",467,NA,NA,"Zinc finger, C3HC4 type (RING finger)"
-"g17800","B3","scaffold_295",2289,NA,"A0A151JC66","DNA polymerase type B, organellar and viral"
-"g123","B3","scaffold_360",3397,NA,"J9M4U0",NA
-"g130","B3","scaffold_360",1025,NA,"A0A2H4T2S8",NA
-"g170","B3","scaffold_360",587,NA,"A0A2H4T2T7",NA
-"g195","B3","scaffold_360",5900,NA,"A0A2H4UX56",NA
-"g98","B3","scaffold_360",976,"DCR1_DROME","A0A067QYQ9","Ribonuclease III domain"
-"g93","B3","scaffold_360",859,NA,NA,"Zinc finger, C3HC4 type (RING finger)"
-"g150","B3","scaffold_360",2014,NA,NA,"Zinc finger, C3HC4 type (RING finger)"
-"g133","B3","scaffold_360",1319,NA,"A0A2H4UXB5",NA
-"g160","B3","scaffold_360",2741,NA,"B7SVC7","Chitin binding Peritrophin-A domain"
-"g156","B3","scaffold_360",3047,NA,"A0A1S5VG25",NA
-"g174","B3","scaffold_360",2201,NA,"A0A2H4T2P1",NA
-"g101","B3","scaffold_360",669,"LST4_CAEEL","A0A067R133","WASP-binding domain of Sorting nexin protein,PX domain"
-"g137","B3","scaffold_360",1472,NA,"B7SVD6","Baculoviral E56 protein, specific to ODV envelope"
-"g124","B3","scaffold_360",904,NA,NA,"Myb/SANT-like DNA-binding domain"
-"g135","B3","scaffold_360",1475,NA,"A0A1S5VG57","ATP dependent DNA ligase domain"
-"g184","B3","scaffold_360",2020,NA,"B7SV33",NA
-"g118","B3","scaffold_360",2239,NA,"A0A1S5VG70",NA
-"g175","B3","scaffold_360",1241,NA,"A4L229","Per os infectivity factor 2"
-"g202","B3","scaffold_360",3710,NA,"A0A2I7G2T7","Ribonucleotide reductase, barrel domain"
-"g162","B3","scaffold_360",728,NA,NA,"Per os infectivity factor 3"
-"g201","B3","scaffold_360",1136,NA,"A0A2P8Y5M2","Transposase (partial DDE domain)"
-"g119","B3","scaffold_360",1930,NA,"A0A0F7KNK5","Steryl acetyl hydrolase"
-"g85","B3","scaffold_360",1746,NA,"J9L0E4","MULE transposase domain"
-"g126","B3","scaffold_360",1643,NA,"B7SVE6",NA
-"g222","B3","scaffold_360",593,NA,NA,"Baculoviridae AC81"
-"g115","B3","scaffold_360",4774,NA,"B7SV22,A0A2H4T2N0","DNA polymerase family B, exonuclease domain"
-"g172","B3","scaffold_360",1756,NA,NA,"Ribonucleotide reductase, small chain"
-"g125","B3","scaffold_360",2168,NA,"B7SVE7","Baculoviridae p74 conserved region,Baculoviridae P74 N-terminal"
-"g208","B3","scaffold_360",1421,NA,"A0A067R7U8","Zinc finger, C3HC4 type (RING finger),Inhibitor of Apoptosis domain"
-"g152","B3","scaffold_360",1535,NA,"A0A1S5VG33","Per os infectivity"
-"g102","B3","scaffold_360",198,NA,NA,"Variant SH3 domain"
-"g167","B3","scaffold_360",1808,NA,"A4L220",NA
-"g198","B3","scaffold_360",464,NA,NA,"Baculoviridae late expression factor 5 C-terminal domain"
-"g159","B3","scaffold_360",875,NA,NA,"Baculovirus FP protein"
-"g221","B3","scaffold_360",2249,NA,"B7SVB7",NA
-"g149","B3","scaffold_360",607,NA,NA,"Zinc finger, C3HC4 type (RING finger)"
-"g94","B3","scaffold_360",1494,NA,NA,"JmjC domain, hydroxylase"
-"g7424","B3","scaffold_526",571,"NFIX_MESAU","X1WJN8","MH1 domain"
-"g7421","B3","scaffold_526",1408,"RCBT1_MOUSE","A0A232EN37","BTB/POZ domain,Regulator of chromosome condensation (RCC1) repeat"
-"g7419","B3","scaffold_526",1616,"RCBT1_MOUSE","K1QBL7","BTB/POZ domain,Regulator of chromosome condensation (RCC1) repeat"
-"g7417","B3","scaffold_526",618,NA,NA,"BTB/POZ domain"
-"g7423","B3","scaffold_526",1543,"RCBT1_HUMAN","A0A232EN37","Regulator of chromosome condensation (RCC1) repeat,BTB/POZ domain"
-"g7422","B3","scaffold_526",1410,"RCBT1_MOUSE","K1QBL7","BTB/POZ domain,Regulator of chromosome condensation (RCC1) repeat"
-"g7420","B3","scaffold_526",414,NA,NA,"Regulator of chromosome condensation (RCC1) repeat"
-"g7416","B3","scaffold_526",1295,"RCBT1_HUMAN","A0A2C9MAE2","Regulator of chromosome condensation (RCC1) repeat,BTB/POZ domain"
-"g7427","B3","scaffold_526",1279,NA,"A0A482WYX0","CTF/NF-I family transcription modulation region"
-"g7430","B3","scaffold_526",1428,"TRET1_CULQU","J9JV25","Sugar (and other) transporter"
-"g7431","B3","scaffold_526",1395,"TRET1_APILI","A0A482WTV6","Sugar (and other) transporter"
-"g23011","B3","scaffold_529",1175,NA,NA,"7tm Odorant receptor"
-"g23013","B3","scaffold_529",719,NA,NA,"Baculovirus FP protein"
-"g23012","B3","scaffold_529",2755,"ARSB_RAT","D2A206","Sulfatase"
-"g23009","B3","scaffold_529",887,NA,"A0A165ZFZ6","Predicted AAA-ATPase"
-"g23008","B3","scaffold_529",2003,NA,NA,"Eukaryotic aspartyl protease"
-"g23003","B3","scaffold_529",822,NA,NA,"7tm Odorant receptor"
-"g23004","B3","scaffold_529",890,NA,NA,"7tm Odorant receptor"
-"g23007","B3","scaffold_529",854,NA,NA,"Eukaryotic aspartyl protease"
-"g20374","B3","scaffold_538",1163,NA,NA,"Farnesoic acid 0-methyl transferase"
-"g14106","B3","scaffold_607",2281,"BAB2_DROME","A0A482WRV5","BTB/POZ domain,Zinc finger, C2H2 type"
-"g13964","B3","scaffold_632",686,NA,NA,"Domain of unknown function (DUF4773)"
-"g13965","B3","scaffold_632",618,NA,"A0A3Q0IT39","Domain of unknown function (DUF4773)"
-"g18473","B3","scaffold_798",988,"MOG2A_XENLA","T1H8G4","Diacylglycerol acyltransferase"
-"g18477","B3","scaffold_798",391,NA,NA,"Diacylglycerol acyltransferase"
-"g18472","B3","scaffold_798",1015,"MOG2A_XENLA","G3UGB8","Diacylglycerol acyltransferase"
-"g18476","B3","scaffold_798",1047,"MOG2A_XENLA","A0A482X8Q2","Diacylglycerol acyltransferase"
-"g18475","B3","scaffold_798",496,"MOG2A_XENLA",NA,"Diacylglycerol acyltransferase"
-"g18474","B3","scaffold_798",1231,"DGAT2_DANRE","A0A182GB69","Diacylglycerol acyltransferase"
-"g507","B3","scaffold_816",601,NA,NA,"ERAP1-like C-terminal domain"
-"g506","B3","scaffold_816",905,NA,"A0A2J7RAG5","Peptidase family M1 domain"
-"g6871","B3","scaffold_916",249,"APC11_MOUSE","A0A1S3DK12","Anaphase-promoting complex subunit 11 RING-H2 finger"
-"g20745","B3","scaffold_957",663,"MAP11_DANRE","A0A482X705",NA
-"g20744","B3","scaffold_957",372,NA,NA,"Major Facilitator Superfamily"
-"g20743","B3","scaffold_957",1327,NA,NA,"KH domain,Regulator of G protein signalling-like domain"
-"g16390","B3","scaffold_970",1319,NA,NA,"7tm Odorant receptor"
-"g21053","B4","scaffold_1019",2289,NA,"A0A2J7Q228",NA
-"g21054","B4","scaffold_1019",2283,"KAT2A_DANRE","A0A2J7QY91","PCAF (P300/CBP-associated factor) N-terminal domain,Acetyltransferase (GNAT) family,Bromodomain"
-"g18798","B4","scaffold_1056",1005,NA,NA,"Low-density lipoprotein receptor domain class A"
-"g20075","B4","scaffold_1152",399,NA,NA,"BTB/POZ domain"
-"g15234","B4","scaffold_1166",2716,NA,NA,"BTB And C-terminal Kelch,BTB/POZ domain"
-"g15233","B4","scaffold_1166",1067,NA,NA,"BTB/POZ domain"
-"g15528","B4","scaffold_1202",1265,NA,"A0A1M6JF78","Phosphatidylinositol-specific phospholipase C, X domain"
-"g15524","B4","scaffold_1202",1355,"GAGXE_DROME","J9LYS0","Associated with zinc fingers"
-"g15525","B4","scaffold_1202",404,"RTJK_DROFU","A0A1D2M8H9","Endonuclease-reverse transcriptase"
-"g15185","B4","scaffold_1270",402,NA,NA,"Trehalase"
-"g2727","B4","scaffold_1381",2115,NA,"T1I2R8","Endonuclease-reverse transcriptase"
-"g12795","B4","scaffold_1418",854,"RTJK_DROFU","A0A2A4K918","Endonuclease-reverse transcriptase"
-"g12794","B4","scaffold_1418",1169,"GAGXE_DROME","A0A194RK46","Associated with zinc fingers"
-"g21527","B4","scaffold_1427",2364,NA,"J9KHS0","THAP domain,Transposase protein"
-"g13786","B4","scaffold_1441",2064,NA,"J9LQI2","THAP domain"
-"g2645","B4","scaffold_1454",894,NA,"J9K3D3","Thioesterase domain"
-"g8513","B4","scaffold_1484",1055,"MURF_BACSU","Q5GT47","Mur ligase family, catalytic domain,Mur ligase middle domain"
-"g8515","B4","scaffold_1484",681,"CC124_XENTR","A0A1S3CXZ8","Coiled-coil domain-containing protein 124 /Oxs1"
-"g18439","B4","scaffold_1579",577,"CSN4_DANRE","A0A2J7R0G0","CSN4/RPN5/eIF3a helix turn helix domain,PCI domain"
-"g19056","B4","scaffold_1615",1536,"RTXE_DROME","J9LYS0","Endonuclease-reverse transcriptase"
-"g18899","B4","scaffold_1628",291,NA,NA,"Carboxylesterase family"
-"g20192","B4","scaffold_1639",353,NA,"E0W394,A0A482WYE9",NA
-"g18153","B4","scaffold_1720",285,"CPR3_CAEEL",NA,"Papain family cysteine protease"
-"g1595","B4","scaffold_1845",321,"SULF1_DROME","A0A482X3I3","Sulfatase"
-"g14826","B4","scaffold_2003",1097,"HSP7E_DROME","T1PA42","Hsp70 protein"
-"g14825","B4","scaffold_2003",553,NA,NA,"Hsp70 protein"
-"g12541","B4","scaffold_2066",1166,"RDX_DROME","A0A484BP37","BTB/POZ domain"
-"g5232","B4","scaffold_2160",2567,NA,NA,"Transactive response DNA-binding protein N-terminal domain"
-"g9857","B4","scaffold_423",2402,NA,"J9KR10","PDZ domain"
-"g9861","B4","scaffold_423",739,NA,"A0A482XEQ4","Immunoglobulin I-set domain,Immunoglobulin domain"
-"g23620","B4","scaffold_497",616,"KGP1_HUMAN","A0A3S2PII9","Coiled-coil N-terminus of cGMP-dependent protein kinase"
-"g23625","B4","scaffold_497",1584,"MYRO1_BREBR","A0A067RC84","Glycosyl hydrolase family 1"
-"g23628","B4","scaffold_497",2865,"LPH_RAT","A0A3Q0J5H8","Glycosyl hydrolase family 1"
-"g23624","B4","scaffold_497",395,"KGP25_DROME","A0A194QK34","Cyclic nucleotide-binding domain"
-"g23627","B4","scaffold_497",1284,"KGP25_DROME","T1H8H9","Cyclic nucleotide-binding domain,Protein kinase domain"
-"g23626","B4","scaffold_497",1702,"MYRO1_BREBR","A0A2J7PTJ0","Glycosyl hydrolase family 1"
-"g23629","B4","scaffold_497",1468,"MYRO1_BREBR","A0A2J7PTJ0","Glycosyl hydrolase family 1"
-"g8505","B4","scaffold_543",1210,NA,"A0A2P8XML8","Ring finger domain"
-"g8503","B4","scaffold_543",1035,"CGRF1_RAT","X1WID2","Zinc finger, C3HC4 type (RING finger)"
-"g8506","B4","scaffold_543",2073,"LSHR_PIG","A0A067QID7","Leucine rich repeat,7 transmembrane receptor (rhodopsin family)"
-"g8502","B4","scaffold_543",5528,"RGPA2_HUMAN","A0A067RK08","Rap/ran-GAP"
-"g1880","B4","scaffold_620",1884,"PERO_DROME","J9K1U3","Animal haem peroxidase"
-"g1878","B4","scaffold_620",930,"YQL5_SCHPO","C4WT46","RNA recognition motif. (a.k.a. RRM, RBD, or RNP domain)"
-"g1881","B4","scaffold_620",2615,"CEG1A_DROME","A0A482XTR2,A0A2J7QUF1","Putative GTPase activating protein for Arf,Ras family"
-"g1876","B4","scaffold_620",1533,NA,"D6WEX8","Predicted AAA-ATPase"
-"g1879","B4","scaffold_620",1764,"PERO_DROME","J9JLS0","Animal haem peroxidase"
-"g1877","B4","scaffold_620",1434,"T161B_MOUSE","A0A2J7RAJ4","Predicted transmembrane protein 161AB"
-"g9420","B4","scaffold_676",872,NA,"J9KWC3",NA
-"g9417","B4","scaffold_676",3008,NA,"K7JWY9","Reverse transcriptase (RNA-dependent DNA polymerase)"
-"g9419","B4","scaffold_676",3016,NA,"K7JWY9","Reverse transcriptase (RNA-dependent DNA polymerase)"
-"g12806","B4","scaffold_684",303,NA,NA,"Nuclear factor I protein pre-N-terminus"
-"g3354","B4","scaffold_733",741,NA,NA,"FLYWCH zinc finger domain"
-"g5254","B4","scaffold_814",2003,"BGLR_FELCA,BGLR_CHLAE,BGLR_HUMAN","A0A2J7QP48,A0A067QW61","Glycosyl hydrolases family 2, sugar binding domain,Glycosyl hydrolases family 2,Glycosyl hydrolases family 2, TIM barrel domain"
-"g5253","B4","scaffold_814",381,NA,"A0A2P8YJG1","HIT zinc finger"
-"g5251","B4","scaffold_814",244,NA,NA,"Uncharacterised protein family (UPF0203)"
-"g5249","B4","scaffold_814",1154,"FXR1B_XENLA",NA,"KH domain,Regulator of G protein signalling-like domain"
-"g5250","B4","scaffold_814",3394,"INT2_CHICK","A0A067QT10","Integrator complex subunit 2"
-"g5248","B4","scaffold_814",1116,"CATA_ASCSU","A0A2J7REJ5","Catalase-related immune-responsive,Catalase"
-"g5252","B4","scaffold_814",802,"C1QBP_HUMAN","A0A067R160","Mitochondrial glycoprotein"
-"g19063","B4","scaffold_829",482,"DRGX_MOUSE","A0A194QFU0","Homeodomain"
-"g21426","B4","scaffold_851",353,NA,NA,"Carboxylesterase family"
-"g21425","B4","scaffold_851",1013,NA,"A0A2J7QKK3","Carboxylesterase family"
+gene,b.status.final,seq,gene_len,blast,diamond,interpro
+g16324,B1,scaffold_1148,797,KIF23_HUMAN,K7J331,Kinesin motor domain
+g16323,B1,scaffold_1148,725,KIF23_HUMAN,K7J331,Kinesin motor domain
+g12159,B1,scaffold_1269,1076,NA,A0A226CTZ9,NA
+g12160,B1,scaffold_1269,1038,NA,A0A226DDY8,hAT family C-terminal dimerisation region
+g16455,B1,scaffold_1425,3374,PAIN_DROME,A0A482WJY3,"Ion transport protein,Ankyrin repeats (3 copies)"
+g16456,B1,scaffold_1425,788,NA,A0A2P8Z590,Ion transport protein
+g17664,B1,scaffold_1508,1238,RM38_MOUSE,A0A067QJE0,Phosphatidylethanolamine-binding protein
+g17662,B1,scaffold_1508,1823,SUCB2_COLLI,R4G3Z4,ATP-grasp domain
+g17661,B1,scaffold_1508,267,NA,A0A482VIA6,NA
+g15851,B1,scaffold_1514,2339,NA,J9K4F9,NA
+g23391,B1,scaffold_1768,2182,NA,J9LQI3,NA
+g13953,B1,scaffold_2040,1483,EP300_HUMAN,A0A3B3RK67,Histone acetylation protein
+g1208,B1,scaffold_2293,283,FAS_CHICK,A0A2J7PFW7,NA
+g20100,B1,scaffold_552,3042,NA,A0A087T926,"Immunoglobulin I-set domain,MULE transposase domain"
+g20092,B1,scaffold_552,2589,NA,A0A0R3QBG2,"Endonuclease-reverse transcriptase,Reverse transcriptase (RNA-dependent DNA polymerase)"
+g20103,B1,scaffold_552,842,NA,J9L5G6,NA
+g20090,B1,scaffold_552,686,NA,NA,Protein of unknown function (DUF1759)
+g20111,B1,scaffold_552,965,NA,NA,Immunoglobulin I-set domain
+g20115,B1,scaffold_552,482,NA,J9KK61,NA
+g20084,B1,scaffold_552,1170,NA,A0A0J7N8Y6,Integrase zinc binding domain
+g20112,B1,scaffold_552,971,NA,NA,Immunoglobulin domain
+g20097,B1,scaffold_552,552,NA,T1HLH9,NA
+g20106,B1,scaffold_552,1316,YMD2_CAEEL,A0A151IDY8,NA
+g20110,B1,scaffold_552,641,NA,D6WQK2,NA
+g20108,B1,scaffold_552,2547,NA,A0A0R3QAL5,Integrase core domain
+g2644,B1,scaffold_786,4614,PGBD4_HUMAN,X1X046,Transposase IS4
+g9063,B1,scaffold_848,327,TRET1_DROPS,A0A3Q0J369,Sugar (and other) transporter
+g9061,B1,scaffold_848,1328,NA,NA,Predicted AAA-ATPase
+g9062,B1,scaffold_848,1025,NA,A0A1H8D3N8,Predicted AAA-ATPase
+g2155,B1,scaffold_887,3164,NA,J9KIL6,NA
+g5582,B1,scaffold_897,663,FAS_ANSAN,A0A158NZW8,"Beta-ketoacyl synthase, N-terminal domain"
+g19061,B1,scaffold_902,1061,NA,K7JWY9,Reverse transcriptase (RNA-dependent DNA polymerase)
+g11624,B2,scaffold_1060,2894,PAIN_DROME,A0A482WJY3,"Ankyrin repeats (3 copies),Ankyrin repeat,Ion transport protein"
+g11625,B2,scaffold_1060,2252,PAIN_DROME,A0A482WJY3,"Ion transport protein,Ankyrin repeats (3 copies),Ankyrin repeats (many copies)"
+g6860,B2,scaffold_1082,1371,NA,J9M905,NA
+g6857,B2,scaffold_1082,954,NA,J9LMH3,Transposase IS4
+g6858,B2,scaffold_1082,328,NA,NA,Transposase IS4
+g12490,B2,scaffold_1086,460,NA,X1WIP7,Zona pellucida-like domain
+g12338,B2,scaffold_1097,987,NA,NA,"Leucine Rich Repeat,Leucine rich repeat,BspA type Leucine rich repeat region (6 copies)"
+g12339,B2,scaffold_1097,1049,NA,NA,Leucine rich repeat
+g17419,B2,scaffold_1288,1704,NA,A0A087T1E7,DDE superfamily endonuclease
+g19186,B2,scaffold_1312,662,MOODY_DROME,A0A0L0CB57,7 transmembrane receptor (rhodopsin family)
+g5825,B2,scaffold_1469,797,NA,A0A1S3DI71,NA
+g5824,B2,scaffold_1469,952,NA,J9LFV8,PIF1-like helicase
+g17650,B2,scaffold_1472,1800,NA,A0A0R3Q943,NA
+g17648,B2,scaffold_1472,803,NA,A0A0R3Q550,NA
+g17647,B2,scaffold_1472,1013,NA,D7EID9,Parvovirus coat protein VP1
+g1206,B2,scaffold_1495,836,NA,NA,Baculovirus FP protein
+g4894,B2,scaffold_1500,431,NA,NA,IclR helix-turn-helix domain
+g5310,B2,scaffold_1578,2794,THAP9_HUMAN,J9L0J1,"Transposase protein,THAP domain"
+g5311,B2,scaffold_1578,1420,NA,A0A087T137,Transposase IS4
+g5312,B2,scaffold_1578,879,NA,NA,Transposase IS4
+g18800,B2,scaffold_1581,1289,NA,J9MAL5,NA
+g8273,B2,scaffold_1773,1126,EST6_APIME,A0A067QSW2,Carboxylesterase family
+g2151,B2,scaffold_1820,1965,TOLL_DROME,NA,"Leucine rich repeat,Leucine rich repeat N-terminal domain,BspA type Leucine rich repeat region (6 copies)"
+g990,B2,scaffold_1966,725,4CLL7_ARATH,K7IVI9,"AMP-binding enzyme,AMP-binding enzyme C-terminal domain"
+g18651,B2,scaffold_2195,309,PDK_DROME,A0A1S3DCA9,"Histidine kinase-, DNA gyrase B-, and HSP90-like ATPase"
+g17804,B2,scaffold_295,391,LSM4_HUMAN,D6WJA0,LSM domain
+g17802,B2,scaffold_295,433,CNI_DROME,A0A482X1C0,Cornichon protein
+g17798,B2,scaffold_295,1807,YMD2_CAEEL,A0A151IDY8,NA
+g17792,B2,scaffold_295,1241,NA,A0A0R3Q943,NA
+g17791,B2,scaffold_295,1933,NA,A0A0R3Q549,NA
+g17817,B2,scaffold_295,1903,NA,A0A2J7QCN0,NA
+g17806,B2,scaffold_295,645,BHE22_XENTR,A0A1S3D3L0,Helix-loop-helix DNA-binding domain
+g17803,B2,scaffold_295,2832,MCM4_DROME,A0A067R0Z3,"MCM P-loop domain,MCM OB domain,MCM AAA-lid domain,MCM N-terminal domain"
+g17818,B2,scaffold_295,1395,NXF1_RAT,A0A2J7R106,"Tap, RNA-binding,TAP C-terminal domain"
+g17813,B2,scaffold_295,1666,ARHGC_MOUSE,A0A151JPR7,"RhoGEF domain,PH domain"
+g17808,B2,scaffold_295,2723,NA,A0A0L7RH29,"Regulator of G protein signalling-like domain,Phorbol esters/diacylglycerol binding domain (C1 domain),PDZ domain"
+g17801,B2,scaffold_295,4870,DYH7_HUMAN,A0A482WYZ6,"Microtubule-binding stalk of dynein motor,Dynein heavy chain AAA lid domain,Dynein heavy chain region D6 P-loop domain,Ligand-binding domain of nuclear hormone receptor,Dynein heavy chain C-terminal domain,ATP-binding dynein motor region,Zinc finger, C4 type (two domains)"
+g17789,B2,scaffold_295,467,NA,NA,"Zinc finger, C3HC4 type (RING finger)"
+g17800,B2,scaffold_295,2289,NA,A0A151JC66,"DNA polymerase type B, organellar and viral"
+g123,B2,scaffold_360,3397,NA,J9M4U0,NA
+g130,B2,scaffold_360,1025,NA,A0A2H4T2S8,NA
+g170,B2,scaffold_360,587,NA,A0A2H4T2T7,NA
+g195,B2,scaffold_360,5900,NA,A0A2H4UX56,NA
+g98,B2,scaffold_360,976,DCR1_DROME,A0A067QYQ9,Ribonuclease III domain
+g93,B2,scaffold_360,859,NA,NA,"Zinc finger, C3HC4 type (RING finger)"
+g150,B2,scaffold_360,2014,NA,NA,"Zinc finger, C3HC4 type (RING finger)"
+g133,B2,scaffold_360,1319,NA,A0A2H4UXB5,NA
+g160,B2,scaffold_360,2741,NA,B7SVC7,Chitin binding Peritrophin-A domain
+g156,B2,scaffold_360,3047,NA,A0A1S5VG25,NA
+g174,B2,scaffold_360,2201,NA,A0A2H4T2P1,NA
+g101,B2,scaffold_360,669,LST4_CAEEL,A0A067R133,"WASP-binding domain of Sorting nexin protein,PX domain"
+g137,B2,scaffold_360,1472,NA,B7SVD6,"Baculoviral E56 protein, specific to ODV envelope"
+g124,B2,scaffold_360,904,NA,NA,Myb/SANT-like DNA-binding domain
+g135,B2,scaffold_360,1475,NA,A0A1S5VG57,ATP dependent DNA ligase domain
+g184,B2,scaffold_360,2020,NA,B7SV33,NA
+g118,B2,scaffold_360,2239,NA,A0A1S5VG70,NA
+g175,B2,scaffold_360,1241,NA,A4L229,Per os infectivity factor 2
+g202,B2,scaffold_360,3710,NA,A0A2I7G2T7,"Ribonucleotide reductase, barrel domain"
+g162,B2,scaffold_360,728,NA,NA,Per os infectivity factor 3
+g201,B2,scaffold_360,1136,NA,A0A2P8Y5M2,Transposase (partial DDE domain)
+g119,B2,scaffold_360,1930,NA,A0A0F7KNK5,Steryl acetyl hydrolase
+g85,B2,scaffold_360,1746,NA,J9L0E4,MULE transposase domain
+g126,B2,scaffold_360,1643,NA,B7SVE6,NA
+g222,B2,scaffold_360,593,NA,NA,Baculoviridae AC81
+g115,B2,scaffold_360,4774,NA,"B7SV22,A0A2H4T2N0","DNA polymerase family B, exonuclease domain"
+g172,B2,scaffold_360,1756,NA,NA,"Ribonucleotide reductase, small chain"
+g125,B2,scaffold_360,2168,NA,B7SVE7,"Baculoviridae p74 conserved region,Baculoviridae P74 N-terminal"
+g208,B2,scaffold_360,1421,NA,A0A067R7U8,"Zinc finger, C3HC4 type (RING finger),Inhibitor of Apoptosis domain"
+g152,B2,scaffold_360,1535,NA,A0A1S5VG33,Per os infectivity
+g102,B2,scaffold_360,198,NA,NA,Variant SH3 domain
+g167,B2,scaffold_360,1808,NA,A4L220,NA
+g198,B2,scaffold_360,464,NA,NA,Baculoviridae late expression factor 5 C-terminal domain
+g159,B2,scaffold_360,875,NA,NA,Baculovirus FP protein
+g221,B2,scaffold_360,2249,NA,B7SVB7,NA
+g149,B2,scaffold_360,607,NA,NA,"Zinc finger, C3HC4 type (RING finger)"
+g94,B2,scaffold_360,1494,NA,NA,"JmjC domain, hydroxylase"
+g7424,B2,scaffold_526,571,NFIX_MESAU,X1WJN8,MH1 domain
+g7421,B2,scaffold_526,1408,RCBT1_MOUSE,A0A232EN37,"BTB/POZ domain,Regulator of chromosome condensation (RCC1) repeat"
+g7419,B2,scaffold_526,1616,RCBT1_MOUSE,K1QBL7,"BTB/POZ domain,Regulator of chromosome condensation (RCC1) repeat"
+g7417,B2,scaffold_526,618,NA,NA,BTB/POZ domain
+g7423,B2,scaffold_526,1543,RCBT1_HUMAN,A0A232EN37,"Regulator of chromosome condensation (RCC1) repeat,BTB/POZ domain"
+g7422,B2,scaffold_526,1410,RCBT1_MOUSE,K1QBL7,"BTB/POZ domain,Regulator of chromosome condensation (RCC1) repeat"
+g7420,B2,scaffold_526,414,NA,NA,Regulator of chromosome condensation (RCC1) repeat
+g7416,B2,scaffold_526,1295,RCBT1_HUMAN,A0A2C9MAE2,"Regulator of chromosome condensation (RCC1) repeat,BTB/POZ domain"
+g7427,B2,scaffold_526,1279,NA,A0A482WYX0,CTF/NF-I family transcription modulation region
+g7430,B2,scaffold_526,1428,TRET1_CULQU,J9JV25,Sugar (and other) transporter
+g7431,B2,scaffold_526,1395,TRET1_APILI,A0A482WTV6,Sugar (and other) transporter
+g23011,B2,scaffold_529,1175,NA,NA,7tm Odorant receptor
+g23013,B2,scaffold_529,719,NA,NA,Baculovirus FP protein
+g23012,B2,scaffold_529,2755,ARSB_RAT,D2A206,Sulfatase
+g23009,B2,scaffold_529,887,NA,A0A165ZFZ6,Predicted AAA-ATPase
+g23008,B2,scaffold_529,2003,NA,NA,Eukaryotic aspartyl protease
+g23003,B2,scaffold_529,822,NA,NA,7tm Odorant receptor
+g23004,B2,scaffold_529,890,NA,NA,7tm Odorant receptor
+g23007,B2,scaffold_529,854,NA,NA,Eukaryotic aspartyl protease
+g20374,B2,scaffold_538,1163,NA,NA,Farnesoic acid 0-methyl transferase
+g14106,B2,scaffold_607,2281,BAB2_DROME,A0A482WRV5,"BTB/POZ domain,Zinc finger, C2H2 type"
+g13964,B2,scaffold_632,686,NA,NA,Domain of unknown function (DUF4773)
+g13965,B2,scaffold_632,618,NA,A0A3Q0IT39,Domain of unknown function (DUF4773)
+g18473,B2,scaffold_798,988,MOG2A_XENLA,T1H8G4,Diacylglycerol acyltransferase
+g18477,B2,scaffold_798,391,NA,NA,Diacylglycerol acyltransferase
+g18472,B2,scaffold_798,1015,MOG2A_XENLA,G3UGB8,Diacylglycerol acyltransferase
+g18476,B2,scaffold_798,1047,MOG2A_XENLA,A0A482X8Q2,Diacylglycerol acyltransferase
+g18475,B2,scaffold_798,496,MOG2A_XENLA,NA,Diacylglycerol acyltransferase
+g18474,B2,scaffold_798,1231,DGAT2_DANRE,A0A182GB69,Diacylglycerol acyltransferase
+g507,B2,scaffold_816,601,NA,NA,ERAP1-like C-terminal domain
+g506,B2,scaffold_816,905,NA,A0A2J7RAG5,Peptidase family M1 domain
+g6871,B2,scaffold_916,249,APC11_MOUSE,A0A1S3DK12,Anaphase-promoting complex subunit 11 RING-H2 finger
+g20745,B2,scaffold_957,663,MAP11_DANRE,A0A482X705,NA
+g20744,B2,scaffold_957,372,NA,NA,Major Facilitator Superfamily
+g20743,B2,scaffold_957,1327,NA,NA,"KH domain,Regulator of G protein signalling-like domain"
+g16390,B2,scaffold_970,1319,NA,NA,7tm Odorant receptor
+g21053,B3,scaffold_1019,2289,NA,A0A2J7Q228,NA
+g21054,B3,scaffold_1019,2283,KAT2A_DANRE,A0A2J7QY91,"PCAF (P300/CBP-associated factor) N-terminal domain,Acetyltransferase (GNAT) family,Bromodomain"
+g18798,B3,scaffold_1056,1005,NA,NA,Low-density lipoprotein receptor domain class A
+g20075,B3,scaffold_1152,399,NA,NA,BTB/POZ domain
+g15234,B3,scaffold_1166,2716,NA,NA,"BTB And C-terminal Kelch,BTB/POZ domain"
+g15233,B3,scaffold_1166,1067,NA,NA,BTB/POZ domain
+g15528,B3,scaffold_1202,1265,NA,A0A1M6JF78,"Phosphatidylinositol-specific phospholipase C, X domain"
+g15524,B3,scaffold_1202,1355,GAGXE_DROME,J9LYS0,Associated with zinc fingers
+g15525,B3,scaffold_1202,404,RTJK_DROFU,A0A1D2M8H9,Endonuclease-reverse transcriptase
+g15185,B3,scaffold_1270,402,NA,NA,Trehalase
+g2727,B3,scaffold_1381,2115,NA,T1I2R8,Endonuclease-reverse transcriptase
+g12795,B3,scaffold_1418,854,RTJK_DROFU,A0A2A4K918,Endonuclease-reverse transcriptase
+g12794,B3,scaffold_1418,1169,GAGXE_DROME,A0A194RK46,Associated with zinc fingers
+g21527,B3,scaffold_1427,2364,NA,J9KHS0,"THAP domain,Transposase protein"
+g13786,B3,scaffold_1441,2064,NA,J9LQI2,THAP domain
+g2645,B3,scaffold_1454,894,NA,J9K3D3,Thioesterase domain
+g8513,B3,scaffold_1484,1055,MURF_BACSU,Q5GT47,"Mur ligase family, catalytic domain,Mur ligase middle domain"
+g8515,B3,scaffold_1484,681,CC124_XENTR,A0A1S3CXZ8,Coiled-coil domain-containing protein 124 /Oxs1
+g18439,B3,scaffold_1579,577,CSN4_DANRE,A0A2J7R0G0,"CSN4/RPN5/eIF3a helix turn helix domain,PCI domain"
+g19056,B3,scaffold_1615,1536,RTXE_DROME,J9LYS0,Endonuclease-reverse transcriptase
+g18899,B3,scaffold_1628,291,NA,NA,Carboxylesterase family
+g20192,B3,scaffold_1639,353,NA,"E0W394,A0A482WYE9",NA
+g18153,B3,scaffold_1720,285,CPR3_CAEEL,NA,Papain family cysteine protease
+g1595,B3,scaffold_1845,321,SULF1_DROME,A0A482X3I3,Sulfatase
+g14826,B3,scaffold_2003,1097,HSP7E_DROME,T1PA42,Hsp70 protein
+g14825,B3,scaffold_2003,553,NA,NA,Hsp70 protein
+g12541,B3,scaffold_2066,1166,RDX_DROME,A0A484BP37,BTB/POZ domain
+g5232,B3,scaffold_2160,2567,NA,NA,Transactive response DNA-binding protein N-terminal domain
+g9857,B3,scaffold_423,2402,NA,J9KR10,PDZ domain
+g9861,B3,scaffold_423,739,NA,A0A482XEQ4,"Immunoglobulin I-set domain,Immunoglobulin domain"
+g23620,B3,scaffold_497,616,KGP1_HUMAN,A0A3S2PII9,Coiled-coil N-terminus of cGMP-dependent protein kinase
+g23625,B3,scaffold_497,1584,MYRO1_BREBR,A0A067RC84,Glycosyl hydrolase family 1
+g23628,B3,scaffold_497,2865,LPH_RAT,A0A3Q0J5H8,Glycosyl hydrolase family 1
+g23624,B3,scaffold_497,395,KGP25_DROME,A0A194QK34,Cyclic nucleotide-binding domain
+g23627,B3,scaffold_497,1284,KGP25_DROME,T1H8H9,"Cyclic nucleotide-binding domain,Protein kinase domain"
+g23626,B3,scaffold_497,1702,MYRO1_BREBR,A0A2J7PTJ0,Glycosyl hydrolase family 1
+g23629,B3,scaffold_497,1468,MYRO1_BREBR,A0A2J7PTJ0,Glycosyl hydrolase family 1
+g8505,B3,scaffold_543,1210,NA,A0A2P8XML8,Ring finger domain
+g8503,B3,scaffold_543,1035,CGRF1_RAT,X1WID2,"Zinc finger, C3HC4 type (RING finger)"
+g8506,B3,scaffold_543,2073,LSHR_PIG,A0A067QID7,"Leucine rich repeat,7 transmembrane receptor (rhodopsin family)"
+g8502,B3,scaffold_543,5528,RGPA2_HUMAN,A0A067RK08,Rap/ran-GAP
+g1880,B3,scaffold_620,1884,PERO_DROME,J9K1U3,Animal haem peroxidase
+g1878,B3,scaffold_620,930,YQL5_SCHPO,C4WT46,"RNA recognition motif. (a.k.a. RRM, RBD, or RNP domain)"
+g1881,B3,scaffold_620,2615,CEG1A_DROME,"A0A482XTR2,A0A2J7QUF1","Putative GTPase activating protein for Arf,Ras family"
+g1876,B3,scaffold_620,1533,NA,D6WEX8,Predicted AAA-ATPase
+g1879,B3,scaffold_620,1764,PERO_DROME,J9JLS0,Animal haem peroxidase
+g1877,B3,scaffold_620,1434,T161B_MOUSE,A0A2J7RAJ4,Predicted transmembrane protein 161AB
+g9420,B3,scaffold_676,872,NA,J9KWC3,NA
+g9417,B3,scaffold_676,3008,NA,K7JWY9,Reverse transcriptase (RNA-dependent DNA polymerase)
+g9419,B3,scaffold_676,3016,NA,K7JWY9,Reverse transcriptase (RNA-dependent DNA polymerase)
+g12806,B3,scaffold_684,303,NA,NA,Nuclear factor I protein pre-N-terminus
+g3354,B3,scaffold_733,741,NA,NA,FLYWCH zinc finger domain
+g5254,B3,scaffold_814,2003,"BGLR_FELCA,BGLR_CHLAE,BGLR_HUMAN","A0A2J7QP48,A0A067QW61","Glycosyl hydrolases family 2, sugar binding domain,Glycosyl hydrolases family 2,Glycosyl hydrolases family 2, TIM barrel domain"
+g5253,B3,scaffold_814,381,NA,A0A2P8YJG1,HIT zinc finger
+g5251,B3,scaffold_814,244,NA,NA,Uncharacterised protein family (UPF0203)
+g5249,B3,scaffold_814,1154,FXR1B_XENLA,NA,"KH domain,Regulator of G protein signalling-like domain"
+g5250,B3,scaffold_814,3394,INT2_CHICK,A0A067QT10,Integrator complex subunit 2
+g5248,B3,scaffold_814,1116,CATA_ASCSU,A0A2J7REJ5,"Catalase-related immune-responsive,Catalase"
+g5252,B3,scaffold_814,802,C1QBP_HUMAN,A0A067R160,Mitochondrial glycoprotein
+g19063,B3,scaffold_829,482,DRGX_MOUSE,A0A194QFU0,Homeodomain
+g21426,B3,scaffold_851,353,NA,NA,Carboxylesterase family
+g21425,B3,scaffold_851,1013,NA,A0A2J7QKK3,Carboxylesterase family

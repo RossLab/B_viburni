@@ -299,5 +299,6 @@ write.csv(genes.B3.tpm.dt,"output/diff_expr/genes.B3.tpm.dt.csv")
 genes.A.tpm <- genes.AB.tpm[genes.AB.tpm$b.status.final == "A",]
 nrow(genes.A.tpm.dt)
 genes.A.tpm.dt <- left_join(genes.A.tpm[1:14], dt_df[-c(1)], by ="gene")
-write.csv(genes.B4.tpm.dt,"output/diff_expr/genes.A.tpm.dt.csv")
+write.csv(genes.A.tpm.dt,"output/diff_expr/genes.A.tpm.dt.csv")
 head(genes.A.tpm.dt)
+
