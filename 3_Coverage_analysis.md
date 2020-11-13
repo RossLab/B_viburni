@@ -571,8 +571,22 @@ We can use evidence from the three approaches (mapping coverage, Illumina assemb
 
 ![](misc/b.assignment.final.jpeg)
 
+### 8. Coverage by windows
 
-sambamba depth window --nthreads=8 --window-size=1000 ../cov/PV_18-04.initial.sorted.primary.only.no.mismatches.bam -o /scratch/afilia/PV_18-04.coverage.per.1kb.window && rsync -av /scratch/afilia/PV_18-04.coverage.per.1kb.window .
-sambamba depth window --nthreads=8 --window-size=1000 ../cov/PV_18-13.initial.sorted.primary.only.no.mismatches.bam -o /scratch/afilia/PV_18-13.coverage.per.1kb.window && rsync -av /scratch/afilia/PV_18-13.coverage.per.1kb.window .
-sambamba depth window --nthreads=8 --window-size=1000 ../cov/PV_18-21.initial.sorted.primary.only.no.mismatches.bam -o /scratch/afilia/PV_18-21.coverage.per.1kb.window && rsync -av /scratch/afilia/PV_18-21.coverage.per.1kb.window .
-sambamba depth window --nthreads=8 --window-size=1000 ../cov/PV_18-23.initial.sorted.primary.only.no.mismatches.bam -o /scratch/afilia/PV_18-23.coverage.per.1kb.window && rsync -av /scratch/afilia/PV_18-23.coverage.per.1kb.window .
+It is possible that some of our A/B scaffolds are chimeras. It would be good to check this in case we are missing some chunks of B-linked sequences that are assembled into an A scaffold or, conversely, if a fragment of a B scaffold is autosomal. To do so, let's computer the coverage depth across 1kb windows and plot it. The R script to do this lives [here](https://github.com/RossLab/B_viburni/blob/master/R_scripts/Coverage_by_windows.R).
+
+	sambamba depth window --nthreads=8 --window-size=1000 ../cov/PV_18-04.initial.sorted.primary.only.no.mismatches.bam -o /scratch/afilia/PV_18-04.coverage.per.1kb.window && rsync -av /scratch/afilia/PV_18-04.coverage.per.1kb.window .
+	sambamba depth window --nthreads=8 --window-size=1000 ../cov/PV_18-13.initial.sorted.primary.only.no.mismatches.bam -o /scratch/afilia/PV_18-13.coverage.per.1kb.window && rsync -av /scratch/afilia/PV_18-13.coverage.per.1kb.window .
+	sambamba depth window --nthreads=8 --window-size=1000 ../cov/PV_18-21.initial.sorted.primary.only.no.mismatches.bam -o /scratch/afilia/PV_18-21.coverage.per.1kb.window && rsync -av /scratch/afilia/PV_18-21.coverage.per.1kb.window .
+	sambamba depth window --nthreads=8 --window-size=1000 ../cov/PV_18-23.initial.sorted.primary.only.no.mismatches.bam -o /scratch/afilia/PV_18-23.coverage.per.1kb.window && rsync -av /scratch/afilia/PV_18-23.coverage.per.1kb.window .
+
+ - [Plots for A scaffolds](https://github.com/RossLab/B_viburni/blob/master/misc/A.scaffold.by.window.pdf).
+ - [Plots for B1 scaffolds](https://github.com/RossLab/B_viburni/blob/master/misc/B1.scaffold.by.window.pdf).
+ - [Plots for B2 scaffolds](https://github.com/RossLab/B_viburni/blob/master/misc/B2.scaffold.by.window.pdf).
+ - [Plots for B3 scaffolds](https://github.com/RossLab/B_viburni/blob/master/misc/B3.scaffold.by.window.pdf).
+
+ I have manually inspected the B1 scaffolds and they look good (no obvious chimeras). We can check any problem scaffolds later on. The plots look like this:
+
+ ![](misc/example.windows.png)
+
+ where the x axis are the windows along the scaffold and the dots represent log2 average cov ratios between B+ and B- lines (blue) and log2(cov PV04/cov PV13) (red). The first plot is from an A scaffold; the second plot is a B1 scaffold. The idea is that a B scaffold should have of course an inflated log2(B+/B-) but also a high log2(cov PV04/cov PV13) (let's say above 1, which is the second dashed line). A B region should meet these criteria, because a high log2(B+/B-) might also represent a region where PV13 maps better than the other one. I have also plotted log10(average cov ratio across all samples) (not log2) in order to diagnose regions where the ratios drop to 0 due to lack of reads mapping to those windows (e.g. see the rightmost part of the second figure). This is not an A region: this just didn't get reads mapping to it and therefore is not particularly concerning.
