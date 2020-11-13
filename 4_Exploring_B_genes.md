@@ -268,7 +268,37 @@ When we integrate expression data (I have taken the TPM estimates from RSEM -- w
 |g9551 |0.09       |0.218333333  |0.005714286   |0.026666667     |scaffold_1388|1631    |NA         |NA        |NA                                              |N   |14907 |B1            |0.602684262|0            |0             |0               |1                 |0                 |
 |g9552 |0.317142857|1.956666667  |0.002857143   |0.145           |scaffold_1388|1646    |NA         |NA        |NA                                              |N   |14907 |B1            |0.602684262|0            |-1            |0               |1                 |0                 |
 
-Let's ignore the B2/B3 genes for now (come back to them later). We can also look at the A genes and see which ones seem to behave consistently in response to presence of B. We have 18,421 that passed the filters (out of 23,143). Let's first select those that are differentially expressed in B samples regardless of sex:
+Let's ignore the B2/B3 genes for now (come back to them later). We can also look at the A genes and see which ones seem to behave consistently in response to presence of B. We have 18,421 that passed the filters (out of 23,143). Let's first select those that are differentially expressed in B samples regardless of sex.
 
+(ISABELLE - A chromosomes here)
+
+## 4. GO analyses
+
+How does having a B change your expression profiles if you are a male or a female? Let's do a GO enrichment analysis. We'll need the following:
+
+- A file with GO terms for each genes in the following format:
+
+	g1      GO:0005515
+	g10     GO:0005515
+	g100    GO:0004222;GO:0006508
+	g10000  GO:0005515
+
+The file is pviburni.gene.GO. We only have 7,793 genes with GO terms with is far from great. Let's try it from now and maybe try to incorporate more GO terms from the transcriptome.
+
+- The background population: 7,793 genes with GO annotations out of the 18,749 that passed the differential expression filters.
+- DE genes in B/B- males: 69 genes with GO terms (out of 247)
+- DE genes in B/B- females: 62 genes with GO terms (out of 220)
+
+	# working directory /data/ross/mealybugs/analyses/B_viburni_2020/5_B_genes/GO
+	# conda env go_afilia
+	find_enrichment.py --pval 0.05 --method fdr_bh --obo go-basic.obo --outfile results/DE.males.genes.GO.basic.tsv DE.males.genes.go background.pop.go pviburni.gene.GO # 0 items
+	find_enrichment.py --pval 0.05 --method fdr_bh --obo goslim_generic.obo --outfile results/DE.males.genes.GO.slim.tsv DE.males.genes.go background.pop.go pviburni.gene.GO # 1 item
+	find_enrichment.py --pval 0.05 --method fdr_bh --obo go-basic.obo --outfile results/DE.females.genes.GO.basic.tsv DE.females.genes.go background.pop.go pviburni.gene.GO # 0 items
+	find_enrichment.py --pval 0.05 --method fdr_bh --obo goslim_generic.obo --outfile results/DE.females.genes.GO.slim.tsv DE.females.genes.go background.pop.go pviburni.gene.GO # 0 items
+
+So it turns out only one term shows up in B/B- males:
+
+	GO:0003677      MF      e       DNA binding     10/69   336/7486        0.0009291132296118181   1       10      0.030660736577189998
+    g11371, g11595, g15704, g18233, g2805, g2938, g5914, g6210, g6329, g6525
 
 
