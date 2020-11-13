@@ -47,59 +47,71 @@ windows.cov$nonB.avg <- rowMeans(windows.cov[5:6])
 cov.04v13_norm <- (windows.cov$PV04+1)/(windows.cov$PV13+1)
 median(cov.04v13_norm)
 windows.cov$ratio.04v13 <- log2((windows.cov$PV04/median(cov.04v13_norm) + 1)/(windows.cov$PV13 + 1))
-View(windows.cov)
+windows.cov$cov.avg <- log10(rowMeans(windows.cov[3:6]))
+windows.cov$cov.avg <- ifelse(windows.cov$cov.avg == "-Inf",-3.602060,windows.cov$cov.avg)
 
 windows.cov <- merge(windows.cov,scaffolds_final_assignment[c(1,27)],by=c("seq"))
 windows.cov.A  <- windows.cov[windows.cov$"b.status.final" == "A",]
 windows.cov.B1 <- windows.cov[windows.cov$"b.status.final" == "B1",]
 windows.cov.B2 <- windows.cov[windows.cov$"b.status.final" == "B2",]
 windows.cov.B3 <- windows.cov[windows.cov$"b.status.final" == "B3",]
-windows.cov.B4 <- windows.cov[windows.cov$"b.status.final" == "B4",]
 
 pdf("B1.scaffold.by.window.pdf", width=10, height=10, pointsize=12)
 par(mfrow = c(1, 1)) # 2 rows, 2 columns
 for (i in unique(windows.cov.B1$seq)) {
   a <- ggplot(windows.cov.B1[windows.cov.B1$seq == i,]) +
-    geom_point(aes(window, ratio.B),colour="black",size=0.2) +
-    geom_point(aes(window, ratio.04v13),colour="tomato",size=0.2) +
-    ylim(c(-10,10)) +
-    geom_hline(yintercept=1, linetype="dashed", color = "steelblue", size=0.3) +
-    geom_hline(yintercept=0, linetype="dashed", color = "darkblue", size=0.3) +
-    labs(title=i, y="log2 ratios", x = "Position") + theme_classic()
+    geom_hline(yintercept=1, linetype="dashed", color = "chocolate2", size=0.3) +
+    geom_hline(yintercept=0, linetype="dashed", color = "tan1", size=0.3) +
+    geom_point(aes(window, cov.avg),colour="black",size=1,alpha=0.2,shape=4) +
+    geom_point(aes(window, ratio.B),colour="steelblue",size=1) +
+    geom_point(aes(window, ratio.04v13),colour="tomato",size=1) +
+    labs(title=i,y="log2",x="Position") +
+    ylim(c(-10,10)) + theme_classic()
   print(a)
 }
 dev.off()
-
 
 pdf("B2.scaffold.by.window.pdf", width=10, height=10, pointsize=12)
 par(mfrow = c(1, 1)) # 2 rows, 2 columns
 for (i in unique(windows.cov.B2$seq)) {
   a <- ggplot(windows.cov.B2[windows.cov.B2$seq == i,]) +
-    geom_point(aes(window, ratio.B),colour="black",size=0.2) +
-    geom_point(aes(window, ratio.04v13),colour="tomato",size=0.2) +
-    ylim(c(-10,10)) +
-    geom_hline(yintercept=1, linetype="dashed", color = "steelblue", size=0.3) +
-    geom_hline(yintercept=0, linetype="dashed", color = "darkblue", size=0.3) +
-    labs(title=i, y="log2 ratios", x = "Position") + theme_classic()
+    geom_hline(yintercept=1, linetype="dashed", color = "chocolate2", size=0.3) +
+    geom_hline(yintercept=0, linetype="dashed", color = "tan1", size=0.3) +
+    geom_point(aes(window, cov.avg),colour="black",size=1,alpha=0.2,shape=4) +
+    geom_point(aes(window, ratio.B),colour="steelblue",size=1) +
+    geom_point(aes(window, ratio.04v13),colour="tomato",size=1) +
+    labs(title=i,y="log2",x="Position") +
+    ylim(c(-10,10)) + theme_classic()
   print(a)
 }
 dev.off()
 
-
-
-#pdf("rsem_gene_mdplot-prenorm.pdf", width=10, height=10, pointsize=12)
-#par(mfrow = c(1, 1)) # 2 rows, 2 columns
-for (i in 1:ncol(x)) {
-  plotMD(cpm(x, log=TRUE), column=i, xlab = "Average log-expression", ylab = "Expression log-ratio (this sample vs others)", main = colnames(x)[i])
-  abline(h=0, col="red", lty=2, lwd=2)
+pdf("B3.scaffold.by.window.pdf", width=10, height=10, pointsize=12)
+par(mfrow = c(1, 1)) # 2 rows, 2 columns
+for (i in unique(windows.cov.B3$seq)) {
+  a <- ggplot(windows.cov.B3[windows.cov.B3$seq == i,]) +
+    geom_hline(yintercept=1, linetype="dashed", color = "chocolate2", size=0.3) +
+    geom_hline(yintercept=0, linetype="dashed", color = "tan1", size=0.3) +
+    geom_point(aes(window, cov.avg),colour="black",size=1,alpha=0.2,shape=4) +
+    geom_point(aes(window, ratio.B),colour="steelblue",size=1) +
+    geom_point(aes(window, ratio.04v13),colour="tomato",size=1) +
+    labs(title=i,y="log2",x="Position") +
+    ylim(c(-10,10)) + theme_classic()
+  print(a)
 }
-#dev.off()
+dev.off()
 
-ggplot(windows.cov[windows.cov$seq == "scaffold_1520",]) +
-  geom_point(aes(window, ratio.B),colour="black",size=0.1) +
-  geom_point(aes(window, ratio.04v13),colour="tomato",size=0.1) + ylim(c(-10,10)) +
-  geom_hline(yintercept=1, linetype="dashed",  color = "darkblue", size=0.3) +
-  geom_hline(yintercept=0, linetype="dashed",  color = "steelblue", size=0.3) +
-  theme_classic()
-
-View(windows.cov[windows.cov$seq == "scaffold_1520",])
+pdf("A.scaffold.by.window.pdf", width=10, height=10, pointsize=12)
+par(mfrow = c(1, 1)) # 2 rows, 2 columns
+for (i in unique(windows.cov.A$seq)) {
+  a <- ggplot(windows.cov.A[windows.cov.A$seq == i,]) +
+    geom_hline(yintercept=1, linetype="dashed", color = "chocolate2", size=0.3) +
+    geom_hline(yintercept=0, linetype="dashed", color = "tan1", size=0.3) +
+    geom_point(aes(window, cov.avg),colour="black",size=1,alpha=0.2,shape=4) +
+    geom_point(aes(window, ratio.B),colour="steelblue",size=1) +
+    geom_point(aes(window, ratio.04v13),colour="tomato",size=1) +
+    labs(title=i,y="log2",x="Position") +
+    ylim(c(-10,10)) + theme_classic()
+  print(a)
+}
+dev.off()
