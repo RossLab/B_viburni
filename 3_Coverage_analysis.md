@@ -4,7 +4,7 @@
 	# working directory	
 	/data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads
 	qlogin -pe smp64 32 -N bwa -l h=bigwig
-    /ceph/software/utilities/sge/qlogin -pe smp 1 -N QLOGIN 
+    /ceph/software/utilities/sge/qlogin -pe smp 1 -N QLOGIN ok
 
 ## 1. Raw reads
 
