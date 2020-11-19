@@ -4,7 +4,7 @@
 	# working directory	
 	/data/ross/mealybugs/analyses/B_viburni_2020/5_B_genes
 	qlogin -pe smp64 32 -N bwa -l h=bigwig
-    /ceph/software/utilities/sge/qlogin -pe smp64 32 -N bamfilterx
+    /ceph/software/utilities/sge/qlogin -pe smp64 32 -N bamfilter ok
 
 We now have: 1) a genome assembly with an annotation (from blast, diamond, interproscan -- see 1_Genome_assembly), 2) a list of candidate B scaffolds (see 3_Coverage_analysis.md) and 3) lists of differentially expressed genes between B-carrying and non-carrying males and females. We can combine all this data and see what we can learn about the gene content of our putative B sequences.
 
