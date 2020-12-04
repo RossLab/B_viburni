@@ -1,0 +1,71 @@
+,X1,gene,seq,gene_len,blast,diamond,interpro,anno,length,b.status.final,cov.04v13,b.status,b.status.asn,b.status.kmer
+1,1,g10306,scaffold_765,274,NA,NA,NA,N,54856,A,0.243398552,A,A,A
+2,2,g10350,scaffold_159,5634,NA,A0A3Q0JHJ8,"MULE transposase domain,GDSL-like Lipase/Acylhydrolase family",Y,848934,A,-0.157158057,A,A,A
+3,3,g10729,scaffold_518,363,NA,NA,NA,N,209603,A,0.337176987,A,A,A
+4,4,g10800,scaffold_270,710,NA,NA,NA,N,511095,A,-0.121600324,A,A,A
+5,5,g11555,scaffold_65,677,NA,NA,NA,N,1324386,A,0.045272684,A,A,A
+6,6,g1248,scaffold_485,472,NA,NA,NA,N,237609,A,0.255941722,A,A,A
+7,7,g12841,scaffold_44,454,NA,NA,Uncharacterized conserved domain (SAYSvFN),Y,1539515,A,0.244409,A,A,A
+8,8,g13042,scaffold_823,288,NA,NA,NA,N,41255,A,-0.307130469,A,A,A
+9,9,g1324,scaffold_69,1942,NA,D6WEX8,Predicted AAA-ATPase,Y,1296325,A,0.352042127,A,A,A
+10,10,g13388,scaffold_297,1084,NA,NA,NA,N,460796,A,-0.441019929,A,A,A
+11,11,g13495,scaffold_143,1559,ERMP1_HUMAN,A0A067R1N3,Peptidase family M28,Y,907036,A,-0.57179311,A,A,A
+12,12,g13497,scaffold_143,1513,NA,E0VQ39,NA,Y,907036,A,-0.57179311,A,A,A
+13,13,g1438,scaffold_20,2439,THAP9_HUMAN,J9JTA4,Transposase protein,Y,2080048,A,-0.276802188,A,A,A
+14,14,g15704,scaffold_493,3104,MCM9_XENTR,A0A067RI06,"MCM OB domain,MCM P-loop domain,MCM AAA-lid domain",Y,227342,A,-0.264038199,A,A,A
+15,15,g15797,scaffold_1906,755,CBP_MOUSE,G5BVC5,TAZ zinc finger,Y,8069,A,0.4633885,A,A,A
+16,16,g15798,scaffold_1906,1750,NA,NA,"BTB And C-terminal Kelch,BTB/POZ domain",Y,8069,A,0.4633885,A,A,A
+17,17,g15894,scaffold_187,325,NA,NA,NA,N,753167,A,0.222681329,A,A,A
+18,18,g16040,scaffold_225,683,NA,NA,Mitochondrial-associated sphingomyelin phosphodiesterase,Y,632046,A,-0.350678417,A,A,A
+19,19,g16809,scaffold_8,226,NA,NA,NA,N,2847527,A,0.12592923,A,A,A
+20,20,g17069,scaffold_2094,1988,NA,A0A482XLL5,NA,Y,6389,A,-0.3353438,A,A,A
+21,21,g17070,scaffold_2094,680,NA,NA,NA,N,6389,A,-0.3353438,A,A,A
+22,22,g17199,scaffold_57,698,NA,NA,NA,N,1361687,A,-0.000589509,A,A,A
+23,23,g17204,scaffold_57,1121,DUT_HUMAN,A0A2A4JSL6,"dUTPase,Zinc knuckle,gag-polypeptide of LTR copia-type",Y,1361687,A,-0.000589509,A,A,A
+24,24,g17218,scaffold_57,617,UDB14_RABIT,A0A2P8Z243,UDP-glucoronosyl and UDP-glucosyl transferase,Y,1361687,A,-0.000589509,A,A,A
+25,25,g17219,scaffold_57,396,NA,K7J0S2,NA,Y,1361687,A,-0.000589509,A,A,A
+26,26,g17277,scaffold_180,1238,NA,NA,NA,N,782579,A,-0.035907264,A,A,A
+27,27,g17311,scaffold_811,2024,NA,J9KHS0,Transposase protein,Y,44050,A,-0.083854391,A,A,A
+28,28,g17312,scaffold_811,288,NA,NA,NA,N,44050,A,-0.083854391,A,A,A
+29,29,g17317,scaffold_390,1170,ZNF41_HUMAN,NA,"Zinc finger, C2H2 type,Zinc-finger of C2H2 type,C2H2-type zinc finger",Y,334945,A,-0.814214035,A,A,A
+30,30,g17785,scaffold_965,2400,LFC_TACTR,J9KTP3,Trypsin,Y,26730,A,-1.610754561,A,A,A
+31,31,g17872,scaffold_146,560,C4G15_DROME,NA,Cytochrome P450,Y,897096,A,-0.088357331,A,A,A
+32,32,g17932,scaffold_226,1409,NA,NA,NA,N,631026,A,-0.69191933,A,A,A
+33,33,g18023,scaffold_1231,335,NA,U4UG15,NA,Y,17812,A,-1.484324,A,A,A
+34,34,g18118,scaffold_859,908,NA,A0A2P8YF88,DDE superfamily endonuclease,Y,35811,A,-0.743375904,A,A,A
+35,35,g18441,scaffold_314,1259,NA,NA,NA,N,423911,A,-0.03191473,A,A,A
+36,36,g18640,scaffold_362,244,NA,NA,Hsp70 protein,Y,370763,A,0.126613199,A,A,A
+37,37,g18641,scaffold_362,918,HSP7C_RAT,A0A3B3CHS0,"Hsp70 protein,DnaJ domain",Y,370763,A,0.126613199,A,A,A
+38,38,g19038,scaffold_682,3865,YI31B_YEAST,"A0A3B5QZY7,A0A3B5PQ07","Reverse transcriptase (RNA-dependent DNA polymerase),Integrase zinc binding domain,Integrase core domain,RNase H-like domain found in reverse transcriptase,Aspartyl protease",Y,90845,A,0.070871472,A,A,A
+39,39,g19773,scaffold_60,2514,GRM1_HUMAN,B0WMA9,"Receptor family ligand binding region,Nine Cysteines Domain of family 3 GPCR,7 transmembrane sweet-taste receptor of 3 GCPR",Y,1353332,A,-0.321423966,A,A,A
+40,40,g20012,scaffold_894,929,PWP2_PONAB,J9K4S6,"WD domain, G-beta repeat",Y,31517,A,0.10496427,A,A,A
+41,41,g20833,scaffold_921,662,NA,NA,NA,N,29080,A,0.216100246,A,A,A
+42,42,g22782,scaffold_196,436,NA,NA,NA,N,708020,A,0.064827585,A,A,A
+43,43,g22858,scaffold_37,1311,NA,NA,NA,N,1648890,A,-0.516654036,A,A,A
+44,44,g22901,scaffold_37,1259,NA,NA,NA,N,1648890,A,-0.516654036,A,A,A
+45,45,g22998,scaffold_1135,303,NA,NA,NA,N,19955,A,-2.890705,A,A,A
+46,46,g23106,scaffold_222,1908,NA,NA,NA,N,636692,A,-0.053496985,A,A,A
+47,47,g23396,scaffold_364,1075,HARB1_HUMAN,J9KAE0,DDE superfamily endonuclease,Y,369540,A,0.494831942,A,A,A
+48,48,g23495,scaffold_1149,494,NA,NA,NA,N,19548,A,-0.373129,A,A,A
+49,49,g2882,scaffold_89,414,NA,NA,NA,N,1205502,A,0.023041738,A,A,A
+50,50,g3541,scaffold_10,1613,NA,A0A482X7A4,NA,Y,2776264,A,-0.506933299,A,A,A
+51,51,g3814,scaffold_261,1172,NA,NA,NA,N,520855,A,0.401831382,A,A,A
+52,52,g3974,scaffold_162,845,NA,NA,NA,N,839433,A,-0.170515164,A,A,A
+53,53,g4187,scaffold_28,2707,NA,A0A1I7W3G3,"Putative peptidase (DUF1758),Family of unknown function (DUF5641),Protein of unknown function (DUF1759)",Y,1812903,A,0.061554549,A,A,A
+54,54,g4661,scaffold_501,629,NA,NA,NA,N,222918,A,-0.514203897,A,A,A
+55,55,g4821,scaffold_169,1581,NA,NA,NA,N,814881,A,-0.607130213,A,A,A
+56,56,g5248,scaffold_814,1116,CATA_ASCSU,A0A2J7REJ5,"Catalase-related immune-responsive,Catalase",Y,43109,B3,-0.131942929,B.loose,A,A
+57,57,g6329,scaffold_235,313,PCNA_BOMMO,R4G4N7,"Proliferating cell nuclear antigen, C-terminal domain",Y,589863,A,-0.421220801,A,A,A
+58,58,g7421,scaffold_526,1408,RCBT1_MOUSE,A0A232EN37,"BTB/POZ domain,Regulator of chromosome condensation (RCC1) repeat",Y,204775,B2,0.082367809,B.loose,A,A
+59,59,g8423,scaffold_232,2572,NA,NA,Immunoglobulin I-set domain,Y,605804,A,-0.717709863,A,A,A
+60,60,g8578,scaffold_447,869,NA,NA,NA,N,269477,A,-0.01947693,A,A,A
+61,61,g8580,scaffold_447,488,NA,NA,7tm Odorant receptor,Y,269477,A,-0.01947693,A,A,A
+62,62,g8581,scaffold_447,1240,NA,NA,7tm Odorant receptor,Y,269477,A,-0.01947693,A,A,A
+63,63,g8730,scaffold_1067,2454,NA,J9M2D0,"DDE superfamily endonuclease,Tc5 transposase DNA-binding domain",Y,22328,A,-0.9398328,A,A,A
+64,64,g8819,scaffold_177,878,NA,NA,NA,N,798885,A,0.255697123,A,A,A
+65,65,g9057,scaffold_740,2103,NA,C3WB46,"Transactive response DNA-binding protein N-terminal domain,Predicted AAA-ATPase",Y,65332,A,0.269879768,A,A,A
+66,66,g9186,scaffold_757,3034,NA,NA,NA,N,59257,A,0.056796748,A,A,A
+67,67,g9187,scaffold_757,1187,NA,NA,NA,N,59257,A,0.056796748,A,A,A
+68,68,g9195,scaffold_442,1250,NA,NA,NA,N,275404,A,0.481953666,A,A,A
+69,69,g9535,scaffold_101,1210,NA,NA,NA,N,1110711,A,-0.067778632,A,A,A
+70,70,g9537,scaffold_101,1733,NA,NA,NA,N,1110711,A,-0.067778632,A,A,A

@@ -121,6 +121,8 @@ de.B.males.vs.nonB.females <- read_delim("output/diff_expr/B.males.vs.nonB.femal
 de.B.females.vs.nonB.females <- read_delim("output/diff_expr/B.females.vs.nonB.females.de.treat.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
 de.nonB.males.vs.nonB.females <- read_delim("output/diff_expr/nonB.males.vs.nonB.females.de.treat.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
 
+de.over.B.genes<- read_delim("output/diff_expr/over.B.vs.nonB.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
+de.under.B.genes<- read_delim("output/diff_expr/under.B.vs.nonB.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
 ###
 
 ##### Genes located on B candidate scaffolds
@@ -148,6 +150,17 @@ de.under.B.males.genes.anno <- left_join(de.under.B.males.genes,genes.AB,by="gen
 #write.csv(de.under.B.males.genes.anno,"output/diff_expr/under.Bmales.vs.all.anno.csv")
 
 ###
+
+##### Examine genes that are over/under expressed in B compared to non B lines
+colnames(de.over.B.genes)[2] <- "gene"
+de.over.B.genes.anno <- left_join(de.over.B.genes,genes.AB,by="gene")
+table(de.over.B.genes.anno$b.status.final)
+write.csv(de.over.B.genes.anno,"output/diff_expr/over.B.vs.noB.csv")
+
+colnames(de.under.B.genes)[2] <- "gene"
+de.under.B.genes.anno <- left_join(de.under.B.genes,genes.AB,by="gene")
+table(de.under.B.genes.anno$b.status.final)
+write.csv(de.under.B.genes.anno,"output/diff_expr/under.B.vs.noB.csv")
 
 ##### Examine differentially expressed genes between groups
 
@@ -213,9 +226,19 @@ write.csv(de.B.males.vs.B.females.anno,"output/diff_expr/de.B.males.vs.B.females
 write.csv(de.B.males.vs.nonB.females.anno,"output/diff_expr/de.B.males.vs.nonB.females.anno.csv")
 write.csv(de.nonB.males.vs.nonB.females.anno,"output/diff_expr/de.nonB.males.vs.nonB.females.anno.csv")
 
+
+
+
+
+
 # extract putative B genes that are differentially expressed between B-carrying males and females
 de.B.males.vs.B.females.anno.b <- de.B.males.vs.B.females.anno[de.B.males.vs.B.females.anno$b.status.final != "A",]
 write.csv(de.B.males.vs.B.females.anno.b,"output/diff_expr/de.B.males.vs.B.females.anno.b.csv")
+
+
+
+
+
 
 ###
 
@@ -227,19 +250,39 @@ rsem.tpm.B.females <- subset(rsem.tpm[c(1,2,3,4,8,9,10)])
 rsem.tpm.nonB.males <- subset(rsem.tpm[c(1,18,19,20,24,25,26,27)])
 rsem.tpm.nonB.females <- subset(rsem.tpm[c(1,15,16,17,21,22,23)])
 
+# B vs non B groups
+rsem.tpm.B <- subset(rsem.tpm[c(1,5,6,7,11,12,13,14,2,3,4,8,9,10)])
+rsem.tpm.nonB <- subset(rsem.tpm[c(1,18,19,20,24,25,26,27,15,16,17,21,22,23)])
+
+
+
 gene <- rsem.tpm[1]
 B.males.tpm <- rowMeans(rsem.tpm.B.males[-1])
 B.females.tpm <- rowMeans(rsem.tpm.B.females[-1])
 nonB.males.tpm <- rowMeans(rsem.tpm.nonB.males[-1])
 nonB.females.tpm <- rowMeans(rsem.tpm.nonB.females[-1])
 
+B.tpm <- rowMeans(rsem.tpm.B[-1])
+B.tpm <- rowMeans(rsem.tpm.nonB[-1])
+
+
+
 rsem.tpm.avg <- data.frame(gene,B.males.tpm,B.females.tpm,nonB.males.tpm,nonB.females.tpm)
 colnames(rsem.tpm.avg)[1] <- "gene"
 genes.AB.tpm <- merge(rsem.tpm.avg, genes.AB, by ="gene")
 
+#for b vs non b
+rsem.tpm.avg2 <- data.frame(gene,B.tpm,B.tpm)
+colnames(rsem.tpm.avg2)[1] <- "gene"
+genes.AB.tpm2 <- merge(rsem.tpm.avg2, genes.AB, by ="gene")
+
+
+
+
 library(patchwork)
 
 genes.AB.tpm
+
 
 b.males.tpm <- ggplot(genes.AB.tpm, aes(b.status.final, log10(B.males.tpm+1e-3),fill=b.status.final)) + 
   geom_jitter(data=genes.AB.tpm, aes(b.status.final, log10(B.males.tpm+1e-3), group=b.status.final),
@@ -248,6 +291,7 @@ b.males.tpm <- ggplot(genes.AB.tpm, aes(b.status.final, log10(B.males.tpm+1e-3),
   labs(title="B males",x="", y ="log10(Average TPM + 1e-4)") +
   scale_fill_manual(values=c("gray85","royalblue4", "deepskyblue", "cadetblue", "lavenderblush4")) +
   theme_bw()
+#b.males.tpm
 
 b.females.tpm <- ggplot(genes.AB.tpm, aes(b.status.final, log10(B.females.tpm+1e-3),fill=b.status.final)) + 
   geom_jitter(data=genes.AB.tpm, aes(b.status.final, log10(B.females.tpm+1e-3), group=b.status.final),
@@ -273,10 +317,29 @@ nonb.females.tpm <- ggplot(genes.AB.tpm, aes(b.status.final, log10(nonB.females.
   scale_fill_manual(values=c("gray85","royalblue4", "deepskyblue", "cadetblue", "lavenderblush4")) +
   theme_bw()
 
+#b vs non b
+b.tpm <- ggplot(genes.AB.tpm2, aes(b.status.final, log10(B.tpm+1e-3),fill=b.status.final)) + 
+  geom_jitter(data=genes.AB.tpm, aes(b.status.final, log10(B.tpm+1e-3), group=b.status.final),
+              size=0.5, width = 0.4, alpha=0.5, show.legend=FALSE) +
+  geom_boxplot(alpha=0.75,outlier.shape = NA,notch=TRUE,lwd=0.6) +
+  labs(title="B+ lines",x="", y ="log10(Average TPM + 1e-4)") +
+  scale_fill_manual(values=c("gray85","royalblue4", "deepskyblue", "cadetblue", "lavenderblush4")) +
+  theme_bw()
+
+
+nonb.tpm <- ggplot(genes.AB.tpm2, aes(b.status.final, log10(nonB.tpm+1e-3),fill=b.status.final)) + 
+  geom_jitter(data=genes.AB.tpm2, aes(b.status.final, log10(nonB.tpm+1e-3), group=b.status.final),
+              size=0.5, width = 0.4, alpha=0.5, show.legend=FALSE) +
+  geom_boxplot(alpha=0.75,outlier.shape = NA,notch=TRUE,lwd=0.6) +
+  labs(title="B- lines",x="", y ="log10(Average TPM + 1e-4)") +
+  scale_fill_manual(values=c("gray85","royalblue4", "deepskyblue", "cadetblue", "lavenderblush4")) +
+  theme_bw()
+
+
 library(patchwork)
 jpeg("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/misc/gene.tpm.by.b.status.jpeg",
      width = 4200, height = 3800, units = 'px', res = 300)
-b.males.tpm + b.females.tpm + nonb.males.tpm + nonb.females.tpm
+b.males.tpm + b.females.tpm + nonb.males.tpm + nonb.females.tpm + b.tpm + nonb.tpm
 dev.off()
 
 # examine classes of genes

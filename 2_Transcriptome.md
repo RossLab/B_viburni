@@ -781,5 +781,65 @@ List of annotated Bmale only transcripts are in misc/rsem_isoform_Bmale_annot2.c
 | g864.t1    | Pfam        | PF15868      | Transcription activator MBF2                         | Transcription activator MBF2                        |                                                |
 | g9431.t1   | SignalP_EUK | SignalP-noTM |                                                      |                                                     |                                                |
 
+# DEGs B vs non B lines regardless of sex
+
+## Using edgeR script
+
+To obtain the DEGs in B compared to non B lines, the same data prep was made and a new Design was created (design2 in R script)
+```
+group2=c("B","B","B","B","B","B","B","B","B","B","B","B","B","noB","noB","noB","noB","noB","noB","noB","noB","noB","noB","noB","noB","noB")
+design2 <- model.matrix(~0 + group2)
+```
+
+*Voom plot before contrast matrix*
+
+![](misc/v2_design2_voomplot.png)
+
+
+*Contrast matrix*
+```
+cont.matrix2 <- makeContrasts(BnoB = group2B - group2noB, levels= design2)
+```
+
+*Voom plot after model fit*
+
+![](misc/v2_design2_voomplot_finalmodel.png)
+
+* Venn Diagram *
+
+![](misc/venn_b_noB.png)
+
+There were 178 overexpressed and 70 underexpressed genes if we compared presence or absence of B, regardless of sex
+
+The list of overexpressed genes was exported to output/
+
+
+
+## Using exploring_AB_genes R script
+
+I edited the script by just adding the B vs non B list.
+
+There are 160 A genes overexpressed and 68 underexpressed genes between B and non B lines regarless of sex
+
+*Distribution to type of gene in the overexpressed genes*
+```
+ A  B1  B2  B3 
+160   8   6   4 
+
+```
+List: output/over.B.vs.noB.csv
+
+
+
+Distribution to type of gene in the underexpressed genes*
+```
+ A B2 B3 
+68  1  1
+```
+List: output/under.B.vs.noB.csv
+
+
+*Plot expression by type of gene*
+![](misc/gene.tpm.by.b.statusnew.jpeg)
 
 
