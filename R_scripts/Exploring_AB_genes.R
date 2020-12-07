@@ -123,6 +123,8 @@ de.nonB.males.vs.nonB.females <- read_delim("output/diff_expr/nonB.males.vs.nonB
 
 de.over.B.genes<- read_delim("output/diff_expr/over.B.vs.nonB.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
 de.under.B.genes<- read_delim("output/diff_expr/under.B.vs.nonB.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
+de.B.vs.nonB <- read_delim("output/diff_expr/B.vs.nonB.de.treat.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
+
 ###
 
 ##### Genes located on B candidate scaffolds
@@ -155,12 +157,14 @@ de.under.B.males.genes.anno <- left_join(de.under.B.males.genes,genes.AB,by="gen
 colnames(de.over.B.genes)[2] <- "gene"
 de.over.B.genes.anno <- left_join(de.over.B.genes,genes.AB,by="gene")
 table(de.over.B.genes.anno$b.status.final)
-write.csv(de.over.B.genes.anno,"output/diff_expr/over.B.vs.noB.csv")
+write.csv(de.over.B.genes.anno,"output/diff_expr/over.B.vs.noB.anno.csv")
 
 colnames(de.under.B.genes)[2] <- "gene"
 de.under.B.genes.anno <- left_join(de.under.B.genes,genes.AB,by="gene")
+
+
 table(de.under.B.genes.anno$b.status.final)
-write.csv(de.under.B.genes.anno,"output/diff_expr/under.B.vs.noB.csv")
+write.csv(de.under.B.genes.anno,"output/diff_expr/under.B.vs.noB.anno.csv")
 
 ##### Examine differentially expressed genes between groups
 
@@ -169,18 +173,23 @@ de.B.males.vs.B.females <- de.B.males.vs.B.females[c(-1)]
 de.B.males.vs.nonB.females <- de.B.males.vs.nonB.females[c(-1)]
 de.B.females.vs.nonB.females <- de.B.females.vs.nonB.females[c(-1)]
 de.nonB.males.vs.nonB.females <- de.nonB.males.vs.nonB.females[c(-1)]
+de.B.vs.nonB <- de.B.vs.nonB[c(-1)]
+
 
 colnames(de.B.males.vs.nonB.males)[1] <- "gene"
 colnames(de.B.males.vs.B.females)[1] <- "gene"
 colnames(de.B.males.vs.nonB.females)[1] <- "gene"
 colnames(de.B.females.vs.nonB.females)[1] <- "gene"
 colnames(de.nonB.males.vs.nonB.females)[1] <- "gene"
+colnames(de.B.vs.nonB)[1] <- "gene"
+
 
 de.B.males.vs.nonB.males.anno <- left_join(de.B.males.vs.nonB.males,genes.AB,by="gene")
 de.B.males.vs.B.females.anno <- left_join(de.B.males.vs.B.females,genes.AB,by="gene")
 de.B.males.vs.nonB.female.anno <- left_join(de.B.males.vs.nonB.females,genes.AB,by="gene")
 de.B.females.vs.nonB.females.anno <- left_join(de.B.females.vs.nonB.females,genes.AB,by="gene")
 de.nonB.males.vs.nonB.females.anno <- left_join(de.nonB.males.vs.nonB.females,genes.AB,by="gene")
+de.B.vs.nonB.anno <- left_join(de.B.vs.nonB,genes.AB,by="gene")
 
 ## B males v non B males
 
@@ -226,7 +235,18 @@ write.csv(de.B.males.vs.B.females.anno,"output/diff_expr/de.B.males.vs.B.females
 write.csv(de.B.males.vs.nonB.females.anno,"output/diff_expr/de.B.males.vs.nonB.females.anno.csv")
 write.csv(de.nonB.males.vs.nonB.females.anno,"output/diff_expr/de.nonB.males.vs.nonB.females.anno.csv")
 
+## B lines vs non B lines
+de.over.B.vs.nonB.anno <- de.B.vs.nonB.anno[de.B.vs.nonB.anno$logFC > 1,]
+table(de.over.B.vs.nonB.anno$b.status.final)
+de.over.B.vs.nonB.anno.yes <- de.over.B.vs.nonB.anno[de.over.B.vs.nonB.anno$anno == "Y",]
+table(de.over.B.vs.nonB.anno.yes$b.status.final)
+write.csv(de.over.B.vs.nonB.anno,"output/diff_expr/de.over.B.vs.nonB.anno.csv")
 
+de.under.B.vs.nonB.anno <- de.B.vs.nonB.anno[de.B.vs.nonB.anno$logFC < 1,]
+table(de.under.B.vs.nonB.anno$b.status.final)
+de.under.B.vs.nonB.anno.yes <- de.under.B.vs.nonB.anno[de.under.B.vs.nonB.anno$anno == "Y",]
+table(de.under.B.vs.nonB.anno.yes$b.status.final)
+write.csv(de.under.B.vs.nonB.anno,"output/diff_expr/de.under.B.vs.nonB.anno.csv")
 
 
 
@@ -337,8 +357,14 @@ nonb.tpm <- ggplot(genes.AB.tpm2, aes(b.status.final, log10(nonB.tpm+1e-3),fill=
 
 
 library(patchwork)
-jpeg("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/misc/gene.tpm.by.b.status.jpeg",
+#jpeg("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/misc/gene.tpm.by.b.status.jpeg",
+    # width = 4200, height = 3800, units = 'px', res = 300)
+jpeg("misc/gene.tpm.by.b.status.jpeg",
      width = 4200, height = 3800, units = 'px', res = 300)
+b.males.tpm + b.females.tpm + nonb.males.tpm + nonb.females.tpm 
+dev.off()
+jpeg("misc/gene.tpm.by.b.statusnew.jpeg",
+     width = 5400, height = 4200, units = 'px', res = 300)
 b.males.tpm + b.females.tpm + nonb.males.tpm + nonb.females.tpm + b.tpm + nonb.tpm
 dev.off()
 
