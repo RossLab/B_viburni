@@ -132,11 +132,41 @@ summary(decideTests(efit))
 tfit <- treat(efit, lfc=1) 
 dt <- decideTests(tfit)
 summary(dt)
-write.fit(tfit, dt, file="diff_expression_sex_tfit.txt")
+#write.fit(tfit, dt, file="sex_diff_expr/FvsM_results_tfit.txt") #export results
 
+# export results
 
+FvsM.results.all <- topTreat(tfit, coef=1, n=Inf)
+FvsM.results.de <- topTreat(tfit, coef=1, n=3830)
 
+#write.csv(FvsM.results.all, file="sex_diff_expr/FvsM_results_all.csv") #export results
+#write.csv(FvsM.results.de, file="sex_diff_expr/FvsM_results_de.csv") #export results
 
+FvsM.anno <- FvsM.results.all
+FvsM.anno$de <- "NS"
+FvsM.anno$de <- ifelse(FvsM.anno$adj.P.Val < 0.05 & FvsM.anno$logFC < 0,
+                                   "MB",FvsM.anno$de)
+FvsM.anno$de <- ifelse(FvsM.anno$adj.P.Val < 0.05 & FvsM.anno$logFC > 0,
+                                   "FB",FvsM.anno$de)
+table(FvsM.anno$de)
+
+# plot
+
+plotMD(tfit, column=1, status=dt[,1], main=colnames(tfit)[1],
+       xlab = "Average log-expression",
+       ylab = "Expression log-ratio (F v M)",
+       hl.col = c("firebrick3","cornflowerblue"))
+head(FvsM.results.all)
+
+ggplot(FvsM.anno, aes(x = logFC, y = AveExpr)) +
+  geom_vline(xintercept=(0)) +
+  geom_point(aes(colour=de, size=de, alpha=de)) +
+  scale_colour_manual(name="Expression",values=c("firebrick3","cornflowerblue","azure4")) +
+  scale_size_manual(values=c(1, 1, 0.8),guide=FALSE) +
+  scale_alpha_manual(values=c(0.8, 0.8, 0.3),guide=FALSE) +
+  xlab = "Expression log-ratio (F v M)" +
+  ylab = "Average log-expression" +
+  theme_bw()
 
 
 

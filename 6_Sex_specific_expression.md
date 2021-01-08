@@ -24,3 +24,5 @@ Differentially expressed genes
 | Down          | 1644                        |
 | NotSig        | 11843                       |
 | Up            | 2186                        |
+
+![](misc/FIG.sex.biased.expr.tiff)
