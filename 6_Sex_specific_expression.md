@@ -25,4 +25,6 @@ Differentially expressed genes
 | NotSig        | 11843                       |
 | Up            | 2186                        |
 
-![](misc/FIG.sex.biased.expr.tiff)
+Volcano plot:
+
+![](misc/FIG.sex.biased.expr.jpg)
