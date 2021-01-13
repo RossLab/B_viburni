@@ -13,12 +13,12 @@ library(gplots)
 #BiocManager::install("org.Mm.eg.db")
 library(org.Mm.eg.db)
 
-# import counts and sample info
+setwd("E:/agdel/Documents/projects_rosslab/B_viburni")
 
-setwd("E:\agdel\Documents\projects_rosslab\B_viburni\R_scripts")
 
-rsem.counts <-read.delim("RSEM_digi.counts.matrix",header=TRUE) #matrix generated from rsem
+##### Differential expression analysis
 
+rsem.counts <-read.delim("R_scripts/RSEM_digi.counts.matrix",header=TRUE) #matrix generated from rsem
 sampleinfo <- read.csv("sampleinfoPviburnisex.csv") #sample group info
 
 a <- rsem.counts
@@ -129,20 +129,17 @@ summary(decideTests(efit))
 
 # set logFc to 1
 
-tfit <- treat(efit, lfc=1) 
+tfit <- treat(efit, lfc = 1) 
 dt <- decideTests(tfit)
 summary(dt)
-#write.fit(tfit, dt, file="sex_diff_expr/FvsM_results_tfit.txt") #export results
+#write.fit(tfit, dt, file="output/sex_diff_expr/FvsM_results_tfit.txt") #export results
 
-# export results
+# results
 
 FvsM.results.all <- topTreat(tfit, coef=1, n=Inf)
-FvsM.results.de <- topTreat(tfit, coef=1, n=3830)
-
-#write.csv(FvsM.results.all, file="sex_diff_expr/FvsM_results_all.csv") #export results
-#write.csv(FvsM.results.de, file="sex_diff_expr/FvsM_results_de.csv") #export results
 
 FvsM.anno <- FvsM.results.all
+colnames(FvsM.anno)[1] <- "gene"
 FvsM.anno$de <- "NS"
 FvsM.anno$de <- ifelse(FvsM.anno$adj.P.Val < 0.05 & FvsM.anno$logFC < 0,
                                    "MB",FvsM.anno$de)
@@ -152,63 +149,169 @@ table(FvsM.anno$de)
 
 # plot
 
-plotMD(tfit, column=1, status=dt[,1], main=colnames(tfit)[1],
-       xlab = "Average log-expression",
-       ylab = "Expression log-ratio (F v M)",
-       hl.col = c("firebrick3","cornflowerblue"))
-head(FvsM.results.all)
-
-ggplot(FvsM.anno, aes(x = logFC, y = AveExpr)) +
+sb.plot <- ggplot(FvsM.anno, aes(x = logFC, y = AveExpr)) +
   geom_vline(xintercept=(0)) +
   geom_point(aes(colour=de, size=de, alpha=de)) +
   scale_colour_manual(name="Expression",values=c("firebrick3","cornflowerblue","azure4")) +
   scale_size_manual(values=c(1, 1, 0.8),guide=FALSE) +
   scale_alpha_manual(values=c(0.8, 0.8, 0.3),guide=FALSE) +
-  xlab = "Expression log-ratio (F v M)" +
-  ylab = "Average log-expression" +
+  labs(x = "Expression log-ratio (F v M)", y = "Average log-expression", title = "Sex biased expression") +
   theme_bw()
+table(FvsM.anno$de)
+#tiff("E:/agdel/Documents/projects_rosslab/B_viburni/manuscript/plots/FIG.sex.biased.expr.tiff",
+#    width = 3000, height = 2100, units = 'px', res = 300)
+#sb.plot
+#dev.off()
+#
+#jpeg("E:/agdel/Documents/projects_rosslab/B_viburni/misc/FIG.sex.biased.expr.jpg",
+#     width = 3000, height = 2100, units = 'px', res = 300)
+#sb.plot
+#dev.off()
+
+# annotate genes with the master annotation
+
+freeze.v0.genes.anno <- read_delim("output/freeze.v0.genes.anno.complete.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE) # master anno
+FvsM.anno <- left_join(FvsM.anno,freeze.v0.genes.anno,by="gene")
+
+#write.csv(FvsM.anno, file="output/sex_diff_expr/FvsM_results_anno.csv") #export results
 
 
+##### GO analysis
+
+# Make a compatible GO annotation file
+
+Pcitri_genes_with_GO <- read_table2("output/pviburni.gene.GO", 
+                                    col_names = FALSE)
+colnames(Pcitri_genes_with_GO) <- c("gene","go")
+Pcitri_genes_with_GO <- separate_rows(Pcitri_genes_with_GO, go, sep =';')
+#write.table(new_annotations, file="P_citri_GO_terms.txt", sep="\t", quote = F,
+#            col.names = T, row.names = F)
 
 
+# Make the expression gene lists
 
-# extracting only the B male specific
+logFC_DEgenes <- FvsM.anno
+nrow(FB_DEgenes)
 
-# these are all the genes that are DE between B males and all the others
-de.B.vs.all <- which(dt[,1]!=0 & dt[,2]!=0 &dt[,3]!=0)
-length(de.B.vs.all)
+MB_DEgenes <- logFC_DEgenes[logFC_DEgenes$de == "MB",]
+FB_DEgenes <- logFC_DEgenes[logFC_DEgenes$de == "FB",]
 
-# these are all the genes that are over expressed and underexpressed, respectively, between B males and all the others
-de.over.B.males <- which(dt[,1]==1 & dt[,2]==1 &dt[,3]==1)
-de.under.B.males <- which(dt[,1]==-1 & dt[,2]==-1 &dt[,3]==-1)
-length(de.over.B.males) # B genes overexpressed in B males compared to the rest of the groups
-length(de.under.B.males) # B genes underexpressed in B males compared to the rest of the groups
+background <- merge(Pcitri_genes_with_GO, logFC_DEgenes[c(1)])
 
-# list of genes from Bmale
-fit.cont1$genes[de.over.B.males,]
-fit.cont1$genes[de.under.B.males,]
+# load packages
 
-# export overexpressed genes in B+ males vs all
-de.over.B.males.genes <- data.frame(fit.cont1$genes[de.over.B.males,])
-colnames(de.over.B.males.genes) <- "genes"
-#write.csv(de.over.B.males.genes,"output/diff_expr/over.Bmales.vs.all.csv")
-head(de.over.B.males.genes)
+#BiocManager::install("GOstats")
+#BiocManager::install("treemap")
+library(GOstats)
+library(GSEABase)
+library(treemap)
 
-# export all lists of genes 
-maleB.noB <- topTreat(tfit, coef=1,number = summary(dt)[1]+summary(dt)[3])
-maleB.femaleB <- topTreat(tfit, coef=2, number = summary(dt)[4]+summary(dt)[6]) 
-maleB.femalenoB <- topTreat(tfit, coef=3, number = summary(dt)[7]+summary(dt)[9] ) 
-femaleB.femalenoB <- topTreat(tfit, coef=4, number = summary(dt)[10]+summary(dt)[12]) 
-malenoB.femalenoB <- topTreat(tfit, coef=5, number = summary(dt)[13]+summary(dt)[15]) 
+# Read in background GO set and make compatible with GOstats
 
-#write.csv(maleB.noB,"output/diff_expr/B.males.vs.nonB.males.de.treat.csv")
-#write.csv(maleB.femaleB,"output/diff_expr/B.males.vs.B.females.de.treat.csv")
-#write.csv(maleB.femalenoB,"output/diff_expr/B.males.vs.nonB.females.de.treat.csv")
-#write.csv(femaleB.femalenoB,"output/diff_expr/B.females.vs.nonB.females.de.treat.csv")
-#write.csv(malenoB.femalenoB,"output/diff_expr/nonB.males.vs.nonB.females.de.treat.csv")
+GO_annotations <- background
+GO_annotations[,3] <- paste("IEA")
+names(GO_annotations) <- c("genes","GOIds","evi")
+GO_annotations[,3] <- paste("IEA")
+GO_annotations <- GO_annotations[c(2,3,1)]
 
-#additional exports: complete list of contrasts
+# Create necessary objects
 
-dt_df <- as.data.frame(dt)
-dt_df$gene <- row.names(dt_df)
-#write.csv(dt_df,"output/diff_expr/dt_df.csv")
+GO_frame <- GOFrame(GO_annotations,organism = "Planococcus citri")
+goAllFrame <- GOAllFrame(GO_frame)
+gsc <- GeneSetCollection(goAllFrame, setType = GOCollection())
+universe <- as.vector(unique(GO_annotations[,3]))
+
+# Read in genes of interest 
+
+f_genes <- as.data.frame(logFC_DEgenes$gene[logFC_DEgenes$de=="FB"])
+f_genes <- as.data.frame(na.omit(f_genes[,1]))
+f_genes <- as.vector(f_genes[,1])
+
+m_genes <- as.data.frame(logFC_DEgenes$gene[logFC_DEgenes$de=="MB"])
+m_genes <- as.data.frame(na.omit(m_genes[,1]))
+m_genes <- as.vector(m_genes[,1])
+
+# Keep only genes with annotated GOs
+
+f_genes <- f_genes[f_genes %in% universe]
+m_genes <- m_genes[m_genes %in% universe]
+# background pop: 6958 annotated / 15673 total
+# female biased genes: 803/2186
+# male biased genes: 653/1644
+
+# Set up parameters for hypergeometric test
+
+my_genes <- f_genes
+#my_genes <- m_genes
+
+Get_GO_params_all <- function(genes_of_i,universe,pvalue_cut){
+  onto_terms <- c("BP","CC","MF")
+  directions <- c("over","under")
+  param_list <- list()
+  name_1 <- list()
+  for(i in 1:3){
+    for(j in 1:2){
+      name_1 <- c(name_1,paste(onto_terms[i],directions[j],sep = "_"))
+      parameters <- GSEAGOHyperGParams(name="Hygeo params",
+                                       geneSetCollection = gsc,
+                                       universeGeneIds = universe,
+                                       geneIds = my_genes,
+                                       ontology = paste(onto_terms[i]),
+                                       pvalueCutoff = pvalue_cut,
+                                       conditional = T,testDirection = paste(directions[j]))
+      param_list <- c(param_list,parameters)
+    }
+  }
+  names(param_list) <- name_1
+  return(param_list)
+}
+
+param_list <- Get_GO_params_all(genes_of_i = DE_Genes_A,universe = universe,
+                                pvalue_cut = 0.01)
+
+# Hypergeometric test
+
+Hyper_G_test <- function(param_list){
+  Hyper_G_list <- list()
+  for(i in 1:length(param_list)){
+    res <- hyperGTest(param_list[[i]])
+    Hyper_G_list <- c(Hyper_G_list,res)
+  }
+  names(Hyper_G_list) <- names(param_list)
+  return(Hyper_G_list)
+}
+
+GO_enrichment <- Hyper_G_test(param_list = param_list)
+
+# Extract results
+
+Result.BP.F <- summary(GO_enrichment[["BP_over"]])
+Result.CC.F <- summary(GO_enrichment[["CC_over"]])
+Result.MF.F <- summary(GO_enrichment[["MF_over"]])
+
+colnames(Result.BP.F)[1] <- "GO"
+colnames(Result.CC.F)[1] <- "GO"
+colnames(Result.MF.F)[1] <- "GO"
+
+Result.BP.F$Category <- "BP"
+Result.CC.F$Category <- "CC"
+Result.MF.F$Category <- "MF"
+GO.enriched.F <- rbind(Result.BP.F,Result.CC.F,Result.MF.F)
+
+Result.BP.M <- summary(GO_enrichment[["BP_over"]])
+Result.CC.M <- summary(GO_enrichment[["CC_over"]])
+Result.MF.M <- summary(GO_enrichment[["MF_over"]])
+
+colnames(Result.BP.M)[1] <- "GO"
+colnames(Result.CC.M)[1] <- "GO"
+colnames(Result.MF.M)[1] <- "GO"
+
+Result.BP.M$Category <- "BP"
+Result.CC.M$Category <- "CC"
+Result.MF.M$Category <- "MF"
+GO.enriched.M <- rbind(Result.BP.M,Result.MF.M)
+
+# export results
+
+#write.table(GO.enriched.F, file="output/sex_diff_expr/GO.enriched.F.tsv", sep = "\t", quote = F, row.names = F)
+#write.table(GO.enriched.M, file="output/sex_diff_expr/GO.enriched.M.tsv", sep = "\t", quote = F, row.names = F)

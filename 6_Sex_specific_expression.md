@@ -28,3 +28,7 @@ Differentially expressed genes
 Volcano plot:
 
 ![](misc/FIG.sex.biased.expr.jpg)
+
+### GO term analysis
+
+A hypergeometric test was applied using GOstats (pval < 0.01)

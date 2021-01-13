@@ -12,14 +12,15 @@ library(reshape2)
 ##### Get things ready
 
 # setwd and import data
-setwd("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/data")
+setwd("E:/agdel/Documents/projects_rosslab/B_viburni")
 
 # master anno
-freeze.v0.genes.anno <- read_delim("output/freeze.v0.genes.anno.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
+freeze.v0.genes.anno <- read_delim("output/freeze.v0.genes.anno.complete.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
 
 # B chromosome assignment
 scaffolds.final.assignment <- read_delim("output/scaffolds.final.assignment.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
 table(scaffolds.final.assignment$b.status.final)
+
 # expression data from RSEM
 
 #this is how I obtained TPM values from RSEM
@@ -108,8 +109,51 @@ table(scaffolds.final.assignment$b.status.final)
 # import the file
 rsem.tpm <- read_delim("output/diff_expr/rsem.tpm.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
 rsem.tpm <- rsem.tpm[c(-1)]
+rsem.tpm
+##### Genes located on B candidate scaffolds
 
-# differentially expressed genes -- from Andrés' rerun of Isabelle's script (received 03.11.20, rerun completed 09.11.20)
+genes.AB <- merge(freeze.v0.genes.anno,scaffolds.final.assignment[c("seq","length","b.status.final","cov.04v13","b.status","b.status.asn","b.status.kmer")],by="seq")
+genes.AB$anno <- ifelse(!is.na(genes.AB$blast) | !is.na(genes.AB$diamond) | !is.na(genes.AB$pfam_acc) | !is.na(genes.AB$ipr_acc) | !is.na(genes.AB$GO),"Y","N")
+genes.A <-  genes.AB[genes.AB$b.status.final == "A",]
+genes.B1 <- genes.AB[genes.AB$b.status.final == "B1",]
+genes.B2 <- genes.AB[genes.AB$b.status.final == "B2",]
+genes.B3 <- genes.AB[genes.AB$b.status.final == "B3",]
+
+# which or these are annotated?
+genes.AB$anno <- ifelse(!is.na(genes.AB$blast) | !is.na(genes.AB$diamond) | !is.na(genes.AB$pfam_acc) | !is.na(genes.AB$ipr_acc) | !is.na(genes.AB$GO),"Y","N")
+table(genes.A$anno)
+genes.in.Bs.anno <- rbind(genes.B1[genes.B1$anno == "Y",], genes.B2[genes.B2$anno == "Y",], genes.B3[genes.B3$anno == "Y",])[c(2,1,3,4,5,6,7,8,9,10,13)]
+genes.in.Bs.anno$b.status.final
+#write.table(genes.in.Bs.anno, file = "output/genes.in.Bs.anno.csv",row.names = F,sep = ",")
+sum(genes.B1$gene_len)
+length(unique(genes.B1$seq))
+
+# which or these are expressed?
+tpm <- rsem.tpm
+
+tpm$tpm04F <- (tpm$X04F_1+tpm$X04F_2+tpm$X04F_3)/3
+tpm$tpm04M <- (tpm$X04M_1+tpm$X04M_2+tpm$X04M_3)/3
+tpm$tpm13F <- (tpm$X13F_1+tpm$X13F_2+tpm$X13F_3)/3
+tpm$tpm13M <- (tpm$X13M_1+tpm$X13M_2+tpm$X13M_3+tpm$X13M_4)/4
+tpm$tpm15F <- (tpm$X15F_1+tpm$X15F_2+tpm$X15F_3)/3
+tpm$tpm15M <- (tpm$X15M_1+tpm$X15M_2+tpm$X15M_3)/3
+tpm$tpm21F <- (tpm$X21F_1+tpm$X21F_2+tpm$X21F_3)/3
+tpm$tpm21M <- (tpm$X21M_1+tpm$X21M_2+tpm$X21M_3+tpm$X21M_4)/4
+
+tpm <- tpm[c("gene_id","tpm04F","tpm04M","tpm13F","tpm13M","tpm15F","tpm15M","tpm21F","tpm21M")]
+colnames(tpm)[1] <- "gene"
+genes.B1.tpm <- merge(genes.B1,tpm,by="gene")
+genes.B2.tpm <- merge(genes.B2,tpm,by="gene")
+genes.B3.tpm <- merge(genes.B3,tpm,by="gene")
+genes.B.tpm <- rbind(genes.B1.tpm,genes.B2.tpm,genes.B3.tpm)
+#write.table(genes.B.tpm, file = "output/genes.in.Bs.tpm.csv",row.names = F,sep = ",")
+
+genes.B1.tpm$expr <- "no"
+genes.B1.tpm$expr <- ifelse((genes.B1.tpm$tpm04F > 1 | genes.B1.tpm$tpm04M > 1 | genes.B1.tpm$tpm13F > 1 | genes.B1.tpm$tpm13M > 1 | genes.B1.tpm$tpm15F > 1 | genes.B1.tpm$tpm15M > 1 | genes.B1.tpm$tpm21F > 1 | genes.B1.tpm$tpm21M > 1), "yes_1", genes.B1.tpm$expr)
+genes.B1.tpm$expr <- ifelse((genes.B1.tpm$tpm04F > 10 | genes.B1.tpm$tpm04M > 10 | genes.B1.tpm$tpm13F > 10 | genes.B1.tpm$tpm13M > 10 | genes.B1.tpm$tpm15F > 10 | genes.B1.tpm$tpm15M > 10 | genes.B1.tpm$tpm21F > 10 | genes.B1.tpm$tpm21M > 10), "yes_10", genes.B1.tpm$expr)
+table(genes.B1.tpm$expr)
+genes.B1.tpm[(genes.B1.tpm$expr == "yes_10"),]
+# differentially expressed genes -- from Andres' rerun of Isabelle's script (received 03.11.20, rerun completed 09.11.20)
 
 dt_df <- read_delim("output/diff_expr/dt_df.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE) # complete list of contrasts
 de.over.B.males.genes <- read_delim("output/diff_expr/over.Bmales.vs.all.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
