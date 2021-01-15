@@ -110,6 +110,7 @@ table(scaffolds.final.assignment$b.status.final)
 rsem.tpm <- read_delim("output/diff_expr/rsem.tpm.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
 rsem.tpm <- rsem.tpm[c(-1)]
 rsem.tpm
+
 ##### Genes located on B candidate scaffolds
 
 genes.AB <- merge(freeze.v0.genes.anno,scaffolds.final.assignment[c("seq","length","b.status.final","cov.04v13","b.status","b.status.asn","b.status.kmer")],by="seq")
@@ -153,6 +154,122 @@ genes.B1.tpm$expr <- ifelse((genes.B1.tpm$tpm04F > 1 | genes.B1.tpm$tpm04M > 1 |
 genes.B1.tpm$expr <- ifelse((genes.B1.tpm$tpm04F > 10 | genes.B1.tpm$tpm04M > 10 | genes.B1.tpm$tpm13F > 10 | genes.B1.tpm$tpm13M > 10 | genes.B1.tpm$tpm15F > 10 | genes.B1.tpm$tpm15M > 10 | genes.B1.tpm$tpm21F > 10 | genes.B1.tpm$tpm21M > 10), "yes_10", genes.B1.tpm$expr)
 table(genes.B1.tpm$expr)
 genes.B1.tpm[(genes.B1.tpm$expr == "yes_10"),]
+
+# differences in expression rates across genes
+
+rsem.tpm.B.males <- subset(rsem.tpm[c(1,5,6,7,11,12,13,14)])
+rsem.tpm.B.females <- subset(rsem.tpm[c(1,2,3,4,8,9,10)])
+rsem.tpm.nonB.males <- subset(rsem.tpm[c(1,18,19,20,24,25,26,27)])
+rsem.tpm.nonB.females <- subset(rsem.tpm[c(1,15,16,17,21,22,23)])
+
+# B vs non B groups
+rsem.tpm.B <- subset(rsem.tpm[c(1,5,6,7,11,12,13,14,2,3,4,8,9,10)])
+rsem.tpm.nonB <- subset(rsem.tpm[c(1,18,19,20,24,25,26,27,15,16,17,21,22,23)])
+
+# differences in expression rates across B+ lines and B- lines
+
+gene <- rsem.tpm[1]
+B.males.tpm <- rowMeans(rsem.tpm.B.males[-1])
+B.females.tpm <- rowMeans(rsem.tpm.B.females[-1])
+nonB.males.tpm <- rowMeans(rsem.tpm.nonB.males[-1])
+nonB.females.tpm <- rowMeans(rsem.tpm.nonB.females[-1])
+
+B.tpm <- rowMeans(rsem.tpm.B[-1])
+nonB.tpm <- rowMeans(rsem.tpm.nonB[-1])
+
+rsem.tpm.avg <- data.frame(gene,B.males.tpm,B.females.tpm,nonB.males.tpm,nonB.females.tpm)
+colnames(rsem.tpm.avg)[1] <- "gene"
+genes.AB.tpm <- merge(rsem.tpm.avg, genes.AB, by ="gene")
+
+#for b vs non b
+rsem.tpm.avg2 <- data.frame(gene,B.tpm,nonB.tpm)
+colnames(rsem.tpm.avg2)[1] <- "gene"
+genes.AB.tpm2 <- merge(rsem.tpm.avg2, genes.AB, by ="gene")
+
+b.males.tpm <- ggplot(genes.AB.tpm, aes(b.status.final, log10(B.males.tpm+1e-3),fill=b.status.final)) + 
+  geom_jitter(data=genes.AB.tpm, aes(b.status.final, log10(B.males.tpm+1e-3), group=b.status.final),
+              size=0.5, width = 0.4, alpha=0.5, show.legend=FALSE) +
+  geom_boxplot(alpha=0.75,outlier.shape = NA,notch=TRUE,lwd=0.6) +
+  labs(title="B males",x="", y ="log10(Average TPM + 1e-4)") +
+  scale_fill_manual(values=c("gray85","royalblue4", "deepskyblue", "cadetblue", "lavenderblush4")) +
+  theme_bw()
+
+b.females.tpm <- ggplot(genes.AB.tpm, aes(b.status.final, log10(B.females.tpm+1e-3),fill=b.status.final)) + 
+  geom_jitter(data=genes.AB.tpm, aes(b.status.final, log10(B.females.tpm+1e-3), group=b.status.final),
+              size=0.5, width = 0.4, alpha=0.5, show.legend=FALSE) +
+  geom_boxplot(alpha=0.75,outlier.shape = NA,notch=TRUE,lwd=0.6) +
+  labs(title="B females",x="", y ="log10(Average TPM + 1e-4)") +
+  scale_fill_manual(values=c("gray85","royalblue4", "deepskyblue", "cadetblue", "lavenderblush4")) +
+  theme_bw()
+
+nonb.males.tpm <- ggplot(genes.AB.tpm, aes(b.status.final, log10(nonB.males.tpm+1e-3),fill=b.status.final)) + 
+  geom_jitter(data=genes.AB.tpm, aes(b.status.final, log10(nonB.males.tpm+1e-3), group=b.status.final),
+              size=0.5, width = 0.4, alpha=0.5, show.legend=FALSE) +
+  geom_boxplot(alpha=0.75,outlier.shape = NA,notch=TRUE,lwd=0.6) +
+  labs(title="Non B males",x="", y ="log10(Average TPM + 1e-4)") +
+  scale_fill_manual(values=c("gray85","royalblue4", "deepskyblue", "cadetblue", "lavenderblush4")) +
+  theme_bw()
+
+nonb.females.tpm <- ggplot(genes.AB.tpm, aes(b.status.final, log10(nonB.females.tpm+1e-3),fill=b.status.final)) + 
+  geom_jitter(data=genes.AB.tpm, aes(b.status.final, log10(nonB.females.tpm+1e-3), group=b.status.final),
+              size=0.5, width = 0.4, alpha=0.5, show.legend=FALSE) +
+  geom_boxplot(alpha=0.75,outlier.shape = NA,notch=TRUE,lwd=0.6) +
+  labs(title="Non B females",x="", y ="",guide="Scaffolds") +
+  scale_fill_manual(values=c("gray85","royalblue4", "deepskyblue", "cadetblue", "lavenderblush4")) +
+  theme_bw()
+
+# are expression levels different across B groups?
+
+library("PMCMR")
+genes.AB.tpm2.noA <- genes.AB.tpm2[genes.AB.tpm2$b.status.final != "A",]
+genes.AB.tpm2.noA$b.status.final <- as.factor(genes.AB.tpm2.noA$b.status.final)
+kruskal.test(B.tpm~b.status.final, data=genes.AB.tpm2.noA)
+posthoc.kruskal.nemenyi.test(B.tpm~b.status.final, data=genes.AB.tpm2.noA,dist="Chisquare")
+kruskal.test(nonB.tpm~b.status.final, data=genes.AB.tpm2.noA)
+posthoc.kruskal.nemenyi.test(nonB.tpm~b.status.final, data=genes.AB.tpm2.noA,dist="Chisquare")
+
+b.tpm.plot <- ggplot(genes.AB.tpm2, aes(b.status.final, log10(B.tpm+1e-3),fill=b.status.final)) + 
+  geom_jitter(data=genes.AB.tpm, aes(b.status.final, log10(B.tpm+1e-3), group=b.status.final),
+              size=0.5, width = 0.4, alpha=0.5, show.legend=FALSE) +
+  geom_boxplot(alpha=0.75,outlier.shape = NA,notch=TRUE,lwd=0.6) +
+  labs(title="Gene expression levels in B+ samples",x="", y ="Mean TPM (log10)", fill = "Location") +
+  scale_fill_manual(values=c("gray85","royalblue4", "deepskyblue", "cadetblue", "lavenderblush4")) +
+  geom_text(x=2.5,y=2.40, label="1.2e-12",size=3) +
+  geom_text(x=3.0,y=2.80, label="5.9e-06",size=3) +
+  geom_text(x=3.5,y=3.30, label="0.15" ,size=3) +
+  geom_segment(aes(x=2,xend=3,y=2.30,yend=2.30),size=0.1) +
+  geom_segment(aes(x=2,xend=4,y=2.70,yend=2.70),size=0.1) +
+  geom_segment(aes(x=3,xend=4,y=3.20,yend=3.20),size=0.1) +
+  theme_bw()
+
+nonb.tpm.plot <- ggplot(genes.AB.tpm2, aes(b.status.final, log10(nonB.tpm+1e-3),fill=b.status.final)) + 
+  geom_jitter(data=genes.AB.tpm2, aes(b.status.final, log10(nonB.tpm+1e-3), group=b.status.final),
+              size=0.5, width = 0.4, alpha=0.5, show.legend=FALSE) +
+  geom_boxplot(alpha=0.75,outlier.shape = NA,notch=TRUE,lwd=0.6) +
+  labs(title="Gene expression levels in B- samples",x="", y ="Mean TPM (log10)", fill = "Location") +
+  scale_fill_manual(values=c("gray85","royalblue4", "deepskyblue", "cadetblue", "lavenderblush4")) +
+  geom_text(x=2.5,y=2.40, label="< 2e-16",size=3) +
+  geom_text(x=3.0,y=2.80, label="5.3e-10",size=3) +
+  geom_text(x=3.5,y=3.30, label="0.067" ,size=3) +
+  geom_segment(aes(x=2,xend=3,y=2.30,yend=2.30),size=0.1) +
+  geom_segment(aes(x=2,xend=4,y=2.70,yend=2.70),size=0.1) +
+  geom_segment(aes(x=3,xend=4,y=3.20,yend=3.20),size=0.1) +
+  theme_bw()
+
+b.tpm.plot + nonb.tpm.plot 
+
+
+
+
+
+
+
+
+
+
+
+
+
 # differentially expressed genes -- from Andres' rerun of Isabelle's script (received 03.11.20, rerun completed 09.11.20)
 
 dt_df <- read_delim("output/diff_expr/dt_df.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE) # complete list of contrasts
@@ -171,17 +288,18 @@ de.B.vs.nonB <- read_delim("output/diff_expr/B.vs.nonB.de.treat.csv",",", escape
 
 ###
 
-##### Genes located on B candidate scaffolds
 
-genes.AB <- merge(freeze.v0.genes.anno,scaffolds.final.assignment[c("seq","length","b.status.final","cov.04v13","b.status","b.status.asn","b.status.kmer")],by="seq")
-genes.A <-  genes.AB[genes.AB$b.status.final == "A",]
-genes.B1 <- genes.AB[genes.AB$b.status.final == "B1",]
-genes.B2 <- genes.AB[genes.AB$b.status.final == "B2",]
-genes.B3 <- genes.AB[genes.AB$b.status.final == "B3",]
-table(genes.AB$b.status.final)
-genes.in.Bs.anno <- rbind(genes.B1[genes.B1$anno == "Y",], genes.B2[genes.B2$anno == "Y",], genes.B3[genes.B3$anno == "Y",])[c(2,9,1,3,4,5,6)]
-table(genes.in.Bs.anno$b.status.final)
-#write.table(genes.in.Bs.anno, file = "output/genes.in.Bs.anno.csv",row.names = F,sep = ",")
+
+
+
+
+
+
+
+
+
+
+
 
 ###
 

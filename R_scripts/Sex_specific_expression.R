@@ -15,11 +15,10 @@ library(org.Mm.eg.db)
 
 setwd("E:/agdel/Documents/projects_rosslab/B_viburni")
 
-
 ##### Differential expression analysis
 
 rsem.counts <-read.delim("R_scripts/RSEM_digi.counts.matrix",header=TRUE) #matrix generated from rsem
-sampleinfo <- read.csv("sampleinfoPviburnisex.csv") #sample group info
+sampleinfo <- read.csv("R_scripts/sampleinfoPviburnisex.csv") #sample group info
 
 a <- rsem.counts
 head(a,2)
@@ -51,7 +50,6 @@ x$samples
 rowSums(x$counts==0) # for each sample where the count is 0, then sums the samples that have counts = 0 for a gene
 table(rowSums(x$counts==0) == 26) #number of genes that have all samples with 0 counts
 proportion_0_count = 21236/2393
-
 
 dim(x)
 
@@ -147,33 +145,17 @@ FvsM.anno$de <- ifelse(FvsM.anno$adj.P.Val < 0.05 & FvsM.anno$logFC > 0,
                                    "FB",FvsM.anno$de)
 table(FvsM.anno$de)
 
-# plot
-
-sb.plot <- ggplot(FvsM.anno, aes(x = logFC, y = AveExpr)) +
-  geom_vline(xintercept=(0)) +
-  geom_point(aes(colour=de, size=de, alpha=de)) +
-  scale_colour_manual(name="Expression",values=c("firebrick3","cornflowerblue","azure4")) +
-  scale_size_manual(values=c(1, 1, 0.8),guide=FALSE) +
-  scale_alpha_manual(values=c(0.8, 0.8, 0.3),guide=FALSE) +
-  labs(x = "Expression log-ratio (F v M)", y = "Average log-expression", title = "Sex biased expression") +
-  theme_bw()
-table(FvsM.anno$de)
-#tiff("E:/agdel/Documents/projects_rosslab/B_viburni/manuscript/plots/FIG.sex.biased.expr.tiff",
-#    width = 3000, height = 2100, units = 'px', res = 300)
-#sb.plot
-#dev.off()
-#
-#jpeg("E:/agdel/Documents/projects_rosslab/B_viburni/misc/FIG.sex.biased.expr.jpg",
-#     width = 3000, height = 2100, units = 'px', res = 300)
-#sb.plot
-#dev.off()
+# sex bias category
+head(FvsM.anno)
+FvsM.anno$de <- ifelse(FvsM.anno$de == "FB" & FvsM.anno$logFC > 5, "FB (FC > 5)", FvsM.anno$de)
+FvsM.anno$de <- ifelse(FvsM.anno$de == "MB" & FvsM.anno$logFC < -5, "MB (FC > 5)", FvsM.anno$de)
 
 # annotate genes with the master annotation
 
 freeze.v0.genes.anno <- read_delim("output/freeze.v0.genes.anno.complete.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE) # master anno
 FvsM.anno <- left_join(FvsM.anno,freeze.v0.genes.anno,by="gene")
-
-#write.csv(FvsM.anno, file="output/sex_diff_expr/FvsM_results_anno.csv") #export results
+FvsM.anno.de.only <- FvsM.anno[FvsM.anno$de != "NS",]
+#write.csv(FvsM.anno.de.only, file="output/sex_diff_expr/FvsM_results_anno_de.csv") #export results
 
 
 ##### GO analysis
@@ -184,17 +166,20 @@ Pcitri_genes_with_GO <- read_table2("output/pviburni.gene.GO",
                                     col_names = FALSE)
 colnames(Pcitri_genes_with_GO) <- c("gene","go")
 Pcitri_genes_with_GO <- separate_rows(Pcitri_genes_with_GO, go, sep =';')
-#write.table(new_annotations, file="P_citri_GO_terms.txt", sep="\t", quote = F,
+#write.table(new_annotations, file="P_citri_GO_terms.txt", sep="/t", quote = F,
 #            col.names = T, row.names = F)
 
 
 # Make the expression gene lists
 
 logFC_DEgenes <- FvsM.anno
-nrow(FB_DEgenes)
+nrow(logFC_DEgenes)
 
-MB_DEgenes <- logFC_DEgenes[logFC_DEgenes$de == "MB",]
-FB_DEgenes <- logFC_DEgenes[logFC_DEgenes$de == "FB",]
+MB_DEgenes <- logFC_DEgenes[logFC_DEgenes$de == "MB" | logFC_DEgenes$de == "MB (FC > 5)",]
+FB_DEgenes <- logFC_DEgenes[logFC_DEgenes$de == "FB" | logFC_DEgenes$de == "FB (FC > 5)",]
+
+nrow(MB_DEgenes)
+nrow(FB_DEgenes)
 
 background <- merge(Pcitri_genes_with_GO, logFC_DEgenes[c(1)])
 
@@ -223,14 +208,15 @@ universe <- as.vector(unique(GO_annotations[,3]))
 
 # Read in genes of interest 
 
-f_genes <- as.data.frame(logFC_DEgenes$gene[logFC_DEgenes$de=="FB"])
+
+f_genes <- as.data.frame(FB_DEgenes$gene)
 f_genes <- as.data.frame(na.omit(f_genes[,1]))
 f_genes <- as.vector(f_genes[,1])
 
-m_genes <- as.data.frame(logFC_DEgenes$gene[logFC_DEgenes$de=="MB"])
+m_genes <- as.data.frame(MB_DEgenes$gene)
 m_genes <- as.data.frame(na.omit(m_genes[,1]))
 m_genes <- as.vector(m_genes[,1])
-
+length(m_genes)
 # Keep only genes with annotated GOs
 
 f_genes <- f_genes[f_genes %in% universe]
@@ -241,8 +227,8 @@ m_genes <- m_genes[m_genes %in% universe]
 
 # Set up parameters for hypergeometric test
 
-my_genes <- f_genes
-#my_genes <- m_genes
+#my_genes <- f_genes
+my_genes <- m_genes
 
 Get_GO_params_all <- function(genes_of_i,universe,pvalue_cut){
   onto_terms <- c("BP","CC","MF")
@@ -284,7 +270,6 @@ Hyper_G_test <- function(param_list){
 GO_enrichment <- Hyper_G_test(param_list = param_list)
 
 # Extract results
-
 Result.BP.F <- summary(GO_enrichment[["BP_over"]])
 Result.CC.F <- summary(GO_enrichment[["CC_over"]])
 Result.MF.F <- summary(GO_enrichment[["MF_over"]])
@@ -313,5 +298,89 @@ GO.enriched.M <- rbind(Result.BP.M,Result.MF.M)
 
 # export results
 
-#write.table(GO.enriched.F, file="output/sex_diff_expr/GO.enriched.F.tsv", sep = "\t", quote = F, row.names = F)
-#write.table(GO.enriched.M, file="output/sex_diff_expr/GO.enriched.M.tsv", sep = "\t", quote = F, row.names = F)
+#write.table(GO.enriched.F, file="output/sex_diff_expr/GO.enriched.F.tsv", sep = "/t", quote = F, row.names = F)
+#write.table(GO.enriched.M, file="output/sex_diff_expr/GO.enriched.M.tsv", sep = "/t", quote = F, row.names = F)
+
+
+##### Plot the results
+
+#normalize, add the reps and divide by the number to get average male or female expression
+a1.f <- a1[,grepl("F", colnames(a1))]
+a1.m <- a1[,grepl("M", colnames(a1))]
+f.adj <- rowMeans(a1.f)
+head(a1.f)
+head(f.adj)
+m.adj <- rowMeans(a1.m)
+head(a1.m)
+head(m.adj)
+
+#SPM
+f.spm<-(f.adj^2)/((m.adj^2)+(f.adj^2))
+f.spm<-as.data.frame(f.spm)
+spm.hist <- ggplot(f.spm,aes(f.spm)) + geom_histogram(breaks=seq(0,1, by=0.04),fill="gray60",color="gray10") +
+  labs(title="", y="Genes", x = "SPM (relative to females)") +
+  theme_classic() + theme(legend.position="right") +
+  theme(plot.title = element_text(hjust = 0.5, family = "Helvetica", size = (12)), 
+        axis.title = element_text(family = "Helvetica", size = (11)),
+        axis.text = element_text(family = "Helvetica", size = (10)),
+        legend.text = element_text(family = "Helvetica", size = (10)),
+        legend.title = element_text(family = "Helvetica", size = (10))) + guides(size = FALSE)
+
+# plot
+
+sb.plot <- ggplot(FvsM.anno, aes(x = logFC, y = AveExpr)) +
+  geom_vline(xintercept=(0)) +
+  geom_point(aes(colour=de, size=de, alpha=de)) +
+  scale_colour_manual(name="Expression",values=c("firebrick1","firebrick4","dodgerblue1","dodgerblue4","azure4")) +
+  scale_size_manual(values=c(0.9,0.9,0.9,0.9,0.8),guide=FALSE) +
+  scale_alpha_manual(values=c(0.8, 0.8, 0.8, 0.8, 0.3),guide=FALSE) +
+  labs(x = "Expression log-ratio (F v M)", y = "Average log-expression (TPM)", title = "") +
+  theme(plot.title = element_text(hjust = 0.5, family = "Helvetica", size = (14)), 
+        axis.title = element_text(family = "Helvetica", size = (13)),
+        axis.text = element_text(family = "Helvetica", size = (12)),
+        legend.text = element_text(family = "Helvetica", size = (12)),
+        legend.title = element_text(family = "Helvetica", size = (13))) + guides(size = FALSE) + theme_bw()
+table(FvsM.anno$de)
+#tiff("E:/agdel/Documents/projects_rosslab/B_viburni/manuscript/plots/FIG.sex.biased.expr.tiff",
+#    width = 3000, height = 2100, units = 'px', res = 300)
+#sb.plot
+#dev.off()
+#
+#jpeg("E:/agdel/Documents/projects_rosslab/B_viburni/misc/FIG.sex.biased.expr.jpg",
+#     width = 3000, height = 2100, units = 'px', res = 300)
+#sb.plot
+#dev.off()
+
+# GO terms
+
+go.f.bp <- GO.enriched.F[GO.enriched.F$Category == "BP",]
+go.m.bp <- GO.enriched.M[GO.enriched.M$Category == "BP",]
+go.f.bp$sex <- "F"
+go.m.bp$sex <- "M"
+go.f.bp$logp <- -log10(go.f.bp$Pvalue)
+go.m.bp$logp <- -log10(go.m.bp$Pvalue)
+go.bp <- rbind(go.f.bp,go.m.bp)
+
+go.plot <- ggplot(go.bp,aes(logp,reorder(Term,logp),label=Count, size=Count, shape=sex, fill=sex)) + 
+  geom_point(color="black") +
+  labs(title="", x = (bquote("p ("~-log[10]*')')), y=NULL) +
+  geom_text(size=3, nudge_x=0.7,vjust=0.2, hjust = 0,show.legend = F,color="black") +
+  scale_shape_manual(name="Sex",values=c(21,22),breaks=c("F","M"),labels=c("In females", "In males"))  +
+  scale_fill_manual(name="Sex",values=c("firebrick2","dodgerblue2"),breaks=c("F","M"),labels=c("In females", "In males"))  +
+  scale_x_continuous(limits=c(2,12.5),breaks=c(2,4,6,8,10,12)) +
+  scale_y_discrete(position = "right") +
+  scale_size_continuous(name="Number of proteins", range = c(2,5),guide = "none")+
+  theme(plot.title = element_text(hjust = 0.5, family = "Helvetica", size = (14)), 
+        axis.title = element_text(family = "Helvetica", size = (13)),
+        axis.text = element_text(family = "Helvetica", size = (12)),
+        legend.text = element_text(family = "Helvetica", size = (12)),
+        legend.title = element_text(family = "Helvetica", size = (13))) + guides(size = FALSE, shape = FALSE, fill = FALSE) + theme_bw()
+
+library(patchwork)
+fig3 <- ( spm.hist / sb.plot) | go.plot
+tiff("E:/agdel/Documents/projects_rosslab/B_viburni/manuscript/figures/fig3.tiff",
+     width = 4000, height = 2000, units = 'px', res = 300)
+fig3
+dev.off()
+
+
