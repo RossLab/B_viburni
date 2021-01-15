@@ -137,7 +137,7 @@ vpn2-083:quast-4.6.3 isabelle$ python quast.py -o ~/Dropbox/UniversityofEdinburg
 /Users/isabelle/quast-4.6.3/quast.py -o /Users/isabelle/Dropbox/UniversityofEdinburgh/BNPGE/Deliverables/Genomics/ /Users/isabelle/Dropbox/UniversityofEdinburgh/BNPGE/Deliverables/Genomics/pviburni.clc.se.fna
 
 ```
-
+```
 Assembly                    pviburni.clc.se
 # contigs (>= 0 bp)         740451         
 # contigs (>= 1000 bp)      149617         
@@ -160,7 +160,7 @@ N75                         876
 L50                         81892          
 L75                         176765         
 # N's per 100 kbp           0.00 
-
+```
 # II. BLOBPLOTS ==> to copy from Quiver
 
 source activate blobtools_env
