@@ -44,25 +44,9 @@ Differentially expressed genes (FDR <0.05 and log2FC > 0.58)
 |NotSig |     23166 |   18016 |     17848 |     23216|
 |Up     |       316 |    2642 |      2829 |       245|
 
-![](misc/B_DE_for_manuscript_vennDE_comps.jpg)
-![](misc/B_DE_for_manuscript_vennDE_MBvsall.jpg)
+![](misc/B_DE_for_manuscript_vennDE_comps.jpeg)
+![](misc/B_DE_for_manuscript_vennDE_MBvsall.jpeg)
 
-
-10. DE only in male with B
-
-To obtain the transcript only expressed in male with B, I selected all the differentially expressed genes that are found in all the three comparisons.
-
-```{r}
-tfit <- treat(fit.cont1, lfc=1)
-dt <- decideTests(tfit)
-summary(dt)
-de.common <- which(dt[,1]!=0 & dt[,2]!=0 &dt[,3]!=0)
-length(de.common)
-
-```
-There are 53 genes left
-
-![](misc/B_DE_for_manuscript_vennDE_comps.jpg)
 
 Not sure why the Venn diagram show 43 DE genes that are B male.
 
