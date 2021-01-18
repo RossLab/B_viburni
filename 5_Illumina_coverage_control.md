@@ -1,5 +1,6 @@
 
 # Illumina coverage analysis
+Current location as of December 2020
 
 	# working directory	
 	/data/ross/mealybugs/analyses/B_viburni_2020/isabelle_old_2019/pseudococcus_viburni/
@@ -7,12 +8,11 @@
 	data/ross/mealybugs/analyses/B_viburni_2020/isabelle_old_2019/pseudococcus_viburni/0_reads/ 
 
 
-# I. GENOME ASSEMBLY => to copy from Quiver
+# I. GENOME ASSEMBLY (copied from Quiver from 2018)
 
-
-
+```
 $ tmux attach-session -t genomics
-
+```
 ## Made shortcut in 0_reads (26 June 2018)
 ```
 cd 0_reads/
@@ -53,7 +53,6 @@ parallel -j1 'qsub -cwd -N readbase -V -pe **smp64** 16 -b yes {}' :::: 0_reads/
 OUTPUT:
 ```
 file=0_reads/pviburni.1813.1B.350.r1.fastq.gz count=107,793,344 bases=16,169,001,600
-
 
 ```
 
@@ -138,7 +137,7 @@ vpn2-083:quast-4.6.3 isabelle$ python quast.py -o ~/Dropbox/UniversityofEdinburg
 /Users/isabelle/quast-4.6.3/quast.py -o /Users/isabelle/Dropbox/UniversityofEdinburgh/BNPGE/Deliverables/Genomics/ /Users/isabelle/Dropbox/UniversityofEdinburgh/BNPGE/Deliverables/Genomics/pviburni.clc.se.fna
 
 ```
-
+```
 Assembly                    pviburni.clc.se
 # contigs (>= 0 bp)         740451         
 # contigs (>= 1000 bp)      149617         
@@ -161,15 +160,14 @@ N75                         876
 L50                         81892          
 L75                         176765         
 # N's per 100 kbp           0.00 
-
-# II. BLOBPLOTS ==> to copy from Quiver
+```
+# II. BLOBPLOTS (copied from Quiver 2018)
 
 source activate blobtools_env
 ## Make index of the assembly with bwa
 This was run in qmaster
 ```
 bwa index pviburni.clc.se.fna
-
 ```
 ## get hits by blastn and blastx through diamond
 Diamond is a program that is faster when running a blastx on genome data
@@ -264,39 +262,51 @@ awk '$3 < 0.2 && $10 > 10000 && $15=="Arthropoda" ' pviburni.blobDB.bestsumorder
 
 
 
-# III. LISTs by coverage
-Column numbers are
-$5 2B
-$6 1B
-$7 1B
-$8 0B
-$9 0B
+# III. Lists of candidates by coverage
+Using: pviburni.blobDB.bestsumorder.table.txt
+
+Column numbers are:
+- $5 2B
+- $6 1B
+- $7 1B
+- $8 0B
+- $9 0B
 
 I used different threshold of coverage for each library and filtered by taxa or not.
+The lists that are relevant:
 
 ## List D - Potential candidates of B sequences in the Arthropod hits
 Very conservative criteria: need to be Arthropod and coverage as follow
-$5 2B >100
-$6 1B >100
-$7 1B >100
-$8 0B <10
-$9 0B <10
+- $5 2B >100
+- $6 1B >100
+- $7 1B >100
+- $8 0B <10
+- $9 0B <10
 ```
 awk '$15 =="Arthropoda" && $5 > 100 && $6 >100  && $7 >100 && $8 <10 && $9 < 10 >'  pviburni.blobDB.bestsumorder.table.txt >  pviburni.blobDB.bestsumorder.table.D.txt 
 ```
 ## List L
 No Arthropod filtering and coverage as follows
-$5 2B >100
-$6 1B >25
-$7 1B >25
-$8 0B <1
-$9 0B <1
+- $5 2B >100
+- $6 1B >25
+- $7 1B >25
+- $8 0B <1
+- $9 0B <1
 
 ```
 awk '$5 > 100 && $6 >25  && $7 >25 && $8 <1 && $9 <1'  pviburni.blobDB.bestsumorder.table.txt >  pviburni.blobDB.bestsumorder.table.L.txt 
 ```
 
-Using List L
+
+# IV. We now need to map the contigs from the Illumina candidates to the PacBio assembly (From here, done in 2020 - 2021)
+### December 2020
+I chose List L for to map candidate contigs. Reminder, list L was determined by applying thresholds to the 5 libraries as follows:
+- $5 2B >100
+- $6 1B >25
+- $7 1B >25
+- $8 0B <1
+- $9 0B <1
+No taxa filter was applied.
 
 1. Make a file of sequences containing the list of contigs from list L
 
@@ -305,9 +315,11 @@ Fasta file of contigs: /data/ross/mealybugs/analyses/B_viburni_2020/isabelle_old
 ```
 awk -F'>' 'NR==FNR{ids[$0]; next} NF>1{f=($2 in ids)} f' listL.txt /data/ross/mealybugs/analyses/B_viburni_2020/isabelle_old_2019/pseudococcus_viburni/4_clc/pviburni.clc.se.fna > pviburni.clc.se.listL.fna
 ```
- 2. Mapping the B contigs from list L to the assembly
 
- /ceph/users/afilia/.conda/envs/afilia
+
+2. Mapping the B contigs from list L to the assembly
+
+/ceph/users/afilia/.conda/envs/afilia
 
 1.1. using bwa
 In submission file: 5_blobtools/1_blobplot1/bwa_listL_p.viburni.freeze.v0.sub
@@ -319,8 +331,45 @@ parallel -j1 'qsub -cwd -N bwa -V -pe **smp64** 32 -b yes {}' :::: 5_blobtools/1
 
 ===> stopped here because parallel not working. 
 
-1.2. using minimap
+Christina sent this command to submit to the cluster
 
- minimap2 --secondary=no -ax map-pb -t 32 pseudococcus_viburni.hypo3.fa ../../0_reads/PV_18-13.1.subreads.fasta.gz ../../0_reads/PV_18-13.2.subreads.fasta.gz ../../0_reads/PV_18-13.3.subreads.fasta.gz | samtools view -hF 0x900 - | samtools sort -@32 -O BAM -o /scratch/afilia/pseudococcus_viburni.hypo3.sorted.bam - && rsync -av /scratch/afilia/pseudococcus_viburni.hypo3.sorted.bam .
+qsub -o logs -e logs -cwd -N td.lorf -V -pe smp64 1 -b yes 'TransDecoder.LongOrfs -t transcriptomes/cech.transcriptome.longiso.fasta --output_dir 2_transdecoder/cech/'
+
+```
+qsub -o logfiles -e logfiles -cwd -N td.lorf -V -pe smp64 1 -b yes 'bwa ##mem -R '@RG\tID:WYE3_pacbio\tSM:WYE3_pacbio'## -x nanoseq -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/5_freeze_v0/p.viburni.freeze.v0.fa 5_blobtools/1_blobplot1/pviburni.clc.se.listL.fna | samtools view -bS - > 5_blobtools/1_blobplot1/pviburni.clc.se.listL.fna.vs.p.viburni.freeze.v0.fa'
+```
+
+### January 2021
+=====January 15 2020=====
+Working directory and environment
+```
+cd /data/ross/mealybugs/analyses/B_viburni_2020/isabelle_old_2019/pseudococcus_viburni/5_blobtools/1_blobplot1/
+
+conda activate /ceph/users/afilia/.conda/envs/afilia
+```
+This directory contains the reads for each libraries and lists of B candidates.
+
+- My contig files extract from list L: /data/ross/mealybugs/analyses/B_viburni_2020/isabelle_old_2019/pseudococcus_viburni/5_blobtools/1_blobplot1/pviburni.clc.se.listL.fna
+
+- PacBio assembly: /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/5_assembly_freeze_v0/p.viburni.freeze.v0.fa 
+
+I will retry bwa mapping using Christina submission command and use nucmer as in section 5 of 3.Coverage_analysis
+
+```
+qsub -o logs -e logs -cwd -N nucmer -V -pe smp64 1 -b yes 'nucmer -p pviburni.clc.se.listL.p.viburni.freeze.v0.fa -t 24 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/5_assembly_freeze_v0/p.viburni.freeze.v0.fa /data/ross/mealybugs/analyses/B_viburni_2020/isabelle_old_2019/pseudococcus_viburni/5_blobtools/1_blobplot1/pviburni.clc.se.listL.fna'
+```
+ok
+```
+show-coords -clrT  pviburni.clc.se.listL.p.viburni.freeze.v0.fa.delta > pviburni.clc.se.listL.p.viburni.freeze.v0.fa.delta.coords
+```
+
+```
+awk '{ a[$12]++ } END { for (b in a) { print b } }' pviburni.clc.se.listL.p.viburni.freeze.v0.fa.delta.coords > pviburni.clc.se.listL.p.viburni.freeze.v0.scaffolds.list
+```
+
+There are 255 scaffolds that mapped to the PacBio genome
+
+Now I want to see how in which categories they are sorted
+
 
 
