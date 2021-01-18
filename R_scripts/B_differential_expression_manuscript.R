@@ -64,6 +64,7 @@ keep.exprs.group <- filterByExpr(x, group=x$samples$group,min.count=5)
 keep.exprs.group[keep.exprs.group == FALSE]
 x1 <- x[keep.exprs.group, keep.lib.sizes=FALSE]
 dim(x1)
+x <- x1
 
 # plot  individual samples pre normalization
 for (i in 1:ncol(x)) {
@@ -155,7 +156,7 @@ fit1 <- lmFit(v1)
 colnames(design1)
 
 # I only want transcripts differentially expressed in male B samples.
-cont.matrix1 <- makeContrasts(BmalevnoBmale = group1MB - group1MnoB, BmalevsfemaleB = group1MB - group1FB, BmalevsfemalenoB = group1MB - group1FnoB,BfemalevsnoBfemale = group1FB - group1FnoB, noBmalevsnoBfemale = group1MnoB - group1FnoB, levels=design1)
+cont.matrix1 <- makeContrasts(MB.vs.MnoB = group1MB - group1MnoB, MB.vs.FB = group1MB - group1FB, MB.vs.FnoB = group1MB - group1FnoB, FB.vs.FnoB = group1FB - group1FnoB, levels=design1)
 cont.matrix1
 
 fit.cont1 <- contrasts.fit(fit1, cont.matrix1)
@@ -167,20 +168,45 @@ v1 <- voom(x,design1,plot = TRUE)
 plotSA(fit.cont1, main="Final model: Mean-variance trend")
 
 ## Examine the number of DE genes
-
-tfit <- treat(fit.cont1, lfc=1) 
+tfit <- treat(fit.cont1, lfc=0.58) 
 dt <- decideTests(tfit)
 summary(dt)
-#write.fit(tfit, dt, file="results.txt")
+#write.fit(tfit, dt, file="output/B_diff_expr/results.txt")
 
+par(mfrow=c(2,2))
 #Venn Diagram for B vs no B in males
 vennDiagram(dt[,1], circle.col=c("turquoise", "salmon","orange"),include=c("up","down"))
-
+#Venn Diagram for B vs no B in males
+vennDiagram(dt[,2], circle.col=c("turquoise", "salmon","orange"),include=c("up","down"))
+#Venn Diagram for B vs no B in males
+vennDiagram(dt[,3], circle.col=c("turquoise", "salmon","orange"),include=c("up","down"))
 #Venn Diagram for B vs no B in females
 vennDiagram(dt[,4], circle.col=c("turquoise", "salmon","orange"),include=c("up","down"))
 
 #Venn Diagram for Bmale
-vennDiagram(dt[,1:3], circle.col=c("turquoise", "salmon","orange"),include=c("up","down"))
+par(mfrow=c(1,1))
+vennDiagram(dt[,1:3], circle.col=c("purple", "green","orange"),include=c("up","down"))
+
+# figs
+MB.vs.MnoB.results <- topTreat(tfit, coef=1, n=Inf)
+FB.vs.FnoB.results <- topTreat(tfit, coef=4, n=Inf)
+
+m.tfit <- MB.vs.MnoB.results
+f.tfit <- FB.vs.FnoB.results
+
+colnames(m.tfit)[1] <- "gene"
+colnames(f.tfit)[1] <- "gene"
+m.tfit$de <- "NS"
+f.tfit$de <- "NS"
+
+m.tfit$de <- ifelse(m.tfit$adj.P.Val < 0.05 & m.tfit$logFC < 0, "B-", m.tfit$de)
+m.tfit$de <- ifelse(m.tfit$adj.P.Val < 0.05 & m.tfit$logFC > 0, "B+", m.tfit$de)
+
+f.tfit$de <- ifelse(f.tfit$adj.P.Val < 0.05 & f.tfit$logFC < 0, "B-", f.tfit$de)
+f.tfit$de <- ifelse(f.tfit$adj.P.Val < 0.05 & f.tfit$logFC > 0, "B+", f.tfit$de)
+
+table(m.tfit$de)
+table(f.tfit$de)
 
 # extracting only the B male specific
 
