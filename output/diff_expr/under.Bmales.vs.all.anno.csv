@@ -1,4 +1,0 @@
-"","gene","seq","gene_len","blast","diamond","interpro","anno","length","b.status.final","cov.04v13","b.status","b.status.asn","b.status.kmer"
-"1","g4126","scaffold_70",1475,"SH2B2_MOUSE","A0A482WUF0","SH2 domain,PH domain,Phenylalanine zipper","Y",1292812,"A",0.0355374230577261,"A","A","A"
-"2","g8486","scaffold_633",763,NA,NA,NA,"N",118775,"A",-0.377719458159097,"A","A","A"
-"3","g14550","scaffold_419",1118,NA,NA,NA,"N",297481,"A",0.0730386862390519,"A","A","A"
