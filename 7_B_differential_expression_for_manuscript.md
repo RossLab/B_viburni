@@ -40,9 +40,9 @@ Differentially expressed genes (FDR <0.05 and log2FC > 0.58)
 
 |Genes  |MB.vs.MnoB |MB.vs.FB |MB.vs.FnoB |FB.vs.FnoB|
 |-------|-----------|---------|-----------|----------|
-|Down   |       147 |    2971 |      2952 |       168|
-|NotSig |     23166 |   18016 |     17848 |     23216|
-|Up     |       316 |    2642 |      2829 |       245|
+|Down   |      146  |  3003   |   2968    |   171    |
+|NotSig |    17634  | 12403   |  12283    | 17662    |
+|Up     |      286  |  2660   |   2815    |   233    |
 
 ![](misc/B_DE_for_manuscript_vennDE_comps.jpg)
 ![](misc/B_DE_for_manuscript_vennDE_MBvsall.jpg)
