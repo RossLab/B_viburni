@@ -22,7 +22,10 @@ genetotranscript<-read.delim("annotation/p.viburni.freeze.v0.braker.transcripts.
 genetotranscript <-genetotranscript[order(genetotranscript$V1),]
 
 sampleinfo<-read.csv("R_scripts/sampleinfoPviburniB.csv") #sample group info
-annotation<-read.csv("output/freeze.v0.genes.anno.complete.csv") # annotation
+freeze.v0.genes.anno <- read_delim("output/freeze.v0.genes.anno.complete.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE) # master anno
+scaffolds.final.assignment <- read_delim("output/scaffolds.final.assignment.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
+genes.by.scaffold <- read_delim("output/genes.by.scaffolds.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
+
 
 # count file from all samples
 # need a dataframe containing all gene info per gene id
@@ -187,6 +190,12 @@ vennDiagram(dt[,4], circle.col=c("turquoise", "salmon","orange"),include=c("up",
 par(mfrow=c(1,1))
 vennDiagram(dt[,1:3], circle.col=c("purple", "green","orange"),include=c("up","down"))
 
+# these are all the genes that are over expressed and underexpressed, respectively, between B males and all the others
+de.over.B.males <- which(dt[,1]==1 & dt[,2]==1 &dt[,3]==1)
+de.under.B.males <- which(dt[,1]==-1 & dt[,2]==-1 &dt[,3]==-1)
+length(de.over.B.males) # B genes overexpressed in B males compared to the rest of the groups
+length(de.under.B.males) # B genes underexpressed in B males compared to the rest of the groups
+
 # figs
 MB.vs.MnoB.results <- topTreat(tfit, coef=1, n=Inf)
 FB.vs.FnoB.results <- topTreat(tfit, coef=4, n=Inf)
@@ -207,6 +216,19 @@ f.tfit$de <- ifelse(f.tfit$adj.P.Val < 0.05 & f.tfit$logFC > 0, "B+", f.tfit$de)
 
 table(m.tfit$de)
 table(f.tfit$de)
+
+# merge with annotation
+m.tfit.anno <- left_join(m.tfit, genes.by.scaffold, by="gene")
+f.tfit.anno <- left_join(f.tfit, genes.by.scaffold, by="gene")
+m.tfit.anno <- left_join(m.tfit.anno, freeze.v0.genes.anno, by="gene")
+f.tfit.anno <- left_join(f.tfit.anno, freeze.v0.genes.anno, by="gene")
+m.tfit.anno.de <- m.tfit.anno[m.tfit.anno$de != "NS",]
+f.tfit.anno.de <- f.tfit.anno[f.tfit.anno$de != "NS",]
+#write.csv(m.tfit.anno.de[m.tfit.anno.de$anno == "Y",], file="output/B_diff_expr/MB.vs.MnoB.de.annotated.csv") #export results
+#write.csv(f.tfit.anno.de[f.tfit.anno.de$anno == "Y",], file="output/B_diff_expr/FB.vs.FnoB.de.annotated.csv") #export results
+
+#write.csv(FvsM.anno.de.only, file="output/sex_diff_expr/FvsM_results_anno_de.csv") #export results
+
 
 # extracting only the B male specific
 
