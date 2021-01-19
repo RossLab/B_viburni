@@ -497,14 +497,14 @@ Scaffold_497 has 3 contigs from Illumina. List of corresponding contigs can be f
 
 To triple check, I took list L again and looked at the sequences that had a hit for Arthropoda and Nematoda. There are only XX contigs and I checked which scaffolds and chromosome status they were.
 
-| contig Illumina   assembly | PacBio_scaffold | chromosome status |
+| contig Illumina   assembly | PacBio_scaffold | chromosome status | 
 |---------------------------|-----------------|-------------------|
 | contig_14807              | scaffold_148    | A                 |
 | contig_33424              | scaffold_1148    | B1                 |
 | contig_45379              | scaffold_28     | A                 |
 | contig_50667              | scaffold_94     | A                 |
 | contig_67571              | scaffold_359    | A                 |
-| contig_143760             | scaffold_1269   | B1                |
+| contig_143760             | scaffold_1269   | B1                | 
 | contig_145684             | scaffold_552    | A                 |
 | contig_187923             | NA              |                   |
 | contig_246315             | scaffold_467    | A                 |
