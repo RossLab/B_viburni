@@ -480,6 +480,8 @@ NB: contig_260819 (that contains a chromo domain) is in scaffold_552 and contig_
 
 The scaffold with the most contigs from Illumina coverage analysis in scaffold_295. List of corresponding contigs can be found in /output/pviburni.clc.se.listL.p.viburni.freeze.v0.fa.delta.coord.B2
 
+3.3. Scaffolds assigned to B3 status
+
 | seq          | length | b.status.final | cov.04v13  | b.status | b.status.asn | b.status.kmer | gene   | gene_len | blast       | diamond               | pfam_acc        | pfam_descr                                              | ipr_acc             | ipr_descr                                                    | GO                               | anno |
 |--------------|--------|----------------|------------|----------|--------------|---------------|--------|----------|-------------|-----------------------|-----------------|---------------------------------------------------------|---------------------|--------------------------------------------------------------|----------------------------------|------|
 | scaffold_497 | 224833 | B3             | -0.0553108 | B.loose  | A            | A             | g23624 | 395      | KGP25_DROME | A0A194QK34            | PF00027         | Cyclic nucleotide-binding domain                        | IPR000595           | Cyclic nucleotide-binding domain                             | NA                               | Y    |
@@ -505,3 +507,12 @@ The scaffold with the most contigs from Illumina coverage analysis in scaffold_2
 | scaffold_829 | 40557  | B3             | -0.121677  | B.loose  | A            | A             | g19063 | 482      | DRGX_MOUSE  | A0A194QFU0            | PF00046         | Homeodomain                                             | IPR001356           | Homeobox domain                                              | GO:0003677                       | Y    |
 
 Scaffold_497 has 3 contigs from Illumina. List of corresponding contigs can be found in /output/pviburni.clc.se.listL.p.viburni.freeze.v0.fa.delta.coord.B3
+
+3.4. Scaffold assigned to A chromosomes.
+
+Only two scaffolds were assigned to A: scaffold_1 and scaffold_10. List of contigs assigned to these scaffolds are in /output/pviburni.clc.se.listL.p.viburni.freeze.v0.fa.delta.coord.A.
+
+This is quite reassuring. 
+
+
+
