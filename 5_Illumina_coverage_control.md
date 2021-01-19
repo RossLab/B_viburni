@@ -500,7 +500,7 @@ To triple check, I took list L again and looked at the sequences that had a hit 
 | contig Illumina   assembly | PacBio_scaffold | chromosome status |
 |---------------------------|-----------------|-------------------|
 | contig_14807              | scaffold_148    | A                 |
-| contig_33424              | scaffold_148    | A                 |
+| contig_33424              | scaffold_1148    | B1                 |
 | contig_45379              | scaffold_28     | A                 |
 | contig_50667              | scaffold_94     | A                 |
 | contig_67571              | scaffold_359    | A                 |
