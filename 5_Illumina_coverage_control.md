@@ -347,8 +347,8 @@ show-coords -clrT  pviburni.clc.se.listL.p.viburni.freeze.v0.fa.delta > pviburni
 ```
 awk '{ a[$12]++ } END { for (b in a) { print b } }' pviburni.clc.se.listL.p.viburni.freeze.v0.fa.delta.coords > pviburni.clc.se.listL.p.viburni.freeze.v0.scaffolds.list
 ```
+The contigs mapped to 255 scaffolds of the PacBio assembly.
 
-There are 255 scaffolds that mapped to the PacBio genome
 
 3. Chromosome status of scaffolds found in mapping analysis
 
@@ -491,9 +491,32 @@ Scaffold_497 has 3 contigs from Illumina. List of corresponding contigs can be f
 
 3.4. Scaffold assigned to A chromosomes.
 
-Only two scaffolds were assigned to A: scaffold_1 and scaffold_10. List of contigs assigned to these scaffolds are in /output/pviburni.clc.se.listL.p.viburni.freeze.v0.fa.delta.coord.A.
+194 scaffolds were assigned to A. I didn't compile the list of contigs but this can be done is necessary.
 
-This is quite reassuring. 
+3.5. Going from the contigs that where assigned to Nematoda or Arthropoda in blobtools.
 
+To triple check, I took list L again and looked at the sequences that had a hit for Arthropoda and Nematoda. There are only XX contigs and I checked which scaffolds and chromosome status they were.
 
+| contig Illumina   assembly | PacBio_scaffold | chromosome status |
+|---------------------------|-----------------|-------------------|
+| contig_14807              | scaffold_148    | A                 |
+| contig_33424              | scaffold_148    | A                 |
+| contig_45379              | scaffold_28     | A                 |
+| contig_50667              | scaffold_94     | A                 |
+| contig_67571              | scaffold_359    | A                 |
+| contig_143760             | scaffold_1269   | B1                |
+| contig_145684             | scaffold_552    | A                 |
+| contig_187923             | NA              |                   |
+| contig_246315             | scaffold_467    | A                 |
+| contig_260819             | scaffold_552    | B1                |
+| contig_264982             | scaffold_91     | A                 |
+| contig_273720             | scaffold_1542   | NA                |
+| contig_321423             | scaffold_467    | A                 |
+| contig_356463             | scaffold_9      | A                 |
+| contig_385605             | scaffold_552    | B1                |
+| contig_443093             | scaffold_193    | A                 |
+| contig_518017             | scaffold_28     | A                 |
 
+Very few contigs are B! 
+
+I wonder if we should try to blast the contigs against the PacBio assembly genes and see if there are more information on the annotation?
