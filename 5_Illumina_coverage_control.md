@@ -319,25 +319,6 @@ awk -F'>' 'NR==FNR{ids[$0]; next} NF>1{f=($2 in ids)} f' listL.txt /data/ross/me
 
 2. Mapping the B contigs from list L to the assembly
 
-/ceph/users/afilia/.conda/envs/afilia
-
-1.1. using bwa
-In submission file: 5_blobtools/1_blobplot1/bwa_listL_p.viburni.freeze.v0.sub
-```
-bwa ##mem -R '@RG\tID:WYE3_pacbio\tSM:WYE3_pacbio'## -x nanoseq -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/5_freeze_v0/p.viburni.freeze.v0.fa 5_blobtools/1_blobplot1/pviburni.clc.se.listL.fna | samtools view -bS - > 5_blobtools/1_blobplot1/pviburni.clc.se.listL.fna.vs.p.viburni.freeze.v0.fa
-```
-
-parallel -j1 'qsub -cwd -N bwa -V -pe **smp64** 32 -b yes {}' :::: 5_blobtools/1_blobplot1/bwa_listL_p.viburni.freeze.v0.sub
-
-===> stopped here because parallel not working. 
-
-Christina sent this command to submit to the cluster
-
-qsub -o logs -e logs -cwd -N td.lorf -V -pe smp64 1 -b yes 'TransDecoder.LongOrfs -t transcriptomes/cech.transcriptome.longiso.fasta --output_dir 2_transdecoder/cech/'
-
-```
-qsub -o logfiles -e logfiles -cwd -N td.lorf -V -pe smp64 1 -b yes 'bwa ##mem -R '@RG\tID:WYE3_pacbio\tSM:WYE3_pacbio'## -x nanoseq -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/5_freeze_v0/p.viburni.freeze.v0.fa 5_blobtools/1_blobplot1/pviburni.clc.se.listL.fna | samtools view -bS - > 5_blobtools/1_blobplot1/pviburni.clc.se.listL.fna.vs.p.viburni.freeze.v0.fa'
-```
 
 ### January 2021
 =====January 15 2020=====
