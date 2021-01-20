@@ -1,0 +1,75 @@
+---
+title: "Illumina coverage and PacBio"
+author: "Isabelle Vea"
+date: "15/01/2021"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+I mapped the Illumina contigs that were identified as B candidates (List L) from arbitrary coverage thresholds.
+
+The list of scaffolds needs to be assigned to the status that Andres defined.
+
+```{r}
+library(plyr)
+library(tidyverse)
+library(gridExtra)
+library(patchwork)
+library(lattice)
+library(grid)
+library(gridExtra)
+library(reshape2)
+
+
+```
+#Data
+1. My list of scaffolds
+```{r}
+setwd("Dropbox/_Github_reps/B_viburni/")
+#my list of scaffolds
+scaffolds<-read_csv("output/pviburni.clc.se.listL.p.viburni.freeze.v0.scaffolds.csv")
+head(scaffolds)
+nrow(unique(scaffolds))
+#annotation file
+freeze.v0.genes.anno <- read_delim("output/freeze.v0.genes.anno.complete.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
+
+#B chromosome assignment file
+scaffolds.final.assignment <- read_delim("output/scaffolds.final.assignment.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
+table(scaffolds.final.assignment$b.status.final)
+
+```
+
+Merge my scaffold table with scffold assignment file
+
+```{r}
+scaffolds.assigned <- merge(scaffolds,scaffolds.final.assignment,by="seq")
+head(scaffolds.assigned)
+```
+
+
+#assign to chromsome status
+```{r}
+
+genes.AB <- merge(scaffolds.assigned[c("seq","length","b.status.final","cov.04v13","b.status","b.status.asn","b.status.kmer")],freeze.v0.genes.anno,by="seq")
+genes.AB$anno <- ifelse(!is.na(genes.AB$blast) | !is.na(genes.AB$diamond) | !is.na(genes.AB$pfam_acc) | !is.na(genes.AB$ipr_acc) | !is.na(genes.AB$GO),"Y","N")
+genes.A <-  genes.AB[genes.AB$b.status.final == "A",]
+genes.B1 <- genes.AB[genes.AB$b.status.final == "B1",]
+genes.B2 <- genes.AB[genes.AB$b.status.final == "B2",]
+genes.B3 <- genes.AB[genes.AB$b.status.final == "B3",]
+```
+
+```{r}
+#number of scaffolds per chromsome status
+
+length(unique(genes.A$seq)) #194
+length(unique(genes.B1$seq)) #9 scaffolds
+length(unique(genes.B2$seq)) #5 scaffolds
+length(unique(genes.B3$seq)) #3
+
+write.csv(genes.B1, "output/Illumina_genome_mapped_PacBio_Bstrictscaffolds.csv")
+write.csv(genes.B2, "output/Illumina_genome_mapped_PacBio_B2scaffolds.csv")
+write.csv(genes.B3, "output/Illumina_genome_mapped_PacBio_B3scaffolds.csv")
+
+
+```
