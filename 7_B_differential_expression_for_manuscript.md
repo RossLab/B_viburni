@@ -67,7 +67,7 @@ We found 432 differentially expressed genes between B+ males and B- males, 232 o
 
 Fig 4:
 
-![](manuscript/figures/fig4_for_submission.tif)
+![](manuscript/figures/fig4_for_main_text.png)
 
 Supplementary file S1.8 (annonated DE genes): https://github.com/RossLab/B_viburni/blob/master/output/B_diff_expr/MB.vs.MnoB.de.annotated.csv
 
