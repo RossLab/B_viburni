@@ -20,7 +20,7 @@ setwd("E:/agdel/Documents/projects_rosslab/B_viburni")
 
 genetotranscript<-read.delim("annotation/p.viburni.freeze.v0.braker.transcripts.to.genes.txt", header=FALSE) #mapping genes to transcripts
 genetotranscript <-genetotranscript[order(genetotranscript$V1),]
-
+rsem.counts <-read.delim("R_scripts/RSEM_digi.counts.matrix",header=TRUE) #matrix generated from rsem
 sampleinfo<-read.csv("R_scripts/sampleinfoPviburniB.csv") #sample group info
 freeze.v0.genes.anno <- read_delim("output/freeze.v0.genes.anno.complete.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE) # master anno
 scaffolds.final.assignment <- read_delim("output/scaffolds.final.assignment.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
@@ -189,14 +189,13 @@ vennDiagram(dt[,4], circle.col=c("turquoise", "salmon","orange"),include=c("up",
 #Venn Diagram for Bmale
 par(mfrow=c(1,1))
 vennDiagram(dt[,1:3], circle.col=c("purple", "green","orange"),include=c("up","down"))
-
 # these are all the genes that are over expressed and underexpressed, respectively, between B males and all the others
 de.over.B.males <- which(dt[,1]==1 & dt[,2]==1 &dt[,3]==1)
 de.under.B.males <- which(dt[,1]==-1 & dt[,2]==-1 &dt[,3]==-1)
 length(de.over.B.males) # B genes overexpressed in B males compared to the rest of the groups
 length(de.under.B.males) # B genes underexpressed in B males compared to the rest of the groups
 
-# figs
+# examine DE genes in M and F
 MB.vs.MnoB.results <- topTreat(tfit, coef=1, n=Inf)
 FB.vs.FnoB.results <- topTreat(tfit, coef=4, n=Inf)
 
@@ -227,46 +226,291 @@ f.tfit.anno.de <- f.tfit.anno[f.tfit.anno$de != "NS",]
 #write.csv(m.tfit.anno.de[m.tfit.anno.de$anno == "Y",], file="output/B_diff_expr/MB.vs.MnoB.de.annotated.csv") #export results
 #write.csv(f.tfit.anno.de[f.tfit.anno.de$anno == "Y",], file="output/B_diff_expr/FB.vs.FnoB.de.annotated.csv") #export results
 
-#write.csv(FvsM.anno.de.only, file="output/sex_diff_expr/FvsM_results_anno_de.csv") #export results
+m.tfit.plot <- m.tfit.anno
+m.tfit.plot$de <- factor(m.tfit.plot$de, levels = c("NS", "B-", "B+"))
+f.tfit.plot <- f.tfit.anno
+f.tfit.plot$de <- factor(f.tfit.plot$de, levels = c("NS", "B-", "B+"))
 
+m.tfit.plot.b1.de <- m.tfit.plot[m.tfit.plot$b.status.final == "B1" & m.tfit.plot$de != "NS",]
+m.tfit.plot.b1.ns <- m.tfit.plot[m.tfit.plot$b.status.final == "B1" & m.tfit.plot$de == "NS",]
+m.tfit.plot <- m.tfit.plot[m.tfit.plot$b.status.final != "B1",]
+m.tfit.plot.de <- m.tfit.plot[m.tfit.plot$de != "NS",]
+m.tfit.plot.ns <- m.tfit.plot[m.tfit.plot$de == "NS",]
 
-# extracting only the B male specific
+f.tfit.plot.b1.de <- f.tfit.plot[f.tfit.plot$b.status.final == "B1" & f.tfit.plot$de != "NS",]
+f.tfit.plot.b1.ns <- f.tfit.plot[f.tfit.plot$b.status.final == "B1" & f.tfit.plot$de == "NS",]
+f.tfit.plot <- f.tfit.plot[f.tfit.plot$b.status.final != "B1",]
+f.tfit.plot.de <- f.tfit.plot[f.tfit.plot$de != "NS",]
+f.tfit.plot.ns <- f.tfit.plot[f.tfit.plot$de == "NS",]
 
-# these are all the genes that are DE between B males and all the others
-de.B.vs.all <- which(dt[,1]!=0 & dt[,2]!=0 &dt[,3]!=0)
-length(de.B.vs.all)
+p1 <- ggplot() +
+  geom_vline(xintercept=(0)) +
+  geom_point(data=m.tfit.plot.ns, aes(x = logFC, y = AveExpr),fill="#b8bac2",colour="#b8bac2", size=1.5,alpha=0.5) +
+  geom_point(data=m.tfit.plot.de, aes(x = logFC, y = AveExpr,shape=de),fill="#b8bac2",colour="gray60") +
+  geom_point(data=m.tfit.plot.b1.ns, aes(x = logFC, y = AveExpr),fill="royalblue4",colour="royalblue4") +
+  geom_point(data=m.tfit.plot.b1.de, aes(x = logFC, y = AveExpr,shape=de,colour=de),fill="royalblue4",colour="royalblue4") +
+  scale_shape_manual(name="Expression",values=c(25,24)) +
+  labs(x = "Expression log-ratio (B+ v B-)", y = "Average log-expression (TPM)", title = "Males") +
+  theme(plot.title = element_text(hjust = 0.5, family = "Helvetica", size = (14)), 
+        axis.title = element_text(family = "Helvetica", size = (13)),
+        axis.text = element_text(family = "Helvetica", size = (12)),
+        legend.text = element_text(family = "Helvetica", size = (12)),
+        legend.title = element_text(family = "Helvetica", size = (13))) + guides(shape = FALSE) + theme_bw()
 
-# these are all the genes that are over expressed and underexpressed, respectively, between B males and all the others
-de.over.B.males <- which(dt[,1]==1 & dt[,2]==1 &dt[,3]==1)
-de.under.B.males <- which(dt[,1]==-1 & dt[,2]==-1 &dt[,3]==-1)
-length(de.over.B.males) # B genes overexpressed in B males compared to the rest of the groups
-length(de.under.B.males) # B genes underexpressed in B males compared to the rest of the groups
+p2 <- ggplot() +
+  geom_vline(xintercept=(0)) +
+  geom_point(data=f.tfit.plot.ns, aes(x = logFC, y = AveExpr),fill="#c2b8b8",colour="#c2b8b8", size=1.5,alpha=0.5) +
+  geom_point(data=f.tfit.plot.de, aes(x = logFC, y = AveExpr,shape=de),fill="#c2b8b8",colour="gray60") +
+  geom_point(data=f.tfit.plot.b1.ns, aes(x = logFC, y = AveExpr),fill="royalblue4",colour="royalblue4") +
+  geom_point(data=f.tfit.plot.b1.de, aes(x = logFC, y = AveExpr,shape=de,colour=de),fill="royalblue4",colour="royalblue4") +
+  scale_shape_manual(name="Expression",values=c(25,24)) +
+  labs(x = "Expression log-ratio (B+ v B-)", y = "Average log-expression (TPM)", title = "Females") +
+  theme(plot.title = element_text(hjust = 0.5, family = "Helvetica", size = (14)), 
+        axis.title = element_text(family = "Helvetica", size = (13)),
+        axis.text = element_text(family = "Helvetica", size = (12)),
+        legend.text = element_text(family = "Helvetica", size = (12)),
+        legend.title = element_text(family = "Helvetica", size = (13))) + guides(shape = FALSE) + theme_bw()
 
-# list of genes from Bmale
-fit.cont1$genes[de.over.B.males,]
-fit.cont1$genes[de.under.B.males,]
+# get gene counts
+
+with(m.tfit.anno.de, table(b.status.final, anno, de))
+with(f.tfit.anno.de, table(b.status.final, anno, de))
+
+# extracting and examined DE that are differentially expressed in B males compared to the other groups
+
+over.bm <- which(dt[,1]==1 & dt[,2]==1 &dt[,3]==1)
+under.bm <- which(dt[,1]==-1 & dt[,2]==-1 &dt[,3]==-1)
+length(under.bm)
+# list of genes
+fit.cont1$genes[over.bm,]
+fit.cont1$genes[under.bm,]
 
 # export overexpressed genes in B+ males vs all
-de.over.B.males.genes <- data.frame(fit.cont1$genes[de.over.B.males,])
-colnames(de.over.B.males.genes) <- "genes"
-#write.csv(de.over.B.males.genes,"output/diff_expr/over.Bmales.vs.all.csv")
-head(de.over.B.males.genes)
+over.bm.genes <- data.frame(fit.cont1$genes[over.bm,])
+colnames(over.bm.genes) <- "gene"
+over.bm.genes <- left_join(over.bm.genes, genes.by.scaffold, by="gene")
+over.bm.genes <- left_join(over.bm.genes, freeze.v0.genes.anno, by="gene")
+over.bm.genes
 
-# export all lists of genes 
-maleB.noB <- topTreat(tfit, coef=1,number = summary(dt)[1]+summary(dt)[3])
-maleB.femaleB <- topTreat(tfit, coef=2, number = summary(dt)[4]+summary(dt)[6]) 
-maleB.femalenoB <- topTreat(tfit, coef=3, number = summary(dt)[7]+summary(dt)[9] ) 
-femaleB.femalenoB <- topTreat(tfit, coef=4, number = summary(dt)[10]+summary(dt)[12]) 
-malenoB.femalenoB <- topTreat(tfit, coef=5, number = summary(dt)[13]+summary(dt)[15]) 
+# export underexpressed genes in B+ males vs all
+under.bm.genes <- data.frame(fit.cont1$genes[under.bm,])
+colnames(under.bm.genes) <- "gene"
+under.bm.genes <- left_join(under.bm.genes, genes.by.scaffold, by="gene")
+under.bm.genes <- left_join(under.bm.genes, freeze.v0.genes.anno, by="gene")
+under.bm.genes
 
-#write.csv(maleB.noB,"output/diff_expr/B.males.vs.nonB.males.de.treat.csv")
-#write.csv(maleB.femaleB,"output/diff_expr/B.males.vs.B.females.de.treat.csv")
-#write.csv(maleB.femalenoB,"output/diff_expr/B.males.vs.nonB.females.de.treat.csv")
-#write.csv(femaleB.femalenoB,"output/diff_expr/B.females.vs.nonB.females.de.treat.csv")
-#write.csv(malenoB.femalenoB,"output/diff_expr/nonB.males.vs.nonB.females.de.treat.csv")
+#write.csv(over.bm.genes,file="output/B_diff_expr/over.Bmales.vs.all.csv")
+#write.csv(under.bm.genes,file="output/B_diff_expr/under.Bmales.vs.all.csv")
+with(under.bm.genes, table(b.status.final,anno))
 
-#additional exports: complete list of contrasts
+counts.a <- data.frame(with(over.bm.genes, table(b.status.final)))
+counts.b <- data.frame(with(under.bm.genes, table(b.status.final)))
+counts.a$dir <- "O"
+counts.b$dir <- "U"
+counts <- rbind(counts.a,counts.b)
+data.frame()
 
-dt_df <- as.data.frame(dt)
-dt_df$gene <- row.names(dt_df)
-#write.csv(dt_df,"output/diff_expr/dt_df.csv")
+Status <- as.factor(c('A','B1','B2/B3','A','B1','B2/B3'))
+Total <- as.integer(c(82,1,5,8,0,1))
+Anno <- as.factor(c("82 (38)","1 (1)","5 (2)","8 (5)","0","1 (1)"))
+Dir <- as.factor(c("Overexpressed","Overexpressed","Overexpressed","Underexpressed","Underexpressed","Underexpressed"))
+counts <- data.frame(Status, Total, Anno, Dir)
+counts
+
+p4 <- ggplot(counts,aes(Status, Total, fill=Dir)) + ylim(0,90) +
+  geom_bar(stat="identity", position=position_dodge()) +
+  geom_text(aes(label=Anno),position = position_dodge(0.9),vjust=-1) +
+  scale_fill_manual(name="",values=c("gray20","gray60")) +
+  labs(x = "Location on scaffold", y = "Number of genes", title = "DE in B+ males") + theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5, family = "Helvetica", size = (12)), 
+        axis.title = element_text(family = "Helvetica", size = (11)),
+        axis.text = element_text(family = "Helvetica", size = (10)),
+        legend.position=c(0.75,0.8), legend.title = element_blank(), legend.text = element_text(family = "Helvetica", size = (10)))
+
+### Go analyses: how does having a B change your expression profiles if you are a male or a female?
+
+# Make a compatible GO annotation file
+
+Pviburni_genes_with_GO <- read_table2("output/pviburni.gene.GO", 
+                                      col_names = FALSE)
+colnames(Pviburni_genes_with_GO) <- c("gene","go")
+Pviburni_genes_with_GO <- separate_rows(Pviburni_genes_with_GO, go, sep =';')
+
+# Make the expression gene lists
+
+MlogFC_DEgenes <- MB.vs.MnoB.results
+FlogFC_DEgenes <- FB.vs.FnoB.results
+MB_DEgenes <- MlogFC_DEgenes[MlogFC_DEgenes$adj.P.Val < 0.05,]
+FB_DEgenes <- FlogFC_DEgenes[FlogFC_DEgenes$adj.P.Val < 0.05,]
+
+nrow(MB_DEgenes)
+nrow(FB_DEgenes)
+background <- MlogFC_DEgenes[c(1)] #the background pops are identical so MlogFC_DEgenes[c(1)] = FlogFC_DEgenes[c(1)]
+colnames(background)[1] <- "gene"
+head(background)
+background <- merge(Pviburni_genes_with_GO, background)
+
+# load packages
+
+#BiocManager::install("GOstats")
+#BiocManager::install("treemap")
+library(GOstats)
+library(GSEABase)
+library(treemap)
+
+# Read in background GO set and make compatible with GOstats
+
+GO_annotations <- background
+GO_annotations[,3] <- paste("IEA")
+names(GO_annotations) <- c("genes","GOIds","evi")
+GO_annotations[,3] <- paste("IEA")
+GO_annotations <- GO_annotations[c(2,3,1)]
+
+# Create necessary objects
+
+GO_frame <- GOFrame(GO_annotations,organism = "Pseudococcus viburni")
+goAllFrame <- GOAllFrame(GO_frame)
+gsc <- GeneSetCollection(goAllFrame, setType = GOCollection())
+universe <- as.vector(unique(GO_annotations[,3]))
+nrow(background)
+
+# Read in genes of interest 
+
+nrow(MB_DEgenes)
+m_genes <- as.data.frame(MB_DEgenes$gene)
+m_genes <- as.data.frame(na.omit(m_genes[,1]))
+m_genes <- as.vector(m_genes[,1])
+length(m_genes)
+
+f_genes <- as.data.frame(FB_DEgenes$gene)
+f_genes <- as.data.frame(na.omit(f_genes[,1]))
+f_genes <- as.vector(f_genes[,1])
+length(f_genes)
+
+# Keep only genes with annotated GOs
+m_genes <- m_genes[m_genes %in% universe]
+f_genes <- f_genes[f_genes %in% universe]
+length(m_genes)
+length(f_genes)
+# background pop: 7375 annotated
+# female biased genes: 122
+# male biased genes: 119
+
+# run hypergeometric test in M and collect results
+
+Get_GO_params_all <- function(genes_of_i,universe,pvalue_cut){
+  onto_terms <- c("BP","CC","MF")
+  directions <- c("over","under")
+  param_list <- list()
+  name_1 <- list()
+  for(i in 1:3){
+    for(j in 1:2){
+      name_1 <- c(name_1,paste(onto_terms[i],directions[j],sep = "_"))
+      parameters <- GSEAGOHyperGParams(name="Hygeo params",
+                                       geneSetCollection = gsc,
+                                       universeGeneIds = universe,
+                                       geneIds = m_genes,
+                                       ontology = paste(onto_terms[i]),
+                                       pvalueCutoff = pvalue_cut,
+                                       conditional = T,testDirection = paste(directions[j]))
+      param_list <- c(param_list,parameters)
+    }
+  }
+  names(param_list) <- name_1
+  return(param_list)
+}
+
+param_list <- Get_GO_params_all(genes_of_i = DE_Genes_A,universe = universe,
+                                pvalue_cut = 0.01)
+
+Hyper_G_test <- function(param_list){
+  Hyper_G_list <- list()
+  for(i in 1:length(param_list)){
+    res <- hyperGTest(param_list[[i]])
+    Hyper_G_list <- c(Hyper_G_list,res)
+  }
+  names(Hyper_G_list) <- names(param_list)
+  return(Hyper_G_list)
+}
+
+GO_enrichment.M <- Hyper_G_test(param_list = param_list)
+
+Result.BP.M <- summary(GO_enrichment.M[["BP_over"]])
+Result.CC.M <- summary(GO_enrichment.M[["CC_over"]])
+Result.MF.M <- summary(GO_enrichment.M[["MF_over"]])
+
+colnames(Result.BP.M)[1] <- "GO"
+colnames(Result.CC.M)[1] <- "GO"
+colnames(Result.MF.M)[1] <- "GO"
+
+Result.BP.M$Category <- "BP"
+Result.CC.M$Category <- "CC"
+Result.MF.M$Category <- "MF"
+GO.enriched.M <- rbind(Result.BP.M,Result.CC.M,Result.MF.M)
+
+# run hypergeometric test in F and collect results
+
+Get_GO_params_all <- function(genes_of_i,universe,pvalue_cut){
+  onto_terms <- c("BP","CC","MF")
+  directions <- c("over","under")
+  param_list <- list()
+  name_1 <- list()
+  for(i in 1:3){
+    for(j in 1:2){
+      name_1 <- c(name_1,paste(onto_terms[i],directions[j],sep = "_"))
+      parameters <- GSEAGOHyperGParams(name="Hygeo params",
+                                       geneSetCollection = gsc,
+                                       universeGeneIds = universe,
+                                       geneIds = f_genes,
+                                       ontology = paste(onto_terms[i]),
+                                       pvalueCutoff = pvalue_cut,
+                                       conditional = T,testDirection = paste(directions[j]))
+      param_list <- c(param_list,parameters)
+    }
+  }
+  names(param_list) <- name_1
+  return(param_list)
+}
+
+param_list <- Get_GO_params_all(genes_of_i = DE_Genes_A,universe = universe,
+                                pvalue_cut = 0.01)
+
+Hyper_G_test <- function(param_list){
+  Hyper_G_list <- list()
+  for(i in 1:length(param_list)){
+    res <- hyperGTest(param_list[[i]])
+    Hyper_G_list <- c(Hyper_G_list,res)
+  }
+  names(Hyper_G_list) <- names(param_list)
+  return(Hyper_G_list)
+}
+
+GO_enrichment.F <- Hyper_G_test(param_list = param_list)
+
+Result.BP.F <- summary(GO_enrichment.F[["BP_over"]])
+Result.CC.F <- summary(GO_enrichment.F[["CC_over"]])
+Result.FF.F <- summary(GO_enrichment.F[["MF_over"]])
+
+colnames(Result.BP.F)[1] <- "GO"
+colnames(Result.CC.F)[1] <- "GO"
+colnames(Result.FF.F)[1] <- "GO"
+
+Result.BP.F$Category <- "BP"
+Result.CC.F$Category <- "CC"
+Result.FF.F$Category <- "MF"
+GO.enriched.F <- rbind(Result.BP.F,Result.CC.F,Result.FF.F)
+
+#write.csv(GO.enriched.F, file="output/B_diff_expr/GO.enriched.BvsnoB.F.csv", quote = F, row.names = F)
+#write.csv(GO.enriched.M, file="output/B_diff_expr/GO.enriched.BvsnoB.M.csv", quote = F, row.names = F)
+p1 + p2 + p3.blank + p4
+library(patchwork)
+tiff("E:/agdel/Documents/projects_rosslab/B_viburni/manuscript/figures/fig4.tiff",
+     width = 3000, height = 2500, units = 'px', res = 300)
+p1 + p2 + p3.blank + p4
+dev.off()
+
+tiff("E:/agdel/Documents/projects_rosslab/B_viburni/manuscript/figures/fig4c.tiff",
+     width = 2700, height = 2700, units = 'px', res = 300)
+vennDiagram(dt[,1:3], circle.col=c("purple", "green","orange"),include=c("up","down"))
+dev.off()
+

@@ -162,10 +162,10 @@ FvsM.anno.de.only <- FvsM.anno[FvsM.anno$de != "NS",]
 
 # Make a compatible GO annotation file
 
-Pcitri_genes_with_GO <- read_table2("output/pviburni.gene.GO", 
+Pviburni_genes_with_GO <- read_table2("output/pviburni.gene.GO", 
                                     col_names = FALSE)
-colnames(Pcitri_genes_with_GO) <- c("gene","go")
-Pcitri_genes_with_GO <- separate_rows(Pcitri_genes_with_GO, go, sep =';')
+colnames(Pviburni_genes_with_GO) <- c("gene","go")
+Pviburni_genes_with_GO <- separate_rows(Pviburni_genes_with_GO, go, sep =';')
 #write.table(new_annotations, file="P_citri_GO_terms.txt", sep="/t", quote = F,
 #            col.names = T, row.names = F)
 
@@ -181,7 +181,7 @@ FB_DEgenes <- logFC_DEgenes[logFC_DEgenes$de == "FB" | logFC_DEgenes$de == "FB (
 nrow(MB_DEgenes)
 nrow(FB_DEgenes)
 
-background <- merge(Pcitri_genes_with_GO, logFC_DEgenes[c(1)])
+background <- merge(Pviburni_genes_with_GO, logFC_DEgenes[c(1)])
 
 # load packages
 
