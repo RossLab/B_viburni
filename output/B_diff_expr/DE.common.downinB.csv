@@ -1,0 +1,35 @@
+gene,deM,seq.x,b.status.final,blast,diamond,pfam_descr,ipr_descr,deF
+g10350,B-,scaffold_159,A,NA,A0A3Q0JHJ8,MULE transposase domain; GDSL-like Lipase/Acylhydrolase family,MULE transposase domain; SGNH hydrolase-type esterase domain,B-
+g1157,B-,scaffold_494,A,YM67_CAEEL,A0A1A9UJ87,Serine carboxypeptidase S28,Peptidase S28,B-
+g12078,B-,scaffold_238,A,PABP_DROME,A0A0H2UI64,"RNA recognition motif. (a.k.a. RRM, RBD, or RNP domain)",RNA recognition motif domain,B-
+g12441,B-,scaffold_50,A,UBB_PONPY,H2M983,Ubiquitin family,Ubiquitin domain,B-
+g12841,B-,scaffold_44,A,NA,NA,Uncharacterized conserved domain (SAYSvFN),Uncharacterised domain SAYSvFN,B-
+g1324,B-,scaffold_69,A,NA,D6WEX8,Predicted AAA-ATPase,AAA-ATPase-like domain,B-
+g13495,B-,scaffold_143,A,ERMP1_HUMAN,A0A067R1N3,Peptidase family M28,Peptidase M28,B-
+g13497,B-,scaffold_143,A,NA,E0VQ39,NA,NA,B-
+g1438,B-,scaffold_20,A,THAP9_HUMAN,J9JTA4,Transposase protein,Transposase protein,B-
+g15590,B-,scaffold_166,A,TRIPC_XENTR,A0A1S3DJK1,NA,NA,B-
+g15704,B-,scaffold_493,A,MCM9_XENTR,A0A067RI06,MCM OB domain; MCM P-loop domain; MCM AAA-lid domain,"MCM OB domain; MCM domain; MCM, AAA-lid domain",B-
+g15797,B-,scaffold_1906,A,CBP_MOUSE,G5BVC5,TAZ zinc finger,"Zinc finger, TAZ-type",B-
+g15798,B-,scaffold_1906,A,NA,NA,BTB And C-terminal Kelch; BTB/POZ domain,BTB/Kelch-associated; BTB/POZ domain,B-
+g17204,B-,scaffold_57,A,DUT_HUMAN,A0A2A4JSL6,dUTPase; Zinc knuckle; gag-polypeptide of LTR copia-type,"dUTPase-like; Zinc finger, CCHC-type",B-
+g17216,B-,scaffold_57,A,VGLU1_XENLA,K7J9C8,Major Facilitator Superfamily,Major facilitator superfamily,B-
+g17219,B-,scaffold_57,A,NA,K7J0S2,NA,NA,B-
+g17311,B-,scaffold_811,A,NA,J9KHS0,Transposase protein,Transposase protein,B-
+g17317,B-,scaffold_390,A,ZNF41_HUMAN,NA,"Zinc finger, C2H2 type; Zinc-finger of C2H2 type; C2H2-type zinc finger",Zinc finger C2H2-type,B-
+g17785,B-,scaffold_965,A,LFC_TACTR,J9KTP3,Trypsin,"Serine proteases, trypsin domain",B-
+g17872,B-,scaffold_146,A,C4G15_DROME,NA,Cytochrome P450,Cytochrome P450,B-
+g18023,B-,scaffold_1231,A,NA,U4UG15,NA,NA,B-
+g18118,B-,scaffold_859,A,NA,A0A2P8YF88,DDE superfamily endonuclease,Harbinger transposase-derived nuclease domain,B-
+g18640,B-,scaffold_362,A,NA,NA,Hsp70 protein,Heat shock protein 70 family,B-
+g19539,B-,scaffold_7,A,NA,NA,Kinase binding protein CGI-121,CGI121/TPRKB,B-
+g19773,B-,scaffold_60,A,GRM1_HUMAN,B0WMA9,Receptor family ligand binding region; Nine Cysteines Domain of family 3 GPCR; 7 transmembrane sweet-taste receptor of 3 GCPR,"Receptor, ligand binding region; GPCR, family 3, nine cysteines domain; GPCR family 3, C-terminal",B-
+g20012,B-,scaffold_894,A,PWP2_PONAB,J9K4S6,"WD domain, G-beta repeat",WD40 repeat,B-
+g23396,B-,scaffold_364,A,HARB1_HUMAN,J9KAE0,DDE superfamily endonuclease,Harbinger transposase-derived nuclease domain,B-
+g3541,B-,scaffold_10,A,NA,A0A482X7A4,NA,NA,B-
+g4187,B-,scaffold_28,A,NA,A0A1I7W3G3,Putative peptidase (DUF1758); Family of unknown function (DUF5641); Protein of unknown function (DUF1759),"Peptidase aspartic, putative; Domain of unknown function DUF5641; Protein of unknown function DUF1759",B-
+g6329,B-,scaffold_235,A,PCNA_BOMMO,R4G4N7,"Proliferating cell nuclear antigen, C-terminal domain","Proliferating cell nuclear antigen, PCNA, C-terminal",B-
+g6726,B-,scaffold_179,A,ZNFX1_MOUSE,J9KAH4,AAA domain; AAA domain,"DNA2/NAM7 helicase, AAA domain; DNA2/NAM7 helicase-like, AAA domain",B-
+g7421,B-,scaffold_526,B2,RCBT1_MOUSE,A0A232EN37,BTB/POZ domain; Regulator of chromosome condensation (RCC1) repeat,"BTB/POZ domain; Regulator of chromosome condensation, RCC1",B-
+g8581,B-,scaffold_447,A,NA,NA,7tm Odorant receptor,"Olfactory receptor, insect",B-
+g9057,B-,scaffold_740,A,NA,C3WB46,Transactive response DNA-binding protein N-terminal domain; Predicted AAA-ATPase,"TAR DNA-binding protein 43, N-terminal; AAA-ATPase-like domain",B-

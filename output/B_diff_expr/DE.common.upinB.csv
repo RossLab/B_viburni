@@ -1,0 +1,95 @@
+gene,deM,seq.x,b.status.final,blast,diamond,pfam_descr,ipr_descr,deF
+g10080,B+,scaffold_130,A,NA,NA,Predicted AAA-ATPase,AAA-ATPase-like domain,B+
+g10279,B+,scaffold_150,A,M10B1_DANRE,A0A2J7QS54,AAA domain; AAA domain,"DNA2/NAM7 helicase-like, AAA domain; DNA2/NAM7 helicase, AAA domain",B+
+g10289,B+,scaffold_689,A,NA,J9LF57,DDE superfamily endonuclease,DDE superfamily endonuclease domain,B+
+g10786,B+,scaffold_270,A,NA,NA,Carboxylesterase family,"Carboxylesterase, type B",B+
+g10916,B+,scaffold_1,A,NA,X1XR80,Amyotrophic lateral sclerosis 2 chromosomal region candidate gene 8; MULE transposase domain,Calcium-responsive transcription factor; MULE transposase domain,B+
+g10961,B+,scaffold_1,A,NA,X1XR80,MULE transposase domain; Amyotrophic lateral sclerosis 2 chromosomal region candidate gene 8,MULE transposase domain; Calcium-responsive transcription factor,B+
+g1128,B+,scaffold_605,A,NA,A0A2J7PQL3,RhoGEF domain,Dbl homology (DH) domain,B+
+g11595,B+,scaffold_1801,A,NA,J9M2D0,"Tc5 transposase DNA-binding domain; helix-turn-helix, Psq domain; DDE superfamily endonuclease","HTH CenpB-type DNA-binding domain; DNA binding HTH domain, Psq-type; DDE superfamily endonuclease domain",B+
+g11609,B+,scaffold_289,A,NA,NA,Fibronectin type III domain,Fibronectin type III,B+
+g11943,B+,scaffold_1237,A,NA,K7JKD1,NA,NA,B+
+g1208,B+,scaffold_2293,B1,FAS_CHICK,A0A2J7PFW7,NA,NA,B+
+g12187,B+,scaffold_170,A,NA,J9LV95,Protein of unknown function (DUF 659),Domain of unknown function DUF659,B+
+g13530,B+,scaffold_266,A,SAP_BOVIN,A0A437BE89,"Saposin-like type B, region 1; Saposin A-type domain; Saposin-like type B, region 2","Saposin-like type B, region 1; Saposin A-type domain; Saposin B type, region 2",B+
+g13531,B+,scaffold_266,A,NA,NA,THAP domain,THAP-type zinc finger,B+
+g14546,B+,scaffold_145,A,NA,NA,Transactive response DNA-binding protein N-terminal domain,"TAR DNA-binding protein 43, N-terminal",B+
+g1576,B+,scaffold_206,A,NA,J9LAU4,NA,NA,B+
+g16062,B+,scaffold_315,A,COPIA_DROME,J9KJ72,gag-polypeptide of LTR copia-type; Reverse transcriptase (RNA-dependent DNA polymerase); GAG-pre-integrase domain,"Reverse transcriptase, RNA-dependent DNA polymerase; GAG-pre-integrase domain",B+
+g16189,B+,scaffold_54,A,LST_PHOPY,A0A232F7D1,Sulfotransferase domain,Sulfotransferase domain,B+
+g17760,B+,scaffold_186,A,PEPT1_DROME,A0A2J7R2B1,POT family,Proton-dependent oligopeptide transporter family,B+
+g17873,B+,scaffold_146,A,C4G15_DROME,A0A195CUP0,Cytochrome P450,Cytochrome P450,B+
+g17875,B+,scaffold_146,A,CA131_DROME,J9K6X1,Cytochrome P450,Cytochrome P450,B+
+g18056,B+,scaffold_217,A,NA,A0A3S2NZ68,YqaJ-like viral recombinase domain,YqaJ viral recombinase,B+
+g18233,B+,scaffold_78,A,NA,A0A1I8MK77,Protein of unknown function (DUF 659); hAT family C-terminal dimerisation region; BED zinc finger,"Domain of unknown function DUF659; HAT, C-terminal dimerisation domain; Zinc finger, BED-type",B+
+g18439,B+,scaffold_1579,B3,CSN4_DANRE,A0A2J7R0G0,CSN4/RPN5/eIF3a helix turn helix domain; PCI domain,"COP9 signalosome complex subunit 4, helix turn helix domain; Proteasome component (PCI) domain",B+
+g18507,B+,scaffold_273,A,NA,NA,Eukaryotic-type carbonic anhydrase,Alpha carbonic anhydrase domain,B+
+g18519,B+,scaffold_273,A,NA,A0A2B4RXD0,Aspartyl protease,NA,B+
+g18670,B+,scaffold_45,A,COPIA_DROME,J9KJ72,gag-polypeptide of LTR copia-type; Reverse transcriptase (RNA-dependent DNA polymerase); GAG-pre-integrase domain; Integrase core domain,"Reverse transcriptase, RNA-dependent DNA polymerase; GAG-pre-integrase domain; Integrase, catalytic core",B+
+g19261,B+,scaffold_18,A,NA,D6WEX8,Predicted AAA-ATPase,AAA-ATPase-like domain,B+
+g19483,B+,scaffold_7,A,NA,NA,BTB/POZ domain; BTB And C-terminal Kelch,BTB/POZ domain; BTB/Kelch-associated,B+
+g19940,B+,scaffold_236,A,NA,NA,Myb/SANT-like DNA-binding domain,Myb/SANT-like DNA-binding domain,B+
+g2001,B+,scaffold_581,A,NA,J9MAL5,Major Facilitator Superfamily,Major facilitator superfamily,B+
+g20017,B+,scaffold_894,A,TCPA_MACFA,E2AJN5,TCP-1/cpn60 chaperonin family,Chaperonin Cpn60/TCP-1 family,B+
+g20018,B+,scaffold_894,A,TCPA_DROME,A0A2J7QHG0,TCP-1/cpn60 chaperonin family,Chaperonin Cpn60/TCP-1 family,B+
+g20048,B+,scaffold_850,A,NRDC_MOUSE,A0A087ZSL6,Insulinase (Peptidase family M16); Middle or third domain of peptidase_M16; Peptidase M16 inactive domain,"Peptidase M16, N-terminal; Peptidase M16, middle/third domain; Peptidase M16, C-terminal",B+
+g20062,B+,scaffold_604,A,LIPR1_RAT,J9K5A2,Lipase,Lipase/vitellogenin,B+
+g20141,B+,scaffold_333,A,NA,J9L6S7,YqaJ-like viral recombinase domain,YqaJ viral recombinase,B+
+g20142,B+,scaffold_333,A,NA,J9JL93,DDE superfamily endonuclease; Helix-turn-helix of DDE superfamily endonuclease; THAP domain,"Harbinger transposase-derived nuclease domain; Transposase, Helix-turn-helix domain; THAP-type zinc finger",B+
+g20161,B+,scaffold_333,A,NA,NA,FKBP-type peptidyl-prolyl cis-trans isomerase,FKBP-type peptidyl-prolyl cis-trans isomerase domain,B+
+g20162,B+,scaffold_333,A,NB5R2_MOUSE,A0A194Q8Y9,Oxidoreductase NAD-binding domain; Predicted AAA-ATPase; Oxidoreductase FAD-binding domain,"Oxidoreductase FAD/NAD(P)-binding; AAA-ATPase-like domain; Flavoprotein pyridine nucleotide cytochrome reductase-like, FAD-binding domain",B+
+g20277,B+,scaffold_119,A,NA,T1I516,Sugar (and other) transporter,"Major facilitator,  sugar transporter-like",B+
+g20279,B+,scaffold_119,A,NA,NA,Sugar (and other) transporter,"Major facilitator,  sugar transporter-like",B+
+g20623,B+,scaffold_215,A,PPIA_RABIT,A0A482XF32,Cyclophilin type peptidyl-prolyl cis-trans isomerase/CLD,Cyclophilin-type peptidyl-prolyl cis-trans isomerase domain,B+
+g20686,B+,scaffold_131,A,NA,NA,Low-density lipoprotein receptor domain class A; Trypsin,"Low-density lipoprotein (LDL) receptor class A repeat; Serine proteases, trypsin domain",B+
+g21179,B+,scaffold_98,A,PGBD4_HUMAN,A0A087UIR8,Transposase IS4; DDE_Tnp_1-like zinc-ribbon,"PiggyBac transposable element-derived protein; PiggyBac transposable element-derived protein 4, C-terminal zinc-ribbon",B+
+g21420,B+,scaffold_110,A,CATA_DROME,A0A2J7REJ5,Catalase; Catalase-related immune-responsive,Catalase core domain; Catalase immune-responsive domain,B+
+g21718,B+,scaffold_9,A,NA,NA,Transactive response DNA-binding protein N-terminal domain,"TAR DNA-binding protein 43, N-terminal",B+
+g21903,B+,scaffold_22,A,NA,A0A182HFW8,NA,NA,B+
+g22024,B+,scaffold_124,A,COPIA_DROME,A0A182H8F8,Reverse transcriptase (RNA-dependent DNA polymerase),"Reverse transcriptase, RNA-dependent DNA polymerase",B+
+g22042,B+,scaffold_342,A,HSP7D_MANSE,A0A423SC79,Hsp70 protein; MULE transposase domain; Amyotrophic lateral sclerosis 2 chromosomal region candidate gene 8,Heat shock protein 70 family; MULE transposase domain; Calcium-responsive transcription factor,B+
+g22184,B+,scaffold_11,A,NA,D2CG63,Predicted AAA-ATPase,AAA-ATPase-like domain,B+
+g22599,B+,scaffold_6,A,NA,D6WTN9,Integrase zinc binding domain,Integrase zinc-binding domain,B+
+g23072,B+,scaffold_82,A,NA,A0A212FDA2,IPT/TIG domain,IPT domain,B+
+g23074,B+,scaffold_82,A,FGFR3_DANRE,A0A482WJJ4,Protein tyrosine kinase; Sema domain; TIG domain; TIG domain found in plexin; IPT/TIG domain,"Serine-threonine/tyrosine-protein kinase, catalytic domain; Sema domain; Plexin, TIG domain 1; Plexin, TIG domain 2; IPT domain",B+
+g23117,B+,scaffold_222,A,DMPM_STRAD,A0A1W1W4Q1,Dimerisation domain; O-methyltransferase domain,"Acetylserotonin O-methyltransferase, dimerisation domain; O-methyltransferase domain",B+
+g23189,B+,scaffold_508,A,NA,R4ZGG0,NA,NA,B+
+g23414,B+,scaffold_364,A,NA,A0A226F1P1,PIF1-like helicase; Helitron helicase-like domain at N-terminus,DNA helicase Pif1-like; Helitron helicase-like domain,B+
+g23415,B+,scaffold_364,A,NA,A0A1D2MNM8,Ubiquitin carboxyl-terminal hydrolase,"Peptidase C19, ubiquitin carboxyl-terminal hydrolase",B+
+g23417,B+,scaffold_364,A,NA,NA,OB-fold nucleic acid binding domain,"OB-fold nucleic acid binding domain, AA-tRNA synthetase-type",B+
+g2486,B+,scaffold_49,A,NA,D6WTN9,NA,NA,B+
+g2645,B+,scaffold_1454,B3,NA,J9K3D3,Thioesterase domain,Thioesterase,B+
+g2805,B+,scaffold_817,A,NA,NA,RNA polymerase Rpb6,"RNA polymerase, subunit omega/K/RPB6",B+
+g2808,B+,scaffold_817,A,MYRO1_BREBR,T1HZR0,Glycosyl hydrolase family 1,Glycoside hydrolase family 1,B+
+g2809,B+,scaffold_817,A,NA,NA,Proteasome assembly chaperone 4,Proteasome assembly chaperone 4,B+
+g3239,B+,scaffold_12,A,FACR1_DROME,J9K7D4,Male sterility protein; Male sterility protein,"Fatty acyl-CoA reductase, C-terminal; Male sterility, NAD-binding",B+
+g3441,B+,scaffold_10,A,FACR1_DROME,J9K7D4,Male sterility protein; Male sterility protein,"Male sterility, NAD-binding; Fatty acyl-CoA reductase, C-terminal",B+
+g349,B+,scaffold_42,A,NA,A0A0J7N890,Protein of unknown function (DUF1759); Putative peptidase (DUF1758); Pao retrotransposon peptidase,"Protein of unknown function DUF1759; Peptidase aspartic, putative; Retrotransposon, Pao",B+
+g3496,B+,scaffold_10,A,PPBT_CHICK,A0A2J7PHL4,Alkaline phosphatase,Alkaline phosphatase,B+
+g3503,B+,scaffold_10,A,NA,NA,BTB/POZ domain; BTB And C-terminal Kelch,BTB/POZ domain; BTB/Kelch-associated,B+
+g354,B+,scaffold_42,A,NA,A0A374CGF3,Predicted AAA-ATPase,AAA-ATPase-like domain,B+
+g3672,B+,scaffold_269,A,NA,A0A0J7N0T9,NA,NA,B+
+g4054,B+,scaffold_438,A,NA,NA,BTB And C-terminal Kelch; BTB/POZ domain,BTB/Kelch-associated; BTB/POZ domain,B+
+g4057,B+,scaffold_438,A,NA,NA,BTB/POZ domain; BTB And C-terminal Kelch,BTB/POZ domain; BTB/Kelch-associated,B+
+g4224,B+,scaffold_28,A,SPOP_XENTR,N6U5F7,BTB/POZ domain,BTB/POZ domain,B+
+g4227,B+,scaffold_28,A,YELL_DROSU,A0A1S3CYU3,Major royal jelly protein,Major royal jelly protein/protein yellow,B+
+g4590,B+,scaffold_793,A,ELOV6_CHICK,Q29D49,GNS1/SUR4 family,ELO family,B+
+g4593,B+,scaffold_888,A,NA,NA,Eukaryotic-type carbonic anhydrase,Alpha carbonic anhydrase domain,B+
+g506,B+,scaffold_816,B2,NA,A0A2J7RAG5,Peptidase family M1 domain,"Peptidase M1, membrane alanine aminopeptidase",B+
+g507,B+,scaffold_816,B2,NA,NA,ERAP1-like C-terminal domain,ERAP1-like C-terminal domain,B+
+g5232,B+,scaffold_2160,B3,NA,NA,Transactive response DNA-binding protein N-terminal domain,"TAR DNA-binding protein 43, N-terminal",B+
+g5582,B+,scaffold_897,B1,FAS_ANSAN,A0A158NZW8,"Beta-ketoacyl synthase, N-terminal domain","Beta-ketoacyl synthase, N-terminal",B+
+g5794,B+,scaffold_255,A,EST6_APIME,A0A067QXD4,Carboxylesterase family,"Carboxylesterase, type B",B+
+g5914,B+,scaffold_139,A,RENT1_DROME,T1HV29,Domain of unknown function (DUF5599); AAA domain; RNA helicase (UPF2 interacting domain); AAA domain,"Domain of unknown function DUF5599; DNA2/NAM7 helicase, AAA domain; RNA helicase UPF1, UPF2-interacting domain; DNA2/NAM7 helicase-like, AAA domain",B+
+g6056,B+,scaffold_5,A,POL5_DROME,"J9LCT9,J9L709",Reverse transcriptase (RNA-dependent DNA polymerase); Integrase core domain; Integrase zinc binding domain; RNase H-like domain found in reverse transcriptase,"Reverse transcriptase domain; Integrase, catalytic core; Integrase zinc-binding domain; Reverse transcriptase/retrotransposon-derived protein, RNase H-like domain",B+
+g6067,B+,scaffold_5,A,NA,NA,BTB/POZ domain,BTB/POZ domain,B+
+g6210,B+,scaffold_440,A,NA,NA,BED zinc finger,"Zinc finger, BED-type",B+
+g6396,B+,scaffold_63,A,NA,A0A261D9Z1,Predicted AAA-ATPase,AAA-ATPase-like domain,B+
+g6525,B+,scaffold_52,A,NA,A0A1X7TGY6,hAT family C-terminal dimerisation region; BED zinc finger,"HAT, C-terminal dimerisation domain; Zinc finger, BED-type",B+
+g7175,B+,scaffold_17,A,NA,A0A226EUF5,Pao retrotransposon peptidase; Putative peptidase (DUF1758); Protein of unknown function (DUF1759),"Retrotransposon, Pao; Peptidase aspartic, putative; Protein of unknown function DUF1759",B+
+g864,B+,scaffold_158,A,NA,NA,Transcription activator MBF2,Transcription activator MBF2,B+
+g872,B+,scaffold_158,A,RT07_DROME,A0A067QQP8,"Ribosomal protein S7p/S5e; MULE transposase domain; Zinc finger, C2H2 type",Ribosomal protein S7 domain; MULE transposase domain; Zinc finger C2H2-type,B+
+g9061,B+,scaffold_848,B1,NA,NA,Predicted AAA-ATPase,AAA-ATPase-like domain,B+
+g9062,B+,scaffold_848,B1,NA,A0A1H8D3N8,Predicted AAA-ATPase,AAA-ATPase-like domain,B+
+g9386,B+,scaffold_153,A,NA,J9K020,NA,NA,B+
+g9804,B+,scaffold_47,A,TADBP_XENTR,T1HYV6,"RNA recognition motif. (a.k.a. RRM, RBD, or RNP domain)",RNA recognition motif domain,B+
