@@ -1,7 +1,7 @@
 
 # Coverage analysis
 
-	# working directory	
+	# working directory
 	/data/ross/mealybugs/analyses/B_viburni_andres/2_short_read_DNA_seq/0_reads
 	qlogin -pe smp64 32 -N bwa -l h=bigwig
     /ceph/software/utilities/sge/qlogin -pe smp 1 -N QLOGIN ok
@@ -48,6 +48,7 @@ Based on the assembly size (435.3Mb), we are looking at estimated coverages betw
 
 ## 3. Initial mapping
 
+```
 	# /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/1_mapping
 	bwa index /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz ../0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-13.Illumina.350.sorted.bam
@@ -56,9 +57,11 @@ Based on the assembly size (435.3Mb), we are looking at estimated coverages betw
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../0_reads/PV_18-21.Illumina.350.trimmed_1.fq.gz ../0_reads/PV_18-21.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-21.initial.sorted.bam
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../0_reads/PV_18-23.Illumina.350.trimmed_1.fq.gz ../0_reads/PV_18-23.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-23.initial.sorted.bam
 	rsync -av /scratch/afilia/*initial.sorted.bam .
+```
 
 Some initial mapping stats with ```samtools flagstat```:
 
+```
 	==> PV_18-04.initial.sorted.stats <==
 	417074917 + 0 in total (QC-passed reads + QC-failed reads)
 	7133797 + 0 secondary
@@ -70,7 +73,7 @@ Some initial mapping stats with ```samtools flagstat```:
 	204970560 + 0 read2
 	356671170 + 0 properly paired (87.01% : N/A)
 	386220084 + 0 with itself and mate mapped
-	
+
 	==> PV_18-13.initial.sorted.stats <==
 	375650036 + 0 in total (QC-passed reads + QC-failed reads)
 	4383660 + 0 secondary
@@ -94,7 +97,7 @@ Some initial mapping stats with ```samtools flagstat```:
 	101604410 + 0 read2
 	181141304 + 0 properly paired (89.14% : N/A)
 	196881368 + 0 with itself and mate mapped
-	
+
 	==> PV_18-23.initial.sorted.stats <==
 	220155946 + 0 in total (QC-passed reads + QC-failed reads)
 	4107946 + 0 secondary
@@ -118,7 +121,7 @@ Some initial mapping stats with ```samtools flagstat```:
 	104477186 + 0 read2
 	191120582 + 0 properly paired (91.47% : N/A)
 	203695802 + 0 with itself and mate mapped
-	
+
 	==> PV_18-13.Illumina.550.sorted.stats <==
 	164092832 + 0 in total (QC-passed reads + QC-failed reads)
 	1780828 + 0 secondary
@@ -130,40 +133,50 @@ Some initial mapping stats with ```samtools flagstat```:
 	81156002 + 0 read2
 	147147792 + 0 properly paired (90.66% : N/A)
 	157690294 + 0 with itself and mate mapped
-	
+```
+
 It makes sense to keep primary mapped reads only, as secondary hits might map to A and B.
 
+```
 	# /data/ross/mealybugs/analyses/B_viburni_2020/4_cov_analysis/cov
 	samtools view -@ 16 -F 256 -b PV_18-04.initial.sorted.bam -o /scratch/afilia/PV_18-04.initial.sorted.primary.only.bam
 	samtools view -@ 16 -F 256 -b PV_18-13.initial.sorted.bam -o /scratch/afilia/PV_18-13.initial.sorted.primary.only.bam
 	samtools view -@ 16 -F 256 -b PV_18-21.initial.sorted.bam -o /scratch/afilia/PV_18-21.initial.sorted.primary.only.bam
 	samtools view -@ 16 -F 256 -b PV_18-23.initial.sorted.bam -o /scratch/afilia/PV_18-23.initial.sorted.primary.only.bam
+```
 
 To minimise false negatives, for now we want to keep reads that align with no mismatches only (Carvalho & Clark, 2013; Hall et al., 2013; Smeds et al., 2015; Vicoso et al., 2013).
 
+```
 	bamtools filter -tag NM:0 -in PV_18-04.initial.sorted.primary.only.bam -out /scratch/afilia/PV_18-04.initial.sorted.primary.only.no.mismatches.bam
 	bamtools filter -tag NM:0 -in PV_18-13.initial.sorted.primary.only.bam -out /scratch/afilia/PV_18-13.initial.sorted.primary.only.no.mismatches.bam
 	bamtools filter -tag NM:0 -in PV_18-21.initial.sorted.primary.only.bam -out /scratch/afilia/PV_18-21.initial.sorted.primary.only.no.mismatches.bam
 	bamtools filter -tag NM:0 -in PV_18-23.initial.sorted.primary.only.bam -out /scratch/afilia/PV_18-23.initial.sorted.primary.only.no.mismatches.bam
+```
 
 Collect stats and ```samtools index```
 
 Mapped reads per contig:
 
+```
 	samtools idxstats PV_18-04.initial.sorted.primary.only.bam > PV_18-04.primary.reads.mapped.count
 	samtools idxstats PV_18-13.initial.sorted.primary.only.bam > PV_18-13.primary.reads.mapped.count
 	samtools idxstats PV_18-21.initial.sorted.primary.only.bam > PV_18-21.primary.reads.mapped.count
 	samtools idxstats PV_18-23.initial.sorted.primary.only.bam > PV_18-23.primary.reads.mapped.count
+```
 
 Alternatively, we could also collect coverage depths per contig:
 
+```
 	samtools depth PV_18-04.freeze.v0.sorted.bam | awk '/BEGIN/{scf='scaffold_1'; coverage_sum = 0; }{ if( scf != $1 ){ print scf "\t" coverage_sum; scf = $1; coverage_sum = $3 } else { scf = $1; coverage_sum += $3} }' > PV_18-04.scaffold.depth
 	samtools depth PV_18-13.freeze.v0.sorted.bam | awk '/BEGIN/{scf='scaffold_1'; coverage_sum = 0; }{ if( scf != $1 ){ print scf "\t" coverage_sum; scf = $1; coverage_sum = $3 } else { scf = $1; coverage_sum += $3} }' > PV_18-13.scaffold.depth
 	samtools depth PV_18-21.freeze.v0.sorted.bam | awk '/BEGIN/{scf='scaffold_1'; coverage_sum = 0; }{ if( scf != $1 ){ print scf "\t" coverage_sum; scf = $1; coverage_sum = $3 } else { scf = $1; coverage_sum += $3} }' > PV_18-21.scaffold.depth
 	samtools depth PV_18-23.freeze.v0.sorted.bam | awk '/BEGIN/{scf='scaffold_1'; coverage_sum = 0; }{ if( scf != $1 ){ print scf "\t" coverage_sum; scf = $1; coverage_sum = $3 } else { scf = $1; coverage_sum += $3} }' > PV_18-23.scaffold.depth
+```
 
 The initial bam files will do for now. Alternatively, we can extract mapped reads with ```bamfilter``` (inclusion/exclusion list is needed, just made an empty one) and remap. Let's keep this there for now and see if we come back to it later.
-	
+
+```
 	# /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/1_mapping
 	/ceph/software/blobtools/blobtools bamfilter -b PV_18-21.initial.sorted.bam -o /scratch/afilia/PV_18-21 -n -f fq -e no_contigs.txt
 	/ceph/software/blobtools/blobtools bamfilter -b PV_18-23.initial.sorted.bam -o /scratch/afilia/PV_18-23 -n -f fq -e no_contigs.txt
@@ -178,6 +191,7 @@ The initial bam files will do for now. Alternatively, we can extract mapped read
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../1_mapping/PV_18-21.PV_18-21.initial.sorted.bam.InIn.1.fq ../1_mapping/PV_18-21.PV_18-21.initial.sorted.bam.InIn.2.fq | samtools sort -O BAM -o /scratch/afilia/PV_18-21.freeze.v0.sorted.bam
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../1_mapping/PV_18-23.PV_18-23.initial.sorted.bam.InIn.1.fq ../1_mapping/PV_18-23.PV_18-23.initial.sorted.bam.InIn.2.fq | samtools sort -O BAM -o /scratch/afilia/PV_18-23.freeze.v0.sorted.bam
 	samtools merge /scratch/afilia/PV_18-13.freeze.v0.sorted.bam /scratch/afilia/PV_18-13.350.freeze.v0.sorted.bam /scratch/afilia/PV_18-13.550.freeze.v0.sorted.bam
+```
 
 ## 4. Exploring coverages
 
@@ -191,13 +205,15 @@ while we see no such differences comparing B+ lines and B- lines:
 
 This is promising. Before we carry on, let's normalise all samples by median coverage differences between pairs of lines
 
+```
 	# normalisation factors
 	median(cov.13v21_norm) # 2.08
-	median(cov.13v23_norm) # 1.91 
+	median(cov.13v23_norm) # 1.91
 	median(cov.04v21_norm) # 1.87
 	median(cov.04v23_norm) # 1.77
 	median(cov.04v13_norm) # 0.95
 	median(cov.21v23_norm) # 0.94
+```
 
 And replot. Now the peak of the histogram is centered at 0:
 
@@ -205,10 +221,12 @@ And replot. Now the peak of the histogram is centered at 0:
 
 We can define two preliminary sets of candidate B scaffolds based on coverage:
 
+```
 	b.candidates <- reads.all.lines[reads.all.lines$cov.13v21 >= 0.58 & reads.all.lines$cov.13v23 >= 0.58 & reads.all.lines$cov.04v21 >= 0.58 & reads.all.lines$cov.04v23 >= 0.58,] # assuming 1 B copy + 2 A copies
 	b.candidates.strict <- reads.all.lines[reads.all.lines$cov.13v21 >= 2 & reads.all.lines$cov.13v23 >= 2 & reads.all.lines$cov.04v21 >= 2 & reads.all.lines$cov.04v23 >= 2,]
+```
 
-which gives us 145 putative B scaffolds with the more strict filtering (2.03Mb) and 136 with the looser filtering (4.42Mb). 
+which gives us 145 putative B scaffolds with the more strict filtering (2.03Mb) and 136 with the looser filtering (4.42Mb).
 
 Of course, some of these contigs may be highly repetitive sequences, which should show higher coverage. This is indeed what we see:
 
@@ -231,6 +249,7 @@ Some B chromosomal contigs/scaffolds could have been misassembled during the ass
 
 This will simply follow the steps in sections 3 and 4, but let's not bother with filtering out reads with mismatches for now (commands below for the flye assembly)
 
+```
 	bwa index ../../1_pacbio_assembly/9_alternative/raw_flye/assembly.fasta
 	bwa mem -M -t 32 ../../1_pacbio_assembly/9_alternative/raw_flye/assembly.fasta ../../../2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_	18-13.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-13.to_flye.350.sorted.bam
 	bwa mem -M -t 32 ../../1_pacbio_assembly/9_alternative/raw_flye/assembly.fasta ../../../2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_	18-13.Illumina.550.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-13.to_flye.550.sorted.bam
@@ -251,6 +270,7 @@ This will simply follow the steps in sections 3 and 4, but let's not bother with
 	samtools idxstats PV_18-13.to_flye.sorted.bam > PV_18-13.to_flye.sorted.mapped.count
 	samtools idxstats PV_18-21.to_flye.sorted.bam > PV_18-21.to_flye.sorted.mapped.count
 	samtools idxstats PV_18-23.to_flye.sorted.bam > PV_18-23.to_flye.sorted.mapped.count
+```
 
 Mapping to the new assembly gives a slightly bigger set of putative B chromosomal contigs is recovered (2.2Mb v 1.95Mb strict), but since the flye assembly is bigger the fraction is very similar. It doesn't seem worth pursuing further with this.
 
@@ -266,9 +286,9 @@ Let's build assemblies from the Illumina data and map them to the PacBio referen
 
 Get some basic stats (N scaffolds and total length)
 
-	ln -s 04_SPADES/scaffolds.fasta PV_18-04.spades.fa 
-	ln -s 13_SPADES/scaffolds.fasta PV_18-13.spades.fa 
-	ln -s 21_SPADES/scaffolds.fasta PV_18-21.spades.fa 
+	ln -s 04_SPADES/scaffolds.fasta PV_18-04.spades.fa
+	ln -s 13_SPADES/scaffolds.fasta PV_18-13.spades.fa
+	ln -s 21_SPADES/scaffolds.fasta PV_18-21.spades.fa
 	ln -s 23_SPADES/scaffolds.fasta PV_18-23.spades.fa
 	/ceph/software/scripts/scaffold_stats.pl -f PV_18-04.spades.fa # For scaffolds longer than 200 bp: 305430, 549640993 / For scaffolds longer than 1000 bp: 96516, 461974611
 	/ceph/software/scripts/scaffold_stats.pl -f PV_18-13.spades.fa # For scaffolds longer than 200 bp: 355134, 570873816 / For scaffolds longer than 1000 bp: 103237, 467583548
@@ -372,6 +392,43 @@ And run genomescope again with cov up to 1e5:
 
 The new genome estimate is closer to the assembly -- that's good. ALSO -- only the 18-13 library comes from a pool of 3 individuals! 18-4, 18-21 and 18-23 are from single females -- Isabelle needs to confirm this. Now this makes sense: the heterozygosity peak is broader in 18-13 (rather corresponding to minor allele freq!)
 
+**Revisions update**
+
+Let's rerun these estimates with GenomeScope 2.0, which has an improved convergence model
+
+```
+genomescope.R -i PV_18-04_kmer_counts_round2.max.hist -o . -n PV_18-04 -p 2 -k 21
+genomescope.R -i PV_18-13_kmer_counts_round2.max.hist -o . -n PV_18-13 -p 2 -k 21 -l 38
+genomescope.R -i PV_18-21_kmer_counts_round2.max.hist -o . -n PV_18-21 -p 2 -k 21
+genomescope.R -i PV_18-23_kmer_counts_round2.max.hist -o . -n PV_18-23 -p 2 -k 21
+```
+
+The `04` and `23` are nice genome profiles and the one with two Bs is a lot larger (~45Mbp). However, the `PV_13` has about the same size as the two B-less genome profiles. However, both `13` and `21` are pools of multiple individuals and that will hinder the estimate. I am not sure if the two `PV 13` libraries are from the same isolation, so let's do `PV_18-13` per library with a tiny bit smaller k.
+
+```bash
+# /data/ross/mealybugs/analyses/B_viburni_2020/4_cov_analysis/kmer/per_library_PV_18-13
+# conda activate default_genomics
+mkdir reads_350 reads_550
+ln -s /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_[12].fq.gz ./reads_350
+ln -s /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.550.trimmed_[12].fq.gz ./reads_350
+
+mkdir kmer_hist_350 kmer_hist_550
+
+qsub -o logs -e logs -cwd -b yes -N genome_profiling -V -pe smp64 16 'bash kmer_histogram_cluster.sh reads_350 kmer_hist_550'
+qsub -o logs -e logs -cwd -b yes -N genome_profiling -V -pe smp64 16 'bash kmer_histogram_cluster.sh reads_550 kmer_hist_550'
+
+# the script is a bit messed up and does not rsync the output files well, I renamed them afterwards
+```
+
+and again
+
+```
+genomescope.R -i PV13_350_kmer_k21_full.hist -o . -n PV_18-13_350 -p 2 -k 21
+genomescope.R -i PV13_550_kmer_k21_full.hist -o . -n PV_18-13_550 -p 2 -k 21
+```
+
+Both are pools! However , the genome size estimates of the 350 library is ~11 Mbp longer, given the genome size estimate is (kmers * coverage) / (haploid_cov * ploidy), the size estimate difference will be just hakf of B chromosome size (assuming there is just one in this line). Hence, the B size estimate assuming 350 size estimate is correct would be ~22Mbp. However, the 550 library has the same size and needs to be investigated wether it contains the Bs at all.
+
 ### 6.1. 2d histograms of sample pairs
 
 	# conda install -c bioconda/label/cf201901 kat (v2.4.1)
@@ -455,17 +512,20 @@ Map the fasta files to our Pacbio reference:
 
 Index and count the numbers of A and B k-mers mapping to the assembly:
 
+```
 	samtools index *bam
 	samtools idxstats *bam
+```
 
-Almost all scaffolds have kmers from both sets. The resolution is a bit crap -- it seems we'll need to define better coverage thresholds. However, a ray of light: we see very good agreement with the previous analyses. 
+Almost all scaffolds have kmers from both sets. The resolution is a bit crap -- it seems we'll need to define better coverage thresholds. However, a ray of light: we see very good agreement with the previous analyses.
 
 ![](misc/kmer_ratio.jpeg)
 
 ### 6.3. kmer coverage (improved)
 
-Let's generate everything again (genomescope, 2d histograms, dumps) but this time after filtering out reads that map to contaminants. 
+Let's generate everything again (genomescope, 2d histograms, dumps) but this time after filtering out reads that map to contaminants.
 
+```
 	# /data/ross/mealybugs/analyses/B_viburni_2020/4_cov_analysis/kmer/decon_kmers
 	bwa index /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/4_blobtools/hypo3.scubat.besst1.fa
 	bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/4_blobtools/hypo3.scubat.besst1.fa ../../../2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_1.fq.gz ../../../2_short_read_DNA_seq/0_reads/PV_18-13.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/afilia/PV_18-13.to_hypo3.scubat.besst1.350.sorted.bam
@@ -496,6 +556,7 @@ Let's generate everything again (genomescope, 2d histograms, dumps) but this tim
 	kmc_tools transform /scratch/afilia/PV13_decon_kmer_counts histogram /scratch/afilia/PV13_decon_kmer_counts.hist -cx1000000 -t32
 	kmc_tools transform /scratch/afilia/PV21_decon_kmer_counts histogram /scratch/afilia/PV21_decon_kmer_counts.hist -cx1000000 -t32
 	kmc_tools transform /scratch/afilia/PV23_decon_kmer_counts histogram /scratch/afilia/PV23_decon_kmer_counts.hist -cx1000000 -t32
+```
 
 Both the GenomeScope output and the kat 2v2 comparisons are virtually identical after removing contaminants -- it looks like the noise in the plots is coming from real biological variation in the mealybug genome rather than endosymbionts, etc. Can't say this was much of a surprise:
 
@@ -522,9 +583,9 @@ Instead of defining A/B kmer as above, we can try with coverage ratios. As above
 
 Since we set our lower threshold to 3, anything with normalised coverage < 3 can be assigned a value of 3 before estimating the ratios. We can discard all kmers with norm cov < 5 in all four lines. This leaves 553,816,347 kmers. After doing that and calculating coverages, these are our sets:
 
- - a.candidates.loose.tsv = 504040879 
- - b.candidates.loose.tsv = 49775468 
- - a.candidates.strict.tsv = 529588545 
+ - a.candidates.loose.tsv = 504040879
+ - b.candidates.loose.tsv = 49775468
+ - a.candidates.strict.tsv = 529588545
  - b.candidates.strict.tsv = 24227802
 
 Let's map:
@@ -590,3 +651,47 @@ It is possible that some of our A/B scaffolds are chimeras. It would be good to 
  ![](misc/example.windows.png)
 
  where the x axis are the windows along the scaffold and the dots represent log2 average cov ratios between B+ and B- lines (blue) and log2(cov PV04/cov PV13) (red). The first plot is from an A scaffold; the second plot is a B1 scaffold. The idea is that a B scaffold should have of course an inflated log2(B+/B-) but also a high log2(cov PV04/cov PV13) (let's say above 1, which is the second dashed line). A B region should meet these criteria, because a high log2(B+/B-) might also represent a region where reads from PV13 map better than the other samples (e.g. see the one in the first plot). I have also plotted log10(average cov ratio across all samples) (not log2) in order to diagnose regions where the ratios drop to 0 due to lack of reads mapping to those windows (e.g. see the rightmost part of the second plot). This is not an A region: this just didn't get reads mapping to it and therefore is not particularly concerning.
+
+
+### The B heterozygosity of PV_04
+
+If the two Bs are homologous, and if the higher coverage is due to reads of both Bs map to the same scaffolds, we should be able to find at least some loci that are heterozygous (hopefully). That would help us confirm the two Bs are actually homologous chromosomes and to certain extend quantify their divergence (although we need to understand how crute the estimate will be!). I will use [these assignments](output/scaffolds.final.assignment.table.csv).
+
+```bash
+# /data/ross/mealybugs/analyses/B_viburni_2020/5_B_char/heterozygosity_in_B04
+
+# ln -s /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/1_mapping/PV_18-13.Illumina.350.sorted.bam* .
+# ln -s /data/ross/mealybugs/analyses/B_viburni_2020/2_short_read_DNA_seq/1_mapping/PV_18-13.Illumina.550.sorted.bam* .
+
+# Creating lists of scaffolds from scaffolds.final.assignment.table.csv
+grep "B1" scaffolds.final.assignment.table.csv | cut -f 4 -d '"' > B1_scaffolds.list
+grep "B2" scaffolds.final.assignment.table.csv | cut -f 4 -d '"' > B2_scaffolds.list
+grep "B3" scaffolds.final.assignment.table.csv | cut -f 4 -d '"' > B3_scaffolds.list
+
+qsub -o logs -e logs -cwd -N bam2sync -V -pe smp64 16 -b yes 'samtools mpileup -a --no-BAQ --fasta-ref p.viburni.freeze.v0.fa --output /scratch/$USER/PV_18-13.Illumina.550.mpileup PV_18-13.Illumina.550.sorted.bam && java -jar ~/src/popoolation2/mpileup2sync.jar --input /scratch/$USER/PV_18-13.Illumina.550.mpileup --threads 16 --output /scratch/$USER/PV_18-13.Illumina.550.mpileup.sync && rsync -av --remove-source-files /scratch/$USER/PV_18-13.Illumina.550.mpileup.sync .'
+
+qsub -o logs -e logs -cwd -N bam2sync -V -pe smp64 16 -b yes 'samtools mpileup -a --no-BAQ --fasta-ref p.viburni.freeze.v0.fa --output /scratch/$USER/PV_18-13.Illumina.350.mpileup PV_18-13.Illumina.350.sorted.bam && java -jar ~/src/popoolation2/mpileup2sync.jar --input /scratch/$USER/PV_18-13.Illumina.350.mpileup --threads 16 --output /scratch/$USER/PV_18-13.Illumina.350.mpileup.sync && rsync -av --remove-source-files /scratch/$USER/PV_18-13.Illumina.350.mpileup.sync .'
+
+qsub -o logs -e logs -cwd -N bam2sync -V -pe smp64 16 -b yes 'samtools mpileup -a --no-BAQ --fasta-ref p.viburni.freeze.v0.fa --output /scratch/$USER/18-04.freeze.v0.mpileup PV_18-04.freeze.v0.sorted.bam && java -jar ~/src/popoolation2/mpileup2sync.jar --input /scratch/$USER/18-04.freeze.v0.mpileup --threads 16 --output /scratch/$USER/PV_18-04.freeze.v0.mpileup.sync && rsync -av --remove-source-files /scratch/$USER/PV_18-04.freeze.v0.mpileup.sync .'
+```
+
+The `sync` files contain for each genomic position coverage supports for each of 4 nucleotides. Most of them will have support of only one, but we are not interested in those. Let's select only those positions with two states where the less covered one has at least 3x coverage.
+
+```
+cat PV_18-13.Illumina.550.mpileup.sync | ./sync2variable_sites.py > PV_18-13.Illumina.550_bistates.tsv
+# discarded in total 978040 sites
+
+cat PV_18-13.Illumina.350.mpileup.sync | ./sync2variable_sites.py > PV_18-13.Illumina.350_bistates.tsv
+# discarded in total 821457 sites
+
+cat PV_18-04.freeze.v0.mpileup.sync | ./sync2variable_sites.py > PV_18-04.freeze.v0_bistates.tsv
+# discarded in total 1765812 sites
+```
+
+Notice that `PV_18-04` had a lot more tri/tetra states. They still might be relevant for Bs are actually really repetitive. So, let's not forget we might have deiscarded a lot of signal here.
+
+```
+cat PV_18-04.freeze.v0_bistates.tsv | ./annotate_bistates.py > PV_18-04.freeze.v0_B_bistates.tsv
+cat PV_18-13.Illumina.350_bistates.tsv | ./annotate_bistates.py > PV_18-13.Illumina.350_B_bistates.tsv
+cat PV_18-13.Illumina.550_bistates.tsv | ./annotate_bistates.py > PV_18-13.Illumina.550_B_bistates.tsv
+```
