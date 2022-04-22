@@ -695,3 +695,46 @@ cat PV_18-04.freeze.v0_bistates.tsv | ./annotate_bistates.py > PV_18-04.freeze.v
 cat PV_18-13.Illumina.350_bistates.tsv | ./annotate_bistates.py > PV_18-13.Illumina.350_B_bistates.tsv
 cat PV_18-13.Illumina.550_bistates.tsv | ./annotate_bistates.py > PV_18-13.Illumina.550_B_bistates.tsv
 ```
+
+Note, there are so many multi-states for Bs, perhaps I should do the "annotate_bistates" step on the raw sync files
+
+### Plotting the distributions in R
+
+```{R}
+PV04 <- read.table('PV_18-04.freeze.v0_B_bistates.tsv', col.names = c('scf', 'pos', 'covA', 'covB', 'chr'))
+PV13_350 <- read.table('PV_18-13.Illumina.350_B_bistates.tsv', col.names = c('scf', 'pos', 'covA', 'covB', 'chr'))
+PV13_550 <- read.table('PV_18-13.Illumina.550_B_bistates.tsv', col.names = c('scf', 'pos', 'covA', 'covB', 'chr'))
+
+smudgelike_plot <- function(minor_variant_rel_cov, total_pair_cov, ymax = 250, nbins = 30, draft_n = 50){
+	smudge_container <- get_smudge_container(minor_variant_rel_cov, total_pair_cov,
+																					 .nbins = nbins, .ylim = c(0, ymax))
+	peak_points <- peak_agregation(PV04_smudge_container)
+	peak_sizes <- get_peak_summary(peak_points, PV04_smudge_container, 0.02)
+	colour_ramp <- get_default_col_ramp() # get the default colour ramp (Spectral, 11)
+	plot_smudgeplot(smudge_container, draft_n, colour_ramp)
+}
+
+PV04_minor_variant_rel_cov <- PV04$covB / (PV04$covA + PV04$covB)
+PV04_total_pair_cov <- PV04$covA + PV04$covB
+smudgelike_plot(PV04_minor_variant_rel_cov, PV04_total_pair_cov, ymax = 250)
+
+PV13_350_minor_variant_rel_cov <- PV13_350$covB / (PV13_350$covA + PV13_350$covB)
+PV13_350_total_pair_cov <- PV13_350$covA + PV13_350$covB
+smudgelike_plot(PV13_350_minor_variant_rel_cov, PV13_350_total_pair_cov, draft_n = 25, ymax = 125)
+
+PV13_550_minor_variant_rel_cov <- PV13_550$covB / (PV13_550$covA + PV13_550$covB)
+PV13_550_total_pair_cov <-PV13_550$covA + PV13_550$covB
+smudgelike_plot(PV13_550_minor_variant_rel_cov, PV13_550_total_pair_cov, draft_n = 23, ymax = 125, nbin = 25)
+
+PV04_sane_variants <- PV04[PV04_minor_variant_rel_cov > 0.25 & PV04_total_pair_cov < 100, ]
+PV13_350_sane_variants <- PV13_350[PV13_350_minor_variant_rel_cov > 0.25 & PV13_350_total_pair_cov < 50, ]
+PV13_550_sane_variants <- PV13_550[PV13_550_minor_variant_rel_cov > 0.25 & PV13_550_total_pair_cov < 50, ]
+
+
+nrow(PV04_sane_variants)
+nrow(PV13_350_sane_variants)
+nrow(PV13_550_sane_variants)
+
+hist(PV13_550_sane_variants$covB / c(PV13_550_sane_variants$covA + PV13_550_sane_variants$covB))
+hist(PV04_sane_variants$covB / c(PV04_sane_variants$covA + PV04_sane_variants$covB))
+```
