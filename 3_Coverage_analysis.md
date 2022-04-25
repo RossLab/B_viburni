@@ -700,41 +700,145 @@ Note, there are so many multi-states for Bs, perhaps I should do the "annotate_b
 
 ### Plotting the distributions in R
 
+For this section you need to install in R [smudgeplot](https://github.com/KamilSJaron/smudgeplot) library. That is not so difficult, you can either install the whole package via conda, but that is unnecesarily headvy, we use only the plotting part of the program, which is very easy to install on its own. If there is nothing unusual on your computational settings, this should work: cloning the smudgeplot repo, `cd smudgeplot`, open `R` and run `install.packages(".", repos = NULL, type="source")`.
+
+Once that is sone we can explore our data.
+
 ```{R}
+library(smudgeplot)
+
 PV04 <- read.table('PV_18-04.freeze.v0_B_bistates.tsv', col.names = c('scf', 'pos', 'covA', 'covB', 'chr'))
 PV13_350 <- read.table('PV_18-13.Illumina.350_B_bistates.tsv', col.names = c('scf', 'pos', 'covA', 'covB', 'chr'))
 PV13_550 <- read.table('PV_18-13.Illumina.550_B_bistates.tsv', col.names = c('scf', 'pos', 'covA', 'covB', 'chr'))
 
+PV04_Autosome <- read.table('PV_18-04.freeze.v0_Autosome_sample.tsv', col.names = c('scf', 'pos', 'covA', 'covB'))
+PV13_350_Autosome <- read.table('PV_18-13.Illumina.350_bistates_Autosome_sample.tsv', col.names = c('scf', 'pos', 'covA', 'covB'))
+PV13_550_Autosome <- read.table('PV_18-13.Illumina.550_bistates_Autosome_sample.tsv', col.names = c('scf', 'pos', 'covA', 'covB'))
+
+# this is for smudgeplot-like plot, extracted from smudgeplot codebase (https://github.com/KamilSJaron/smudgeplot)
 smudgelike_plot <- function(minor_variant_rel_cov, total_pair_cov, ymax = 250, nbins = 30, draft_n = 50){
 	smudge_container <- get_smudge_container(minor_variant_rel_cov, total_pair_cov,
 																					 .nbins = nbins, .ylim = c(0, ymax))
-	peak_points <- peak_agregation(PV04_smudge_container)
-	peak_sizes <- get_peak_summary(peak_points, PV04_smudge_container, 0.02)
 	colour_ramp <- get_default_col_ramp() # get the default colour ramp (Spectral, 11)
 	plot_smudgeplot(smudge_container, draft_n, colour_ramp)
+	return(smudge_container)
+}
+
+# this is to extract the global maximum using kernel smoothing
+kernel_smoothing_get_peak <- function(coverages, which_peak = 1, adjust = 1){
+	ks <- density(coverages, bw = "SJ", adjust = adjust)
+  second_deriv <- diff(sign(diff(ks$y)))
+
+  peak_covs <- ks$x[which(second_deriv == -2) + 1]
+  peak_heights <- ks$y[which(second_deriv == -2) + 1]
+  peak_covs[order(peak_heights, decreasing=T)][which_peak]
 }
 
 PV04_minor_variant_rel_cov <- PV04$covB / (PV04$covA + PV04$covB)
 PV04_total_pair_cov <- PV04$covA + PV04$covB
-smudgelike_plot(PV04_minor_variant_rel_cov, PV04_total_pair_cov, ymax = 250)
+PV04_minor_variant_rel_cov_A <- PV04_Autosome$covB / (PV04_Autosome$covA + PV04_Autosome$covB)
+PV04_total_pair_cov_A <- PV04_Autosome$covA + PV04_Autosome$covB
+
+pdf('allelic_smudgeplot-like-plots.pdf', width = 16, height = 10)
+
+par(mfrow = c(3, 4))
+
+############
+### PV04 ###
+############
+
+# plot the individual smudgeplots, the containers will contain the plotted matrix (we don't do anything with is atm, I explored it a bit, see commented code)
+PV04_A_container <- smudgelike_plot(PV04_minor_variant_rel_cov_A, PV04_total_pair_cov_A, ymax = 250, nbin = 30, draft_n = 48)
+PV04_B1_container <- smudgelike_plot(PV04_minor_variant_rel_cov[PV04$chr == 'B1'], PV04_total_pair_cov[PV04$chr == 'B1'], ymax = 250, nbin = 30, draft_n = 48)
+PV04_B2_container <- smudgelike_plot(PV04_minor_variant_rel_cov[PV04$chr == 'B2'], PV04_total_pair_cov[PV04$chr == 'B2'], ymax = 250, nbin = 30, draft_n = 48)
+PV04_B3_container <- smudgelike_plot(PV04_minor_variant_rel_cov[PV04$chr == 'B3'], PV04_total_pair_cov[PV04$chr == 'B3'], ymax = 250, nbin = 30, draft_n = 48)
+
+# I remove the really messy parts of the graph and use kernel smoothing to estimate
+PV04_cov_sums_A <- PV04_total_pair_cov_A[PV04_minor_variant_rel_cov_A > 0.25 & PV04_total_pair_cov_A < 250]
+PV04_sane_filter <- PV04_minor_variant_rel_cov > 0.25 & PV04_total_pair_cov < 250
+PV04_cov_sums_B1 <- PV04_total_pair_cov[PV04_sane_filter & PV04$ch == 'B2']
+PV04_cov_sums_B2 <- PV04_total_pair_cov[PV04_sane_filter & PV04$ch == 'B3']
+
+sapply(list(PV04_cov_sums_A, PV04_cov_sums_B1, PV04_cov_sums_B2), kernel_smoothing_get_peak) # returns a vector of 2n coverage estimates from A, B2 and B3 subsets
+PV04_1n_cov_est <- 48.87182 # I adjusted "draft_n" above with this value and replotted the image
+
+###############
+##### PV13 ####
+# library 350 #
+###############
 
 PV13_350_minor_variant_rel_cov <- PV13_350$covB / (PV13_350$covA + PV13_350$covB)
 PV13_350_total_pair_cov <- PV13_350$covA + PV13_350$covB
-smudgelike_plot(PV13_350_minor_variant_rel_cov, PV13_350_total_pair_cov, draft_n = 25, ymax = 125)
+PV13_350_minor_variant_rel_cov_A <- PV13_350_Autosome$covB / (PV13_350_Autosome$covA + PV13_350_Autosome$covB)
+PV13_350_total_pair_cov_A <- PV13_350_Autosome$covA + PV13_350_Autosome$covB
 
+PV13_350_A_container <- smudgelike_plot(PV13_350_minor_variant_rel_cov_A, PV13_350_total_pair_cov_A, draft_n = 26, ymax = 125)
+PV13_350_B1_container <- smudgelike_plot(PV13_350_minor_variant_rel_cov[PV13_350$chr == 'B1'], PV13_350_total_pair_cov[PV13_350$chr == 'B1'], draft_n = 26, ymax = 125)
+PV13_350_B2_container <- smudgelike_plot(PV13_350_minor_variant_rel_cov[PV13_350$chr == 'B2'], PV13_350_total_pair_cov[PV13_350$chr == 'B2'], draft_n = 26, ymax = 125)
+PV13_350_B3_container <- smudgelike_plot(PV13_350_minor_variant_rel_cov[PV13_350$chr == 'B3'], PV13_350_total_pair_cov[PV13_350$chr == 'B3'], draft_n = 26, ymax = 125)
+
+PV13_350_cov_sums_A <- PV13_350_total_pair_cov_A[PV13_350_minor_variant_rel_cov_A > 0.25 & PV13_350_total_pair_cov_A < 250]
+PV13_350_sane_filter <- PV13_350_minor_variant_rel_cov > 0.25 & PV13_350_total_pair_cov < 250
+PV13_350_cov_sums_B2 <- PV13_350_total_pair_cov[PV13_350_sane_filter & PV13_350$ch == 'B2']
+PV13_350_cov_sums_B3 <- PV13_350_total_pair_cov[PV13_350_sane_filter & PV13_350$ch == 'B3']
+sapply(list(PV13_350_cov_sums_A, PV13_350_cov_sums_B2, PV13_350_cov_sums_B3), kernel_smoothing_get_peak) / 2
+# [1] 25.92866 25.57749 26.83936
+# against the expecation in this line it seems that the B2 and B3 seqeunces have the same coverage as the autosome
+
+###############
+##### PV13 ####
+# library 550 #
+###############
+
+# transformation of coverages of the two states
 PV13_550_minor_variant_rel_cov <- PV13_550$covB / (PV13_550$covA + PV13_550$covB)
-PV13_550_total_pair_cov <-PV13_550$covA + PV13_550$covB
-smudgelike_plot(PV13_550_minor_variant_rel_cov, PV13_550_total_pair_cov, draft_n = 23, ymax = 125, nbin = 25)
+PV13_550_total_pair_cov <- PV13_550$covA + PV13_550$covB
+PV13_550_minor_variant_rel_cov_A <- PV13_550_Autosome$covB / (PV13_550_Autosome$covA + PV13_550_Autosome$covB)
+PV13_550_total_pair_cov_A <- PV13_550_Autosome$covA + PV13_550_Autosome$covB
 
-PV04_sane_variants <- PV04[PV04_minor_variant_rel_cov > 0.25 & PV04_total_pair_cov < 100, ]
-PV13_350_sane_variants <- PV13_350[PV13_350_minor_variant_rel_cov > 0.25 & PV13_350_total_pair_cov < 50, ]
-PV13_550_sane_variants <- PV13_550[PV13_550_minor_variant_rel_cov > 0.25 & PV13_550_total_pair_cov < 50, ]
+# plotting
+PV13_550_A_container <- smudgelike_plot(PV13_550_minor_variant_rel_cov_A, PV13_550_total_pair_cov_A, draft_n = 19, ymax = 125)
+PV13_550_B1_container <- smudgelike_plot(PV13_550_minor_variant_rel_cov[PV13_550$chr == 'B1'], PV13_550_total_pair_cov[PV13_550$chr == 'B1'], draft_n = 19, ymax = 125, nbin = 25)
+PV13_550_B2_container <- smudgelike_plot(PV13_550_minor_variant_rel_cov[PV13_550$chr == 'B2'], PV13_550_total_pair_cov[PV13_550$chr == 'B2'], draft_n = 19, ymax = 125, nbin = 25)
+PV13_550_B3_container <- smudgelike_plot(PV13_550_minor_variant_rel_cov[PV13_550$chr == 'B3'], PV13_550_total_pair_cov[PV13_550$chr == 'B3'], draft_n = 19, ymax = 125, nbin = 25)
 
+# coverage estimate
+PV13_550_cov_sums_A <- PV13_550_total_pair_cov_A[PV13_550_minor_variant_rel_cov_A > 0.25 & PV13_550_total_pair_cov_A < 250]
+PV13_550_sane_filter <- PV13_550_minor_variant_rel_cov > 0.25 & PV13_550_total_pair_cov < 250
+PV13_550_cov_sums_B2 <- PV13_550_total_pair_cov[PV13_350_sane_filter & PV13_550$ch == 'B2']
+PV13_550_cov_sums_B3 <- PV13_550_total_pair_cov[PV13_350_sane_filter & PV13_550$ch == 'B3']
+sapply(list(PV13_550_cov_sums_A, PV13_550_cov_sums_B2, PV13_550_cov_sums_B3), kernel_smoothing_get_peak) / 2
 
-nrow(PV04_sane_variants)
-nrow(PV13_350_sane_variants)
-nrow(PV13_550_sane_variants)
+dev.off()
+```
 
-hist(PV13_550_sane_variants$covB / c(PV13_550_sane_variants$covA + PV13_550_sane_variants$covB))
-hist(PV04_sane_variants$covB / c(PV04_sane_variants$covA + PV04_sane_variants$covB))
+There are two more sanity checks to be made. One to check the consistency of the individual B-linked scaffolds in PV13 line. And second, to check consistency between 350 and 550 libraries. Are the same sites "heterozygous"?
+
+```{R}
+PV04$cov_sum <- PV04_total_pair_cov
+PV04$cov_ratio <- PV04_minor_variant_rel_cov
+PV04$sane <- PV04_sane_filter
+
+scfs_tab <- data.frame(scf = unique(c(PV04$scf, PV13_350$scf, PV13_550$scf)))
+rownames(scfs_tab) <- scfs_tab$scf
+
+sites_per_scf <- table(PV04$scf)
+fraction_of_sane <- sapply(names(sites_per_scf), function(scf){ mean(PV04[PV04$scf == scf, 'sane']) })
+
+scfs_tab[names(sites_per_scf), 'PV04_bistates'] <- as.numeric(sites_per_scf)
+scfs_tab[names(fraction_of_sane), 'PV04_sane_fraction'] <- as.numeric(fraction_of_sane)
+
+PV13_350$sane <- PV13_350_sane_filter
+sites_per_scf <- table(PV13_350$scf)
+fraction_of_sane <- sapply(names(sites_per_scf), function(scf){ mean(PV13_350[PV13_350$scf == scf, 'sane']) })
+
+scfs_tab[names(sites_per_scf), 'PV13_350_bistates'] <- as.numeric(sites_per_scf)
+scfs_tab[names(fraction_of_sane), 'PV13_350_sane_fraction'] <- as.numeric(fraction_of_sane)
+
+PV13_550$sane <- PV13_550_sane_filter
+sites_per_scf <- table(PV13_550$scf)
+fraction_of_sane <- sapply(names(sites_per_scf), function(scf){ mean(PV13_550[PV13_550$scf == scf, 'sane']) })
+
+scfs_tab[names(sites_per_scf), 'PV13_550_bistates'] <- as.numeric(sites_per_scf)
+scfs_tab[names(fraction_of_sane), 'PV13_550_sane_fraction'] <- as.numeric(fraction_of_sane)
 ```
