@@ -9,21 +9,21 @@ library(grid)
 library(gridExtra)
 library(reshape2)
 
-setwd("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/data/coverage_analysis")
+# setwd("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/data/coverage_analysis")
 
 # import number of reads mapped to scaffold
 
-PV04.reads.mapped <- read_delim("PV_18-04.primary.reads.mapped.no.mismatches.count", 
-                                "\t", escape_double = FALSE, col_names = FALSE, 
+PV04.reads.mapped <- read_delim("PV_18-04.primary.reads.mapped.no.mismatches.count",
+                                "\t", escape_double = FALSE, col_names = FALSE,
                                 trim_ws = TRUE)
-PV13.reads.mapped <- read_delim("PV_18-13.primary.reads.mapped.no.mismatches.count", 
-                                "\t", escape_double = FALSE, col_names = FALSE, 
+PV13.reads.mapped <- read_delim("PV_18-13.primary.reads.mapped.no.mismatches.count",
+                                "\t", escape_double = FALSE, col_names = FALSE,
                                 trim_ws = TRUE)
-PV21.reads.mapped <- read_delim("PV_18-21.primary.reads.mapped.no.mismatches.count", 
-                                "\t", escape_double = FALSE, col_names = FALSE, 
+PV21.reads.mapped <- read_delim("PV_18-21.primary.reads.mapped.no.mismatches.count",
+                                "\t", escape_double = FALSE, col_names = FALSE,
                                 trim_ws = TRUE)
-PV23.reads.mapped <- read_delim("PV_18-23.primary.reads.mapped.no.mismatches.count", 
-                                "\t", escape_double = FALSE, col_names = FALSE, 
+PV23.reads.mapped <- read_delim("PV_18-23.primary.reads.mapped.no.mismatches.count",
+                                "\t", escape_double = FALSE, col_names = FALSE,
                                 trim_ws = TRUE)
 
 colnames(PV04.reads.mapped) <- c("seq","length","PV04.mapped","unmapped")
@@ -31,7 +31,7 @@ colnames(PV13.reads.mapped) <- c("seq","length","PV13.mapped","unmapped")
 colnames(PV21.reads.mapped) <- c("seq","length","PV21.mapped","unmapped")
 colnames(PV23.reads.mapped) <- c("seq","length","PV23.mapped","unmapped")
 
-# explore differences in coverage. Let's always do +1 to avoid 0s. We can plot this in all pairs of samples. 
+# explore differences in coverage. Let's always do +1 to avoid 0s. We can plot this in all pairs of samples.
 
 cov.13v21 <- log2((PV13.reads.mapped$PV13.mapped+1)/(PV21.reads.mapped$PV21.mapped+1))
 cov.13v23 <- log2((PV13.reads.mapped$PV13.mapped+1)/(PV23.reads.mapped$PV23.mapped+1))
@@ -72,13 +72,13 @@ cov.04v23_norm <- round((PV04.reads.mapped$PV04.mapped+1)/(PV23.reads.mapped$PV2
 cov.04v13_norm <- round((PV04.reads.mapped$PV04.mapped+1)/(PV13.reads.mapped$PV13.mapped+1),2)
 cov.21v23_norm <- round((PV21.reads.mapped$PV21.mapped+1)/(PV23.reads.mapped$PV23.mapped+1),2)
 median(cov.13v21_norm) # 2.08
-median(cov.13v23_norm) # 1.91 
+median(cov.13v23_norm) # 1.91
 median(cov.04v21_norm) # 1.87
 median(cov.04v23_norm) # 1.77
 median(cov.04v13_norm) # 0.95
 median(cov.21v23_norm) # 0.94
 
-# normalised coverage differences 
+# normalised coverage differences
 
 reads.all.lines$cov.13v21 <- log2((reads.all.lines$PV13.mapped/median(cov.13v21_norm) + 1)/(reads.all.lines$PV21.mapped + 1))
 reads.all.lines$cov.13v23 <- log2((reads.all.lines$PV13.mapped/median(cov.13v23_norm) + 1)/(reads.all.lines$PV23.mapped + 1))
@@ -126,8 +126,8 @@ colnames(reads.B.lines.long)[4] <- "read.cov"
 
 p2 <- ggplot(reads.B.lines.long, aes(B.line, log10(read.cov+1e-4),fill=b.status)) +
   geom_boxplot(alpha=0.75,outlier.shape = NA,notch=TRUE,lwd=0.6) + #ylim(-1.5,2) +
-  scale_fill_manual(breaks = c("A","B.loose","B.strict"), values = c("azure3", "darkgreen", "deeppink3")) + 
-  theme_bw() 
+  scale_fill_manual(breaks = c("A","B.loose","B.strict"), values = c("azure3", "darkgreen", "deeppink3")) +
+  theme_bw()
 
 p.depth <- p1 + p2
 
@@ -149,8 +149,8 @@ ggplot(B.all, aes(length)) + geom_bar() + scale_x_binned(n.breaks = 20, limits =
 # get alignments of SPAdes assemblies to the Pacbio reference
 
 # import files: 1-to-1
-pviburni.freeze <- read_delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/data/annotation/p.viburni.freeze.v0.softmasked.fa.fai", 
-                              "\t", escape_double = FALSE, col_names = FALSE, 
+pviburni.freeze <- read_delim("/Users/agarcia/Documents/genomics/B_viburni_ross_lab/data/annotation/p.viburni.freeze.v0.softmasked.fa.fai",
+                              "\t", escape_double = FALSE, col_names = FALSE,
                               trim_ws = TRUE)
 
 colnames(pviburni.freeze)[1] <- "scaffold"
@@ -203,17 +203,17 @@ p1 <- ggplot(reads.spades.all.lines, aes(log10(PV13.mapped*median(cov.04v13_norm
 
 # import kmers
 
-a.lo.kmers <- read_delim("a.candidates.loose.mapped.kmers", 
-                                "\t", escape_double = FALSE, col_names = FALSE, 
+a.lo.kmers <- read_delim("a.candidates.loose.mapped.kmers",
+                                "\t", escape_double = FALSE, col_names = FALSE,
                                 trim_ws = TRUE)
-b.lo.kmers <- read_delim("b.candidates.loose.mapped.kmers", 
-                          "\t", escape_double = FALSE, col_names = FALSE, 
+b.lo.kmers <- read_delim("b.candidates.loose.mapped.kmers",
+                          "\t", escape_double = FALSE, col_names = FALSE,
                           trim_ws = TRUE)
-a.st.kmers <- read_delim("a.candidates.strict.mapped.kmers", 
-                          "\t", escape_double = FALSE, col_names = FALSE, 
+a.st.kmers <- read_delim("a.candidates.strict.mapped.kmers",
+                          "\t", escape_double = FALSE, col_names = FALSE,
                           trim_ws = TRUE)
-b.st.kmers <- read_delim("b.candidates.strict.mapped.kmers", 
-                          "\t", escape_double = FALSE, col_names = FALSE, 
+b.st.kmers <- read_delim("b.candidates.strict.mapped.kmers",
+                          "\t", escape_double = FALSE, col_names = FALSE,
                           trim_ws = TRUE)
 
 seq <- a.lo.kmers[ ,1]
@@ -225,7 +225,7 @@ B.st <- b.st.kmers[ ,3]
 kmers.all.lines0 <- data.frame(seq,length,A.lo,B.lo,A.st,B.st)
 kmers.all.lines <-kmers.all.lines0[1:(nrow(kmers.all.lines0)-1),] # remove last line (not a scaffold)
 colnames(kmers.all.lines) <- c("seq","length","A.lo","B.lo","A.st","B.st")
- 
+
 kmers.all.lines$AB.ratio.st <- log2((kmers.all.lines$B.st+1)/(kmers.all.lines$A.st+1))
 kmers.all.lines$AB.ratio.lo <- log2((kmers.all.lines$B.lo+1)/(kmers.all.lines$A.lo+1))
 
@@ -280,17 +280,17 @@ scaffolds.final.assignment$b.status <- factor(scaffolds.final.assignment$b.statu
 
 log.labels <- expression(0,"10"^3, "10"^4, "10"^5, "10"^6, "10"^7,"10"^8)
 
-fig2a <- ggplot(scaffolds.cov.sum, aes(b.status, log10(size),fill=b.status)) + 
+fig2a <- ggplot(scaffolds.cov.sum, aes(b.status, log10(size),fill=b.status)) +
   geom_bar(stat="identity", position=position_dodge(),colour="black") +
   scale_fill_manual(values=c("gray85","gray50","gray60")) +
-  scale_x_discrete(labels=c("A", "Putative B\n(strict)", "Additional B\n(loose)")) + 
-  geom_text(aes(label=N),position = position_dodge(0.9),vjust=-1) + 
+  scale_x_discrete(labels=c("A", "Putative B\n(strict)", "Additional B\n(loose)")) +
+  geom_text(aes(label=N),position = position_dodge(0.9),vjust=-1) +
   geom_jitter(data=scaffolds.final.assignment, aes(b.status, log10(length), group=b.status),
               size=0.5, width = 0.4, alpha=1, show.legend=FALSE) +
   labs(title="Scaffold assignment\nby coverage differences",x="", y ="Mb (log10)") + coord_cartesian(ylim = c(3,8.7)) +
   scale_y_continuous(breaks = c(0, 3, 4, 5, 6, 7, 8), labels = log.labels) +
   theme_classic() + theme(legend.position="none") +
-  theme(legend.position="none", plot.title = element_text(hjust = 0.5, family = "Helvetica", size = (14)), 
+  theme(legend.position="none", plot.title = element_text(hjust = 0.5, family = "Helvetica", size = (14)),
         axis.title = element_text(family = "Helvetica", size = (13)),
         axis.text = element_text(family = "Helvetica", size = (12)),
         legend.text = element_text(family = "Helvetica", size = (12)),
@@ -306,7 +306,7 @@ other.num <- nrow(scaffolds.final.assignment)-shared.num-b.num-none.num
 mappings.plot <- data.frame(assembly=c("PV04","PV13","PV21","PV23","Reference","Reference","Reference","Reference"),
            N=c(nrow(spades.nucmer.04),nrow(spades.nucmer.13),nrow(spades.nucmer.21),nrow(spades.nucmer.13),
                shared.num, b.num, none.num, other.num),
-           status=c(NA,NA,NA,NA,"Shared by all","In B lines only","In none","At least one")) 
+           status=c(NA,NA,NA,NA,"Shared by all","In B lines only","In none","At least one"))
 
 mappings.plot$assembly <- factor(mappings.plot$assembly,
                                  levels = c("PV04","PV13","PV21","PV23","Reference"))
@@ -321,7 +321,7 @@ fig2b <- ggplot(mappings.plot, aes(fill=status, y=N, x=assembly)) +
   scale_y_continuous(breaks = c(0, 500, 1000, 1500, 2000, 2392)) + coord_flip() +
   geom_text(aes(label = N), position = position_stack(vjust = 0.5)) +
   theme_classic() + theme(legend.position="bottom") +
-  theme(plot.title = element_text(hjust = 0.5, family = "Helvetica", size = (14)), 
+  theme(plot.title = element_text(hjust = 0.5, family = "Helvetica", size = (14)),
         axis.title = element_text(family = "Helvetica", size = (13)),
         axis.text = element_text(family = "Helvetica", size = (12)),
         legend.text = element_text(family = "Helvetica", size = (12)),
@@ -330,10 +330,10 @@ fig2b <- ggplot(mappings.plot, aes(fill=status, y=N, x=assembly)) +
 fig2c <- ggplot(scaffolds.final.assignment, aes(color=b.status.kmer, y=log10(A.lo+B.lo), x=AB.ratio.lo)) +
   geom_point() + labs(title="Scaffold assignment\nby kmer alignment",
                       x="log2(candidate B/A kmers)", y ="Total number of mapped\n27-mers (log10)") +
-  scale_colour_manual(values = c("gray85", "gray50")) + 
+  scale_colour_manual(values = c("gray85", "gray50")) +
   geom_vline(xintercept = 0, col = 2, lty = 2) +
   theme_classic() + theme(legend.position="none") +
-  theme(plot.title = element_text(hjust = 0.5, family = "Helvetica", size = (14)), 
+  theme(plot.title = element_text(hjust = 0.5, family = "Helvetica", size = (14)),
         axis.title = element_text(family = "Helvetica", size = (13)),
         axis.text = element_text(family = "Helvetica", size = (12)),
         legend.text = element_text(family = "Helvetica", size = (12)))
@@ -348,7 +348,7 @@ ggplot(scaffolds.final.assignment, aes(log10(PV13.mapped*median(cov.04v13_norm)/
   scale_color_manual(values=c("royalblue4", "green", "royalblue2", "lavenderblush4","gray85")) +
   labs(title="B chromosome assignment", y="Cov in PV04 (log10)", x = "Cov in PV13 (log10)") +
   theme_classic() + theme(legend.position="right") +
-  theme(plot.title = element_text(hjust = 0.5, family = "Helvetica", size = (14)), 
+  theme(plot.title = element_text(hjust = 0.5, family = "Helvetica", size = (14)),
         axis.title = element_text(family = "Helvetica", size = (13)),
         axis.text = element_text(family = "Helvetica", size = (12)),
         legend.text = element_text(family = "Helvetica", size = (12)),
@@ -368,7 +368,7 @@ fig2d <- ggplot(scaffolds.final.assignment.b) +
   scale_color_manual(values=c("royalblue4", "deepskyblue", "cadetblue", "lavenderblush4","gray85")) +
   labs(title="Combined B chromosome assignment", y="Cov in PV04 (log10)", x = "Cov in PV13 (log10)", color = "B set") +
   theme_classic() + theme(legend.position="right") +
-  theme(plot.title = element_text(hjust = 0.5, family = "Helvetica", size = (14)), 
+  theme(plot.title = element_text(hjust = 0.5, family = "Helvetica", size = (14)),
         axis.title = element_text(family = "Helvetica", size = (13)),
         axis.text = element_text(family = "Helvetica", size = (12)),
         legend.text = element_text(family = "Helvetica", size = (12)),
@@ -382,4 +382,3 @@ jpeg("/Users/agarcia/Desktop/b.assignment.final.jpeg",
      width = 4200, height = 3800, units = 'px', res = 300)
 fig2a + fig2b + fig2c + fig2d
 dev.off()
-

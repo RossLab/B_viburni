@@ -195,7 +195,7 @@ The initial bam files will do for now. Alternatively, we can extract mapped read
 
 ## 4. Exploring coverages
 
-We can explore per-contig coverage differences between lines: log2((mapped reads line 1 + 1)/(mapped reads line 2 + 1)). Indeed, when we compare B+ lines to B- lines, we see a few contigs that have much higher coverage in B+ lines:
+We can explore per-contig coverage differences between lines: `log2((mapped reads line 1 + 1)/(mapped reads line 2 + 1))`. Indeed, when we compare B+ lines to B- lines, we see a few contigs that have much higher coverage in B+ lines:
 
 ![](misc/hist.mapped.reads.1.jpeg)
 
@@ -632,6 +632,16 @@ We can use evidence from the three approaches (mapping coverage, Illumina assemb
 
 ![](misc/b.assignment.final.jpeg)
 
+**Revisions update**
+
+The final assignment table will be generated via (`R_scripts/B_scaffold_reassignments.R`) from the original "final assignment" table and the table with updated coverage analysis.
+
+I will make sure the two assignment approaches are as consistent as possible in logic.
+
+```
+Rscript R_scripts/B_scaffold_reassignments.R
+```
+
 ### 8. Coverage by windows
 
 It is possible that some of our A/B scaffolds are chimeras. It would be good to check this in case we are missing some chunks of B-linked sequences that are assembled into an A scaffold or, conversely, if a fragment of a B scaffold is autosomal. To do so, let's computer the coverage depth across 1kb windows and plot it. The R script to do this lives [here](https://github.com/RossLab/B_viburni/blob/master/R_scripts/Coverage_by_windows.R).
@@ -805,8 +815,8 @@ PV13_550_B3_container <- smudgelike_plot(PV13_550_minor_variant_rel_cov[PV13_550
 # coverage estimate
 PV13_550_cov_sums_A <- PV13_550_total_pair_cov_A[PV13_550_minor_variant_rel_cov_A > 0.25 & PV13_550_total_pair_cov_A < 250]
 PV13_550_sane_filter <- PV13_550_minor_variant_rel_cov > 0.25 & PV13_550_total_pair_cov < 250
-PV13_550_cov_sums_B2 <- PV13_550_total_pair_cov[PV13_350_sane_filter & PV13_550$ch == 'B2']
-PV13_550_cov_sums_B3 <- PV13_550_total_pair_cov[PV13_350_sane_filter & PV13_550$ch == 'B3']
+PV13_550_cov_sums_B2 <- PV13_550_total_pair_cov[PV13_550_sane_filter & PV13_550$ch == 'B2']
+PV13_550_cov_sums_B3 <- PV13_550_total_pair_cov[PV13_550_sane_filter & PV13_550$ch == 'B3']
 sapply(list(PV13_550_cov_sums_A, PV13_550_cov_sums_B2, PV13_550_cov_sums_B3), kernel_smoothing_get_peak) / 2
 
 dev.off()
@@ -841,4 +851,276 @@ fraction_of_sane <- sapply(names(sites_per_scf), function(scf){ mean(PV13_550[PV
 
 scfs_tab[names(sites_per_scf), 'PV13_550_bistates'] <- as.numeric(sites_per_scf)
 scfs_tab[names(fraction_of_sane), 'PV13_550_sane_fraction'] <- as.numeric(fraction_of_sane)
+
+scfs_tab[is.na(scfs_tab)] <- 0
+# if there are no bistates, it should be a 0, not NA
 ```
+
+And now I will just add there the scaffold lengths using `p.viburni.freeze.v0_scf_sizes.tsv` table of scaffold sizes.
+
+```{R}
+B1_col <- 'dodgerblue4'
+B2_col <- 'deepskyblue1'
+B3_col <- 'darkcyan'
+
+scf_lengths <- read.table('p.viburni.freeze.v0_scf_sizes.tsv', col.names = c('scf', 'len'))
+rownames(scf_lengths) <- scf_lengths$scf
+
+scfs_tab$length <- scf_lengths[scfs_tab$scf, 'len']
+
+PV13_350_sane_per_base <- scfs_tab$PV13_350_bistates * scfs_tab$PV13_350_sane_fraction / scfs_tab$length
+PV13_550_sane_per_base <- scfs_tab$PV13_550_bistates * scfs_tab$PV13_550_sane_fraction / scfs_tab$length
+PV04_sane_per_base <- scfs_tab$PV04_bistates * scfs_tab$PV04_sane_fraction / scfs_tab$length
+
+plot(PV13_350_sane_per_base ~ scfs_tab$length)
+plot(PV13_550_sane_per_base ~ scfs_tab$length)
+
+plot(PV13_350_sane_per_base ~ PV13_550_sane_per_base)
+# THIS shows that 350 and 550 libraries are actually really consistent in the "amount of detected heterozygosity", I suppose they would be probably every consistent regarding the positions too!
+
+chormosome_assignments <- rbind(PV13_550[, c('scf', 'chr')], PV13_350[, c('scf', 'chr')], PV04[, c('scf', 'chr')])
+chormosome_assignments <- chormosome_assignments[!duplicated(chormosome_assignments), ]
+rownames(chormosome_assignments) <- chormosome_assignments$scf
+
+scfs_tab$asn <- chormosome_assignments[scfs_tab$scf, 'chr']
+
+plot(PV04_sane_per_base[scfs_tab$length > 20e3], PV13_350_sane_per_base[scfs_tab$length > 20e3], xlim = c(0, 0.02), ylim = c(0, 0.02), xlab = 'PV04 SNP-candidate density', ylab = 'PV13 SNP-candidate density')
+points(PV04_sane_per_base[scfs_tab$asn == 'B1'], PV13_350_sane_per_base[scfs_tab$asn == 'B1'], pch = 20, col = B1_col)
+points(PV04_sane_per_base[scfs_tab$asn == 'B2'], PV13_350_sane_per_base[scfs_tab$asn == 'B2'], pch = 20, col = B2_col)
+points(PV04_sane_per_base[scfs_tab$asn == 'B3'], PV13_350_sane_per_base[scfs_tab$asn == 'B3'], pch = 20, col = B3_col)
+lines(c(0, 0.019), c(0, 0.019))
+
+legend('topright', c('B1', 'B2', 'B3'), col = c('orange', 'cyan', 'magenta'), pch = 20, bty = 'n')
+```
+
+### Coverage sanity check
+
+Re-mapping using the same approach.
+
+```
+qsub -o logs -e logs -cwd -b yes -N map_PV21_350 -V -pe smp64 32 'bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../0_reads/PV_18-21.Illumina.350.trimmed_1.fq.gz ../0_reads/PV_18-21.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/kjaron/PV_18-21.Illumina.350.sorted.bam && samtools index PV_18-21.Illumina.350.sorted.bam && rsync -av --remove-source-files /scratch/kjaron/PV_18-21.Illumina.350.sorted.bam* .'
+
+qsub -o logs -e logs -cwd -b yes -N map_PV23_350 -V -pe smp64 32 'bwa mem -M -t 32 /data/ross/mealybugs/analyses/B_viburni_2020/1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.softmasked.fa ../0_reads/PV_18-23.Illumina.350.trimmed_1.fq.gz ../0_reads/PV_18-23.Illumina.350.trimmed_2.fq.gz | samtools sort -O BAM -o /scratch/kjaron/PV_18-23.Illumina.350.sorted.bam && samtools index /scratch/kjaron/PV_18-23.Illumina.350.sorted.bam && rsync -av --remove-source-files /scratch/kjaron/PV_18-23.Illumina.350.sorted.bam* .'
+```
+
+
+```
+qsub -o logs -e logs -cwd -b yes -N depth -V -pe smp64 1 'samtools depth PV_18-13.Illumina.350.sorted.bam | perl scripts/depth2windows.pl 10000 > PV_18-13.Illumina.350_window_coverages.tsv'
+qsub -o logs -e logs -cwd -b yes -N depth -V -pe smp64 1 'samtools depth PV_18-13.Illumina.550.sorted.bam | perl scripts/depth2windows.pl 10000 > PV_18-13.Illumina.550_window_coverages.tsv'
+qsub -o logs -e logs -cwd -b yes -N depth -V -pe smp64 1 'samtools depth PV_18-04.freeze.v0.sorted.bam | perl scripts/depth2windows.pl 10000 > PV_18-04.freeze.v0_window_coverages.tsv'
+```
+
+Now, I will plot coverage distributions per window, while using coloring per chromosome type (A, B1, B2, B3).
+
+```{R}
+coverage_files <- c('PV_18-13.Illumina.350_window_coverages.tsv', 'PV_18-13.Illumina.550_window_coverages.tsv', 'PV_18-04.freeze.v0_window_coverages.tsv', 'PV_18-21.freeze.v0_window_coverages.tsv', 'PV_18-23.freeze.v0_window_coverages.tsv')
+
+assignments <- read.csv('scaffolds.final.assignment.table.csv')
+row.names(assignments) <- assignments$seq
+
+load_table_with_assignments <- function(filename){
+	tab <- read.table(filename, header = F, col.names = c('scf', 'range', 'cov'))
+	tab$chr <- assignments[tab[, 'scf'], 'b.status.final']
+	return(tab)
+}
+
+coverage_tabs <- lapply(coverage_files, load_table_with_assignments)
+
+plot_hist <- function(tab, chr, cov_filter = 150, breaks = 60, add = F, col = 'gray', main = ''){
+	data_to_plot <- tab[tab$chr == chr, 'cov']
+	data_to_plot <- data_to_plot[data_to_plot < cov_filter]
+	if (length(data_to_plot) > 300){
+		data_to_plot <- sample(data_to_plot, 300)
+	}
+	hist(data_to_plot, breaks = breaks, add = add, col = col, main = main, xlab = 'Coverage')
+}
+
+plot_log_hist <- function(tab, chr, breaks = 60, add = F, col = 'gray', main = ''){
+	data_to_plot <- tab[tab$chr == chr, 'cov']
+	if (length(data_to_plot) > 300){
+		data_to_plot <- sample(data_to_plot, 300)
+	}
+	hist(log10(data_to_plot), breaks = breaks, add = add, col = col, main = main, xlab = 'Coverage')
+}
+
+tab <- coverage_tabs[[1]]
+PV13_1n_cov = (median(tab[tab$chr == 'A', 'cov']) / 2)
+
+B1_col <- 'dodgerblue4'
+B2_col <- 'deepskyblue1'
+B3_col <- 'darkcyan'
+
+plot_hist(tab, 'A', main = 'PV13 (B)')
+plot_hist(tab, 'B3', col = B3_col, add = T)
+plot_hist(tab, 'B2', col = B2_col, add = T)
+plot_hist(tab, 'B1', col = B1_col, add = T)
+
+plot_log_hist(tab, 'A', main = 'PV13 (B)')
+plot_log_hist(tab, 'B3', col = B3_col, add = T)
+plot_log_hist(tab, 'B2', col = B2_col, add = T)
+plot_log_hist(tab, 'B1', col = B1_col, add = T)
+
+tab <- coverage_tabs[[3]]
+PV04_1n_cov = (median(tab[tab$chr == 'A', 'cov']) / 2)
+
+plot_hist(tab, 'A', main = 'PV04 (BB)', cov_filter = 300)
+plot_hist(tab, 'B3', col = B3_col, add = T, cov_filter = 300)
+plot_hist(tab, 'B2', col = B2_col, add = T, cov_filter = 300)
+plot_hist(tab, 'B1', col = B1_col, add = T, cov_filter = 300)
+
+plot_log_hist(tab, 'A', main = 'PV04 (BB)')
+plot_log_hist(tab, 'B3', col = B3_col, add = T)
+plot_log_hist(tab, 'B2', col = B2_col, add = T)
+plot_log_hist(tab, 'B1', col = B1_col, add = T)
+
+tab <- coverage_tabs[[4]]
+PV21_1n_cov = (median(tab[tab$chr == 'A', 'cov']) / 2)
+
+plot_hist(tab, 'A', main = 'PV21 (no B)', cov_filter = 150)
+plot_hist(tab, 'B3', col = B3_col, add = T, cov_filter = 150)
+plot_hist(tab, 'B2', col = B2_col, add = T, cov_filter = 150)
+plot_hist(tab, 'B1', col = B1_col, add = T, cov_filter = 150)
+
+plot_log_hist(tab, 'A', main = 'PV21 (no B)')
+plot_log_hist(tab, 'B3', col = B3_col, add = T)
+plot_log_hist(tab, 'B2', col = B2_col, add = T)
+plot_log_hist(tab, 'B1', col = B1_col, add = T)
+
+tab <- coverage_tabs[[5]]
+PV23_1n_cov = (median(tab[tab$chr == 'A', 'cov']) / 2)
+
+plot_hist(tab, 'A', main = 'PV23 (no B)', cov_filter = 150)
+plot_hist(tab, 'B3', col = B3_col, add = T, cov_filter = 150)
+plot_hist(tab, 'B2', col = B2_col, add = T, cov_filter = 150)
+plot_hist(tab, 'B1', col = B1_col, add = T, cov_filter = 150)
+
+plot_log_hist(tab, 'A', main = 'PV23 (no B)')
+plot_log_hist(tab, 'B3', col = B3_col, add = T)
+plot_log_hist(tab, 'B2', col = B2_col, add = T)
+plot_log_hist(tab, 'B1', col = B1_col, add = T)
+
+PV13_B <- coverage_tabs[[1]][coverage_tabs[[1]][, 'chr'] != 'A',]
+PV04_B <- coverage_tabs[[3]][coverage_tabs[[3]][, 'chr'] != 'A',]
+PV21_B <- coverage_tabs[[4]][coverage_tabs[[4]][, 'chr'] != 'A',]
+PV23_B <- coverage_tabs[[5]][coverage_tabs[[5]][, 'chr'] != 'A',]
+
+rownames(PV04_B) <- paste(PV04_B$scf, PV04_B$range, sep = ' ')
+rownames(PV13_B) <- paste(PV13_B$scf, PV13_B$range, sep = ' ')
+rownames(PV21_B) <- paste(PV21_B$scf, PV21_B$range, sep = ' ')
+rownames(PV23_B) <- paste(PV23_B$scf, PV23_B$range, sep = ' ')
+
+all_windows <- unique(c(rownames(PV04_B), rownames(PV13_B), rownames(PV21_B), rownames(PV23_B))) # we need to create a table that will contain all the windows in all the coverage files
+scfs <- sapply(strsplit(all_windows, split = ' '), function(x){ return(x[1]) } ) # then we cut the scaffold name out of the IDs we just created
+windows <- sapply(strsplit(all_windows, split = ' '), function(x){ return(x[2]) } ) # the same with windows
+
+B_covs <- data.frame(scf = scfs, window = windows) # making the table
+rownames(B_covs) <- all_windows # naming the rows so we can easily add there the infomation
+B_covs <- B_covs[order(sapply(strsplit(scfs, '_'), function(x){as.numeric(x[2])} )), ] # just reordering the table so the rows are sorted by the scaffold ID
+B_covs$chr <- assignments[B_covs[, 'scf'], 'b.status.final']
+
+B_covs[, c('cov_04', 'cov_13', 'cov_21', 'cov_23')] <- 0
+
+B_covs[rownames(PV04_B), 'cov_04'] <- PV04_B$cov
+B_covs[rownames(PV13_B), 'cov_13'] <- PV13_B$cov
+B_covs[rownames(PV21_B), 'cov_21'] <- PV21_B$cov
+B_covs[rownames(PV23_B), 'cov_23'] <- PV23_B$cov
+rownames(B_covs) <- 1:nrow(B_covs)
+
+B_covs$PV04_copies <- B_covs$cov_04 / PV04_1n_cov
+B_covs$PV13_copies <- B_covs$cov_13 / PV13_1n_cov
+B_covs$PV21_copies <- B_covs$cov_21 / PV21_1n_cov
+B_covs$PV23_copies <- B_covs$cov_23 / PV23_1n_cov
+
+plot_coverages_scf_highlighting <- function(x_cov, y_cov, scf = 'scaffold_295', main = F){
+	plot(B_covs[, x_cov], B_covs[, y_cov], xlim = c(0, 10), ylim = c(0, 10), xlab = x_cov, ylab = y_cov)
+	lines(c(0, 1000), c(0, 1000))
+	lines(c(0, 100), c(0, 10), lty = 2)
+	scf_points <- B_covs$scf == scf
+	points(B_covs[scf_points, x_cov], B_covs[scf_points, y_cov], col = 'red', pch = 20) # pal[col]
+
+	if ( main ){
+		title(scf)
+	}
+}
+
+par(mfrow = c(1, 3))
+plot_coverages_scf_highlighting('PV04_copies', 'PV13_copies')
+plot_coverages_scf_highlighting('PV04_copies', 'PV21_copies', main = T)
+plot_coverages_scf_highlighting('PV04_copies', 'PV23_copies')
+
+colMeans(B_covs[B_covs$scf == 'scaffold_295', c('cov_04', 'cov_13', 'cov_21', 'cov_21')])
+#    cov_04    cov_13    cov_21  cov_21.1
+# 134.35226  64.99765  60.81548  60.81548
+
+# copypased from Andres' assignment table
+# seq 	length 	PV04.mapped 	PV13.mapped 	PV21.mapped 	PV23.mapped 	cov.13v21 	cov.13v23 	cov.04v21 	cov.04v23 	cov.04v13 	cov.21v23 	b.status 	PV04.asn 	PV13.asn 	PV21.asn 	PV23.asn 	b.status.asn 	b.status.cov.asn 	A.lo 	B.lo 	A.st 	B.st 	AB.ratio.st 	AB.ratio.lo 	b.status.kmer 	b.status.final
+# scaffold_295 	464503 	283238 	218973 	65508 	72703 	0.684418136865128 	0.657086292925758 	1.20922105819278 	1.13816784462625 	0.445260673936596 	-0.0610755972912348 	B.loose 	Y 	Y 	Y 	Y 	A 	B.loose 	373001 	89399 	397191 	65209 	-2.6066714404242 	-2.06083662956879 	A 	B2
+# > (283238 * 150) / 464503
+# [1] 91.46486
+# >
+# > (218973 * 150) / 464503
+# [1] 70.71203
+# >
+# > (65508 * 150) / 464503
+# [1] 21.15422
+# >
+# > (72703 * 150) / 464503
+# [1] 23.47767
+
+# PV_18-04.primary.reads.mapped.count:scaffold_295        464503  419839  2683
+# PV_18-13.primary.reads.mapped.count:scaffold_295        464503  365383  3155
+# PV_18-21.primary.reads.mapped.count:scaffold_295        464503  193959  1438
+# PV_18-23.primary.reads.mapped.count:scaffold_295        464503  201582  1410
+
+
+# the coverage naively calculated from the number of mapped reads does not correspond at all to the coverages I calculated
+# this might be the real source of problem
+
+B1s <- B_covs$chr == 'B1'
+B2s <- B_covs$chr == 'B2'
+B3s <- B_covs$chr == 'B3'
+
+plot(B_covs$PV13_copies, B_covs$PV04_copies, xlim = c(0, 100), ylim = c(0, 100), xlab = 'Normalised PV13 coverage', ylab = 'Normalised PV04 coverage')
+lines(c(0, 100), c(0, 100))
+lines(c(0, 100), c(0, 200), lty = 2)
+points(B_covs$PV13_copies[B3s], B_covs$PV04_copies[B3s], col = B3_col, pch = 20)
+points(B_covs$PV13_copies[B2s], B_covs$PV04_copies[B2s], col = B2_col, pch = 20)
+points(B_covs$PV13_copies[B1s], B_covs$PV04_copies[B1s], col = B1_col, pch = 20)
+legend('bottomright', lty = c(NA, NA, NA, 1, 2), pch = c(20, 20, 20, NA, NA), col = c(B1_col, B2_col, B3_col,'black','black'), bty = 'n', c('B1', 'B2', 'B3', '1:1', '1:2'))
+
+plot(B_covs$PV13_copies, B_covs$PV04_copies, xlim = c(0, 10), ylim = c(0, 10), xlab = 'Normalised PV13 coverage', ylab = 'Normalised PV04 coverage')
+lines(c(0, 100), c(0, 100))
+lines(c(0, 100), c(0, 200), lty = 2)
+points(B_covs$PV13_copies[B3s], B_covs$PV04_copies[B3s], col = B3_col, pch = 20)
+points(B_covs$PV13_copies[B2s], B_covs$PV04_copies[B2s], col = B2_col, pch = 20)
+points(B_covs$PV13_copies[B1s], B_covs$PV04_copies[B1s], col = B1_col, pch = 20)
+legend('bottomright', lty = c(NA, NA, NA, 1, 2), pch = c(20, 20, 20, NA, NA), col = c(B1_col, B2_col, B3_col,'black','black'), bty = 'n', c('B1', 'B2', 'B3', '1:1', '1:2'))
+```
+
+Let's check how many scaffolds are actually affected. Plot where the coloring will be per scaffold.
+
+```{R}
+library(RColorBrewer)
+
+plot_coverages_scf_highlighting <- function(x_cov, y_cov, scf = 'scaffold_295'){
+	plot(B_covs[, x_cov], B_covs[, y_cov], xlim = c(0, 10), ylim = c(0, 10), xlab = x_cov, ylab = y_cov)
+	lines(c(0, 100), c(0, 100))
+	lines(c(0, 100), c(0, 200), lty = 2)
+	# scaffolds_with_colors <- names(table(B_covs$scf)[table(B_covs$scf) > 15])
+	# number_of_scfs <- length(scaffolds_with_colors)
+	# pal = palette(rainbow(number_of_scfs))
+	# col <- 1
+	# for (scf in scaffolds_with_colors){
+		# scf = 'scaffold_295'
+		scf_points <- B_covs$scf == scf
+		points(B_covs[scf_points, x_cov], B_covs[scf_points, y_cov], col = 'red', pch = 20) # pal[col]
+		# col <- col + 1
+	# }
+}
+
+plot_coverages_scf_highlighting('PV13_copies', 'PV13_copies')
+legend('bottomright', lty = c(rep(NA, number_of_scfs), 1, 2), pch = c(rep(20, number_of_scfs), NA, NA), col = c(pal,'black','black'), bty = 'n', c(scaffolds_with_colors, '1:1', '1:2'))
+```
+
+
+### Rerunning assignments

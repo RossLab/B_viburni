@@ -144,3 +144,55 @@ write.table(coverage_table, 'Comeplete_window_coverage_table.tsv', sep = '\t', q
 # DE_genes[DE_genes$seq.y %in% B_scaffolds, 'new_asn'] <- 'B'
 
 ```
+
+### K-mers
+
+I followed the coverage analysis workflow and it seems there is the same problem as with mapping coverages. The B kmers are simply B-line enriched, but not necesarily B specific.
+
+I will redo this analysis too with subtracting:
+ - B-specific (absent in B- line, Enrichment in PV04 line compared to PV13)
+ - B-nonspecific (B-enriched, Enrichment in PV04 line compared to PV13)
+ - B-line-associated (B-enriched but with not cov. ratio skew)
+ - Reliably Autosomal (similar cov levels in all samples)
+
+But first I will take a sample of kmers and explore if it actually make sense.
+
+```R
+kmer_tab <- read.table('kmer/decon_kmers/kmer_dump_sample.dump')
+colnames(kmer_tab) <- c('kmer', 'PV04', 'PV13', 'PV21', 'PV23')
+
+# the kmer coverages are 1n estimates from GenomeScope
+# however that was for k = 21, for k = 27, we need to correct by factor (R - 27 + 1) / (R - 21 + 1), where R is readlength and = 150
+kmer_coverages <- c('PV04' = 42.5, "PV13" = 40.1, "PV21" = 22.7, "PV23" = 24.7) * (150 - 27 + 1) / (150 - 21 + 1)
+
+# replacing all the NAs with 0s
+kmer_tab[is.na(kmer_tab)] <- 0
+# normalising kmer coverages
+kmer_tab[, 2:5] <- t(t(kmer_tab[, 2:5]) / kmer_coverages)
+
+kmer_tab[, c('PV04_B', 'PV13_B')] <- kmer_tab[, c('PV04', 'PV13')] - rowMeans(kmer_tab[, c('PV21', 'PV23')])
+
+kmer_tab[, 2:5] <- round(kmer_tab[, 2:5])
+
+
+# removing kmers that are likely errors (those were all of them have normalised rounded coverage == 0)
+totally_absent <- rowSums(kmer_tab[, 2:5]) == 0
+kmer_tab <- kmer_tab[!totally_absent, ]
+
+# now, 20% of kmers are B specific
+B_line_exclusive <- rowSums(kmer_tab[, c('PV21', 'PV23')]) == 0
+B_minus_exclusive <- rowSums(kmer_tab[, c('PV04', 'PV13')]) == 0
+B_enriched <- kmer_tab[, 'PV04_B'] > 0.5 & kmer_tab[, 'PV13_B'] > 0.5
+
+hist(log2(kmer_tab[B_enriched, 'PV13_B'] / kmer_tab[B_enriched, 'PV04_B']), breaks = 100)
+
+plot(kmer_tab[B_enriched, 'PV13_B'], kmer_tab[B_enriched, 'PV04_B'], xlim = c(0, 10), ylim = c(0, 10))
+```
+
+My conclusion here is that so much data transformation (subtraction, normalisation, coverage ratio) will cause too much coverage variation to measure clear peak of kmers that are ~3x more frequent in PV04 compared to PV13. So perhaps the way out will be use Andres' mapping and explore how the "enriched kmers" distribute on the assembled sequences.
+
+### Re-evaluating fractions of assigned kmers
+
+So instead I will at least check for considency of individual assignments with the suboptimal kmer approach we already have implemented (`R_scripts/explore_assignments.R`).
+
+All those plots seem quite alright. So, I will keep those.
