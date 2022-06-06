@@ -375,7 +375,7 @@ fig2d <- ggplot(scaffolds.final.assignment.b) +
         legend.title = element_text(family = "Helvetica", size = (13))) + guides(size = FALSE)
 View(scaffolds.final.assignment)
 
-#write.table(scaffolds.final.assignment, file = "scaffolds.final.assignment.csv",row.names = F,sep = ",")
+#write.table(scaffolds.final.assignment, file = "output/scaffolds.preprint.assignment.csv",row.names = F,sep = ",")
 
 library(patchwork)
 jpeg("/Users/agarcia/Desktop/b.assignment.final.jpeg",
