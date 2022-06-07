@@ -4,11 +4,11 @@ head(assignments)
 
 # removing all the old info about mapping that is obsolete now
 assignments <- assignments[, c(1, 2, 14:18, 20:27)]
-head(assignments)
+# head(assignments)
 colnames(assignments)[15] <- 'b.status.old.final'
 
 # generated together with plots in R_scripts/B_scaffolds_assignment_plots.R
-coverage_table <- read.table('data/4_cov_analysis/Comeplete_window_coverage_table.tsv', header = T)
+coverage_table <- read.table('output/B_scaffold_assignment_comeplete_window_coverage_table.tsv', header = T)
 scaffolds <- assignments$seq
 scf2mean_property <- function(scf, prop = 'B_candidate'){
 	mean(coverage_table[coverage_table$scf == scf, prop])
@@ -48,5 +48,4 @@ sapply(c('A', 'B1', 'B2', 'B3'), function(x){ round(sum(assignments[assignments$
 sapply(c('A', 'B', 'Bc'), function(x){ round(sum(assignments[assignments$b.status.final == x, 'length']) / 1e6, 2) } )
 
 write.table(assignments, file = 'output/scaffolds.final.assignment.tsv', quote = F, row.names = F, sep = '\t', col.names = T)
-
 write.table(assignments[, c('seq', 'length', 'b.status.final')], 'output/scaffolds.final.assignment.table.csv', quote = F, row.names = F, sep = ';', col.names = T)
