@@ -43,9 +43,9 @@ Bc_scaffolds <- asn_table$b.status.final == 'Bc'
 B_scaffolds <- asn_table$b.status.final == 'B'
 
 if ( plot_pdf ){
-  pdf('misc/asn_PV04_PV13_nomalised_coverages_pub.pdf')
+  pdf('manuscript/figures_revision/asn_PV04_PV13_nomalised_coverages_pub.pdf')
 } else {
-  tiff('misc/asn_PV04_PV13_nomalised_coverages_pub.tiff', width = 8, height = 8, units = 'in', res = 150)
+  tiff('manuscript/figures_revision/asn_PV04_PV13_nomalised_coverages_pub.tiff', width = 8, height = 8, units = 'in', res = 150)
 }
     plot(asn_table$norm_cov_PV13, asn_table$norm_cov_PV04, xlim = c(0, 100), ylim = c(0, 100), pch = 20, cex = 2, xlab = 'PV_18-13 nomalized coverage', ylab = 'PV_18-04 nomalized coverage', cex.axis = general_cex, cex.lab = general_cex, bty = 'n', col = 'grey80')
 
@@ -61,7 +61,7 @@ if ( plot_pdf ){
 dev.off()
 
 # low resultion plot
-png('misc/asn_PV04_PV13_nomalised_coverages.png')
+png('manuscript/figures_revision/asn_PV04_PV13_nomalised_coverages.png')
     plot(coverage_table$norm_cov_13, coverage_table$norm_cov_04, xlim = c(0, 300), ylim = c(0, 300), pch = 20, cex = 0.6, xlab = 'PV_18-13 nomalized coverage', ylab = 'PV_18-04 nomalized coverage', cex.axis = 1.3, cex.lab = 1.3)
     lines(c(0, 1000), c(0, 1000))
     # lines(c(0, 1000), c(0, 2000), lty = 2)
@@ -70,7 +70,7 @@ png('misc/asn_PV04_PV13_nomalised_coverages.png')
 dev.off()
 
 
-png('misc/asn_PV04_PV13_nomalised_coverages_zoomin.png')
+png('manuscript/figures_revision/asn_PV04_PV13_nomalised_coverages_zoomin.png')
   subset_to_plot <- sample(1:nrow(coverage_table), 5000)
   plot(coverage_table$norm_cov_13[subset_to_plot], coverage_table$norm_cov_04[subset_to_plot], xlim = c(0, 10), ylim = c(0, 10), cex = 0.6, xlab = 'PV_18-13 nomalized coverage', ylab = 'PV_18-04 nomalized coverage', cex.axis = 1.3, cex.lab = 1.3)
   lines(c(0, 1000), c(0, 1000))
@@ -94,14 +94,14 @@ dev.off()
 points_to_plot <- coverage_table$norm_B_cov_04 > 1 | coverage_table$norm_B_cov_13 > 0.5
 potentially_B <- coverage_table$norm_B_cov_04 > 1 & coverage_table$norm_B_cov_13 > 0.5
 
-pdf('misc/asn_window_coverages_Bline_specific_vs_Blinked.pdf')
+pdf('manuscript/figures_revision/asn_window_coverages_Bline_specific_vs_Blinked.pdf')
   plot(coverage_table$norm_B_cov_13[points_to_plot], coverage_table$norm_B_cov_04[points_to_plot], xlim = c(-5, 200), ylim = c(-5, 200), xlab = 'PV_18-13 nomalized coverage', ylab = 'PV_18-04 nomalized coverage', cex.axis = 1.3, cex.lab = 1.3)
   points(coverage_table$norm_B_cov_13[potentially_B], coverage_table$norm_B_cov_04[potentially_B], col = 'red', pch = 20)
   points(coverage_table[coverage_table$asn == 'B', 'norm_B_cov_13'], coverage_table[coverage_table$asn == 'B', 'norm_B_cov_04'], col = 'yellow', pch = 20, cex = 0.7)
   legend('topright', bty = 'n', pch = c(1, 20, 20), col = c(1, 'red', 'yellow'), c('considered windows', 'B-lines associated windows', 'Windows of B-linked scaffolds'), cex = 1.3)
 dev.off()
 
-pdf('misc/asn_window_coverages_Bline_specific_vs_Blinked_zoomed.pdf')
+pdf('manuscript/figures_revision/asn_window_coverages_Bline_specific_vs_Blinked_zoomed.pdf')
   plot(coverage_table$norm_B_cov_13[points_to_plot], coverage_table$norm_B_cov_04[points_to_plot], xlim = c(-1, 8), ylim = c(-1, 8), xlab = 'PV_18-13 nomalized coverage', ylab = 'PV_18-04 nomalized coverage', cex.axis = 1.3, cex.lab = 1.3)
   points(coverage_table$norm_B_cov_13[potentially_B], coverage_table$norm_B_cov_04[potentially_B], col = 'red', pch = 20)
   points(coverage_table[coverage_table$asn == 'B', 'norm_B_cov_13'], coverage_table[coverage_table$asn == 'B', 'norm_B_cov_04'], col = 'yellow', pch = 20, cex = 0.7)
@@ -133,9 +133,9 @@ in_at_least_one <- sum(shared_by > 0)
 # dev.off()
 
 if ( plot_pdf ){
-  pdf('misc/asn_asm_B_status_scaffolds.pdf')
+  pdf('manuscript/figures_revision/asn_asm_B_status_scaffolds.pdf')
 } else {
-  tiff('misc/asn_asm_B_status_scaffolds.tiff', width = 8, height = 8, units = 'in', res = 150)
+  tiff('manuscript/figures_revision/asn_asm_B_status_scaffolds.tiff', width = 8, height = 8, units = 'in', res = 150)
 }
 
     par(mar=c(5.1,6.1,4.1,2.1))
@@ -155,9 +155,9 @@ kmer_ratio  <- asn_table[, 'AB.ratio.lo']
 B_candidates <- (kmer_ratio > 0)
 
 if ( plot_pdf ){
-  pdf('misc/asn_kmer_B_status_scaffolds.pdf')
+  pdf('manuscript/figures_revision/asn_kmer_B_status_scaffolds.pdf')
 } else {
-  tiff('misc/asn_kmer_B_status_scaffolds.tiff', width = 8, height = 8, units = 'in', res = 150)
+  tiff('manuscript/figures_revision/asn_kmer_B_status_scaffolds.tiff', width = 8, height = 8, units = 'in', res = 150)
 }
   plot(total_kmers ~ kmer_ratio, bty = 'n', xlab = 'log2 (candidate B/A k-mers)', ylab = 'Total number of mapped 27-mers (log10)',
        cex.axis = general_cex, cex.lab = general_cex, pch = 20, cex = 2, col = 'grey80')
@@ -179,9 +179,9 @@ xlab <- 'Fraction of B-supported windows'
 ylab <- 'Number of scaffolds'
 
 if ( plot_pdf ){
-  pdf('misc/asn_fraction_of_B_windows_in_a_scaffold.pdf')
+  pdf('manuscript/figures_revision/asn_fraction_of_B_windows_in_a_scaffold.pdf')
 } else {
-  tiff('misc/asn_fraction_of_B_windows_in_a_scaffold.tiff', width = 8, height = 8, units = 'in', res = 150)
+  tiff('manuscript/figures_revision/asn_fraction_of_B_windows_in_a_scaffold.tiff', width = 8, height = 8, units = 'in', res = 150)
 }
     # native gap.barplot
     # gap.barplot(fraction_of_w_windows_histogram$counts, gap = c(220, 2100), ylim = c(0, 400), xtics = seq(1,10, by = 1), xaxlab=NA, ytics = c(0, 100, 200, 300, 500, 2200), xlab = xlab, ylab = ylab, col = c('grey', rep('yellow', 5), rep('green', 4)))

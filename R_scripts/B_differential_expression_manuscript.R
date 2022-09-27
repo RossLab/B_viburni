@@ -13,50 +13,59 @@ library(Glimma)
 library(gplots)
 #BiocManager::install("org.Mm.eg.db")
 library(org.Mm.eg.db)
+library(RColorBrewer)
+#BiocManager::install("GOstats")
+library(GOstats)
+library(GSEABase)
+#BiocManager::install("treemap")
+library(treemap)
+library(patchwork)
 
+B_col = "royalblue4"
+B_c_col = "deepskyblue"
 # get files
 
-setwd("E:/agdel/Documents/projects_rosslab/B_viburni")
-
-genetotranscript<-read.delim("annotation/p.viburni.freeze.v0.braker.transcripts.to.genes.txt", header=FALSE) #mapping genes to transcripts
-genetotranscript <-genetotranscript[order(genetotranscript$V1),]
-rsem.counts <-read.delim("R_scripts/RSEM_digi.counts.matrix",header=TRUE) #matrix generated from rsem
-sampleinfo<-read.csv("R_scripts/sampleinfoPviburniB.csv") #sample group info
+genetotranscript <- read.delim("annotation/p.viburni.freeze.v0.braker.transcripts.to.genes.txt", header=FALSE) #mapping genes to transcripts
+genetotranscript <- genetotranscript[order(genetotranscript$V1),]
+rsem.counts <- read.delim("R_scripts/RSEM_digi.counts.matrix", header=TRUE) #matrix generated from rsem
+sampleinfo <- read.csv("R_scripts/sampleinfoPviburniB.csv") #sample group info
 freeze.v0.genes.anno <- read_delim("output/freeze.v0.genes.anno.complete.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE) # master anno
-scaffolds.final.assignment <- read_delim("output/scaffolds.final.assignment.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
+# scaffolds.preprint.assignment <- read_delim("output/scaffolds.preprint.assignment.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
+scaffolds.final.assignment <- read_delim('output/scaffolds.final.assignment.tsv',"\t", escape_double = FALSE, col_names = T,trim_ws = TRUE)
+
 genes.by.scaffold <- read_delim("output/genes.by.scaffolds.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
 
 
 # count file from all samples
 # need a dataframe containing all gene info per gene id
-rsem.counts <-read.delim("E:/agdel/Documents/projects_rosslab/B_viburni/R_scripts/RSEM_digi.counts.matrix",header=TRUE) #matrix generated from rsem
+rsem.counts <-read.delim("R_scripts/RSEM_digi.counts.matrix",header=TRUE) #matrix generated from rsem
 a <- rsem.counts
-head(a,2) 
+head(a,2)
 
 colnames(a) <- substr(colnames(a),start=1,stop=6) #removing ".genes.results" in colnames
 colnames(a)
 
 #first column X is the gene id, this needs to be removed but has the order of gene id has to match when merging with gene info
-head(a) 
+head(a)
 a1 <- a[,-1]
 head(a1)
 rownames(a1) <- a[,1]
 head(a1)
-a<-a1
+a <- a1
 head(a)
 
 #adding replicate information
-replicate = as.factor(c("X04F","X04F","X04F","X04M","X04M","X04M","X13F","X13F","X13F","X13M","X13M","X13M","X13M","X15F","X15F","X15F","X15M","X15M","X15M","X21F","X21F","X21F","X21M","X21M","X21M","X21M"))
+replicate <- as.factor(c("X04F","X04F","X04F","X04M","X04M","X04M","X13F","X13F","X13F","X13M","X13M","X13M","X13M","X15F","X15F","X15F","X15M","X15M","X15M","X21F","X21F","X21F","X21M","X21M","X21M","X21M"))
 
 #create the DGE object including all count matrix, replicate info and annotations when available
-x<-DGEList(counts=round(a),genes=rownames(a), group = replicate)
+x <- DGEList(counts=round(a),genes=rownames(a), group = replicate)
 head(x)
 
 # filter out low count
 
 rowSums(x$counts==0) # for each sample where the count is 0, then sums the samples that have counts = 0 for a gene
 table(rowSums(x$counts==0) == 26) #number of genes that have all samples with 0 counts
-proportion_0_count= 2393*100/nrow(x)
+proportion_0_count <- 2393 * 100 / nrow(x)
 proportion_0_count
 
 dim(x)
@@ -69,54 +78,21 @@ x1 <- x[keep.exprs.group, keep.lib.sizes=FALSE]
 dim(x1)
 x <- x1
 
-# plot  individual samples pre normalization
-for (i in 1:ncol(x)) {
-	plotMD(cpm(x, log=TRUE), column=i, xlab = "Average log-expression", ylab = "Expression log-ratio (this sample vs others)", main = colnames(x)[i])
-	abline(h=0, col="red", lty=2, lwd=2)
-}
+# # plot  individual samples pre normalization
+# for (i in 1:ncol(x)) {
+# 	plotMD(cpm(x, log=TRUE), column=i, xlab = "Average log-expression", ylab = "Expression log-ratio (this sample vs others)", main = colnames(x)[i])
+# 	abline(h=0, col="red", lty=2, lwd=2)
+# }
 
 # normalize distribution (TMM normalization)
 x <- calcNormFactors(x, method = "TMM")
 x$samples$norm.factors
 
-# plot  individual samples post normalization
-for (i in 1:ncol(x)) {
-	plotMD(cpm(x, log=TRUE), column=i, xlab = "Average log-expression", ylab = "Expression log-ratio (this sample vs others)", main = colnames(x)[i])
-	abline(h=0, col="red", lty=2, lwd=2)
-}
-
-
-## for supplementary material
-
-par(mfrow=c(2,2))
-# QC
-x$samples$lib.size
-barplot(x$samples$lib.size,names=colnames(x),las=2)
-title("Barplot of library sizes")
-logcounts <- cpm(x,log=TRUE)
-boxplot(logcounts, xlab="", ylab="Log2 counts per million",las=2)
-abline(h=median(logcounts),col="blue")
-title("Boxplots of logCPMs (normalized)")
-
-# MDS plot to check for grouping
-# checking grouping by sex, and by B presence
-
-sampleinfo2 <- sampleinfo %>% mutate(Sex = as.factor(Sex))
-levels(sampleinfo2$Sex)
-col.sex <- c("red","blue")[sampleinfo2$Sex]
-data.frame(sampleinfo2$Sex,col.sex)
-
-# plot by sex
-plotMDS(x,col=col.sex, main="Sex",cex=0.8)
-legend("top",fill=c("red","blue"),legend=levels(sampleinfo2$Sex))
-
-# plot by B presence
-sampleinfo2 <- sampleinfo %>% mutate(Bpresence = as.factor(Bpresence))
-levels(sampleinfo2$Bpresence)
-col.B <- c("orange","purple")[sampleinfo2$Bpresence]
-data.frame(sampleinfo2$Bpresence,col.B)
-plotMDS(x,col=col.B, main="B presence",cex=0.8)
-legend("top",fill=c("orange","purple"),legend=levels(sampleinfo2$Bpresence))
+# # plot  individual samples post normalization
+# for (i in 1:ncol(x)) {
+# 	plotMD(cpm(x, log=TRUE), column=i, xlab = "Average log-expression", ylab = "Expression log-ratio (this sample vs others)", main = colnames(x)[i])
+# 	abline(h=0, col="red", lty=2, lwd=2)
+# }
 
 ## Hierarchical clustering
 var_genes <- apply(logcounts, 1, var)
@@ -128,7 +104,7 @@ dim(highly_variable_lcpm)
 head(highly_variable_lcpm)
 
 # plot the heatmap by sex
-library(RColorBrewer)
+
 mypalette <- brewer.pal(11,"RdYlBu")
 morecols <- colorRampPalette(mypalette)
 heatmap.2(highly_variable_lcpm,col=rev(morecols(50)),trace="none", main="Top 1000 most variable genes across samples",ColSideColors=col.sex,scale="row")
@@ -171,7 +147,7 @@ v1 <- voom(x,design1,plot = TRUE)
 plotSA(fit.cont1, main="Final model: Mean-variance trend")
 
 ## Examine the number of DE genes
-tfit <- treat(fit.cont1, lfc=0.58) 
+tfit <- treat(fit.cont1, lfc=0.58)
 dt <- decideTests(tfit)
 summary(dt)
 #write.fit(tfit, dt, file="output/B_diff_expr/results.txt")
@@ -231,45 +207,17 @@ m.tfit.plot$de <- factor(m.tfit.plot$de, levels = c("NS", "B-", "B+"))
 f.tfit.plot <- f.tfit.anno
 f.tfit.plot$de <- factor(f.tfit.plot$de, levels = c("NS", "B-", "B+"))
 
-m.tfit.plot.b1.de <- m.tfit.plot[m.tfit.plot$b.status.final == "B1" & m.tfit.plot$de != "NS",]
-m.tfit.plot.b1.ns <- m.tfit.plot[m.tfit.plot$b.status.final == "B1" & m.tfit.plot$de == "NS",]
-m.tfit.plot <- m.tfit.plot[m.tfit.plot$b.status.final != "B1",]
+m.tfit.plot.b1.de <- m.tfit.plot[m.tfit.plot$b.status.final == "B" & m.tfit.plot$de != "NS",]
+m.tfit.plot.b1.ns <- m.tfit.plot[m.tfit.plot$b.status.final == "B" & m.tfit.plot$de == "NS",]
+m.tfit.plot <- m.tfit.plot[m.tfit.plot$b.status.final != "B",]
 m.tfit.plot.de <- m.tfit.plot[m.tfit.plot$de != "NS",]
 m.tfit.plot.ns <- m.tfit.plot[m.tfit.plot$de == "NS",]
 
-f.tfit.plot.b1.de <- f.tfit.plot[f.tfit.plot$b.status.final == "B1" & f.tfit.plot$de != "NS",]
-f.tfit.plot.b1.ns <- f.tfit.plot[f.tfit.plot$b.status.final == "B1" & f.tfit.plot$de == "NS",]
-f.tfit.plot <- f.tfit.plot[f.tfit.plot$b.status.final != "B1",]
+f.tfit.plot.b1.de <- f.tfit.plot[f.tfit.plot$b.status.final == "B" & f.tfit.plot$de != "NS",]
+f.tfit.plot.b1.ns <- f.tfit.plot[f.tfit.plot$b.status.final == "B" & f.tfit.plot$de == "NS",]
+f.tfit.plot <- f.tfit.plot[f.tfit.plot$b.status.final != "B",]
 f.tfit.plot.de <- f.tfit.plot[f.tfit.plot$de != "NS",]
 f.tfit.plot.ns <- f.tfit.plot[f.tfit.plot$de == "NS",]
-
-p1 <- ggplot() +
-  geom_vline(xintercept=(0)) +
-  geom_point(data=m.tfit.plot.ns, aes(x = logFC, y = AveExpr),fill="#b8bac2",colour="#b8bac2", size=1.5,alpha=0.5) +
-  geom_point(data=m.tfit.plot.de, aes(x = logFC, y = AveExpr,shape=de),fill="#b8bac2",colour="gray60") +
-  geom_point(data=m.tfit.plot.b1.ns, aes(x = logFC, y = AveExpr),fill="royalblue4",colour="royalblue4") +
-  geom_point(data=m.tfit.plot.b1.de, aes(x = logFC, y = AveExpr,shape=de,colour=de),fill="royalblue4",colour="royalblue4") +
-  scale_shape_manual(name="Expression",values=c(25,24)) +
-  labs(x = "Expression log-ratio (B+ v B-)", y = "Average log-expression (TPM)", title = "Males") +
-  theme(plot.title = element_text(hjust = 0.5, family = "Helvetica", size = (14)), 
-        axis.title = element_text(family = "Helvetica", size = (13)),
-        axis.text = element_text(family = "Helvetica", size = (12)),
-        legend.text = element_text(family = "Helvetica", size = (12)),
-        legend.title = element_text(family = "Helvetica", size = (13))) + guides(shape = FALSE) + theme_bw()
-
-p2 <- ggplot() +
-  geom_vline(xintercept=(0)) +
-  geom_point(data=f.tfit.plot.ns, aes(x = logFC, y = AveExpr),fill="#c2b8b8",colour="#c2b8b8", size=1.5,alpha=0.5) +
-  geom_point(data=f.tfit.plot.de, aes(x = logFC, y = AveExpr,shape=de),fill="#c2b8b8",colour="gray60") +
-  geom_point(data=f.tfit.plot.b1.ns, aes(x = logFC, y = AveExpr),fill="royalblue4",colour="royalblue4") +
-  geom_point(data=f.tfit.plot.b1.de, aes(x = logFC, y = AveExpr,shape=de,colour=de),fill="royalblue4",colour="royalblue4") +
-  scale_shape_manual(name="Expression",values=c(25,24)) +
-  labs(x = "Expression log-ratio (B+ v B-)", y = "Average log-expression (TPM)", title = "Females") +
-  theme(plot.title = element_text(hjust = 0.5, family = "Helvetica", size = (14)), 
-        axis.title = element_text(family = "Helvetica", size = (13)),
-        axis.text = element_text(family = "Helvetica", size = (12)),
-        legend.text = element_text(family = "Helvetica", size = (12)),
-        legend.title = element_text(family = "Helvetica", size = (13))) + guides(shape = FALSE) + theme_bw()
 
 # get gene counts
 
@@ -308,30 +256,12 @@ counts.b <- data.frame(with(under.bm.genes, table(b.status.final)))
 counts.a$dir <- "O"
 counts.b$dir <- "U"
 counts <- rbind(counts.a,counts.b)
-data.frame()
-
-Status <- as.factor(c('A','B1','B2/B3','A','B1','B2/B3'))
-Total <- as.integer(c(82,1,5,8,0,1))
-Anno <- as.factor(c("82 (38)","1 (1)","5 (2)","8 (5)","0","1 (1)"))
-Dir <- as.factor(c("Overexpressed","Overexpressed","Overexpressed","Underexpressed","Underexpressed","Underexpressed"))
-counts <- data.frame(Status, Total, Anno, Dir)
-counts
-
-p4 <- ggplot(counts,aes(Status, Total, fill=Dir)) + ylim(0,90) +
-  geom_bar(stat="identity", position=position_dodge()) +
-  geom_text(aes(label=Anno),position = position_dodge(0.9),vjust=-1) +
-  scale_fill_manual(name="",values=c("gray20","gray60")) +
-  labs(x = "Location on scaffold", y = "Number of genes", title = "DE in B+ males") + theme_bw() +
-  theme(plot.title = element_text(hjust = 0.5, family = "Helvetica", size = (12)), 
-        axis.title = element_text(family = "Helvetica", size = (11)),
-        axis.text = element_text(family = "Helvetica", size = (10)),
-        legend.position=c(0.75,0.8), legend.title = element_blank(), legend.text = element_text(family = "Helvetica", size = (10)))
 
 ### Go analyses: how does having a B change your expression profiles if you are a male or a female?
 
 # Make a compatible GO annotation file
 
-Pviburni_genes_with_GO <- read_table2("output/pviburni.gene.GO", 
+Pviburni_genes_with_GO <- read_table2("output/pviburni.gene.GO",
                                       col_names = FALSE)
 colnames(Pviburni_genes_with_GO) <- c("gene","go")
 Pviburni_genes_with_GO <- separate_rows(Pviburni_genes_with_GO, go, sep =';')
@@ -350,14 +280,6 @@ colnames(background)[1] <- "gene"
 head(background)
 background <- merge(Pviburni_genes_with_GO, background)
 
-# load packages
-
-#BiocManager::install("GOstats")
-#BiocManager::install("treemap")
-library(GOstats)
-library(GSEABase)
-library(treemap)
-
 # Read in background GO set and make compatible with GOstats
 
 GO_annotations <- background
@@ -374,7 +296,7 @@ gsc <- GeneSetCollection(goAllFrame, setType = GOCollection())
 universe <- as.vector(unique(GO_annotations[,3]))
 nrow(background)
 
-# Read in genes of interest 
+# Read in genes of interest
 
 nrow(MB_DEgenes)
 m_genes <- as.data.frame(MB_DEgenes$gene)
@@ -502,15 +424,3 @@ GO.enriched.F <- rbind(Result.BP.F,Result.CC.F,Result.FF.F)
 
 #write.csv(GO.enriched.F, file="output/B_diff_expr/GO.enriched.BvsnoB.F.csv", quote = F, row.names = F)
 #write.csv(GO.enriched.M, file="output/B_diff_expr/GO.enriched.BvsnoB.M.csv", quote = F, row.names = F)
-p1 + p2 + p3.blank + p4
-library(patchwork)
-tiff("E:/agdel/Documents/projects_rosslab/B_viburni/manuscript/figures/fig4.tiff",
-     width = 3000, height = 2500, units = 'px', res = 300)
-p1 + p2 + p3.blank + p4
-dev.off()
-
-tiff("E:/agdel/Documents/projects_rosslab/B_viburni/manuscript/figures/fig4c.tiff",
-     width = 2700, height = 2700, units = 'px', res = 300)
-vennDiagram(dt[,1:3], circle.col=c("purple", "green","orange"),include=c("up","down"))
-dev.off()
-
