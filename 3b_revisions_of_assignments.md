@@ -57,3 +57,13 @@ The two assignment approaches are as consistent as possible in logic, separating
 ```
 Rscript R_scripts/B_scaffold_reassignments.R
 ```
+
+Will (re)generate [this table](output/scaffolds.final.assignment.tsv) with the final assignments.
+
+### Generating a fasta file with all B-linked scaffolds
+
+```
+mkdir -p 5_B_char/RepeatMasker_revisions
+cat GitHub/output/scaffolds.final.assignment.table.csv | grep "B" | grep -v "Bc" | cut -f 1 -d ';' > 5_B_char/RepeatMasker_revisions/B_scaffolds.list
+~/generic_genomics/fasta2extract_by_list_of_headers.py 1_pacbio_assembly/8_freeze_v0/p.viburni.freeze.v0.fa 5_B_char/RepeatMasker_revisions/B_scaffolds.list > 5_B_char/RepeatMasker_revisions/B_scaffolds.fasta
+```
