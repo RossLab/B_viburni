@@ -5,12 +5,12 @@ from sys import stdout
 
 scf2asn = defaultdict(lambda :"A")
 
-with open('output/scaffolds.final.assignment.csv') as scf_asn_file:
+with open('output/scaffolds.final.assignment.table.csv') as scf_asn_file:
     for line in scf_asn_file:
-        line_tab = line.rstrip('\n').split(',')
-        asn = line_tab[-1][1:-1]
+        line_tab = line.rstrip('\n').split(';')
+        asn = line_tab[2]
         if asn.startswith("B"):
-            scf2asn[line_tab[0][1:-1]] = asn
+            scf2asn[line_tab[0]] = asn
 
 
 

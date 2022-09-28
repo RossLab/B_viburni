@@ -31,7 +31,8 @@ To make it easier, I linked the files above to three directories: `viburni`, `lo
 
 #### Data preprocessing
 
-Use gene annotation (probably `1_pacbio_assembly/7_braker/PVIB.BRAKER1/braker.gff3`) and scaffold assignments (`output/scaffolds.final.assignment.csv`) to generate a list of B1/2/3 genes. The one I have is not great.
+Use gene annotation (probably `1_pacbio_assembly/7_braker/PVIB.BRAKER1/braker.gff3`) and scaffold assignments (`output/scaffolds.final.assignment.table.csv`)
+
 
 ```
 python3 python_scripts/generate_B_genes_list.py > 7_B_divergence_and_origin/viburni/B_genes.tsv
@@ -45,8 +46,6 @@ qsub -o logs -e logs -cwd -N gffread -V -pe smp64 1 -b yes 'gffread viburni/anno
 qsub -o logs -e logs -cwd -N gffread -V -pe smp64 1 -b yes 'gffread longispinus/annotation.gff3 -g longispinus/genome.fa -w longispinus/transcripts.fa -y longispinus/proteins.faa'
 qsub -o logs -e logs -cwd -N gffread -V -pe smp64 1 -b yes 'gffread solenopsis/annotation.gff3 -g solenopsis/genome.fa -w solenopsis/transcripts.fa -y solenopsis/proteins.faa'
 ```
-
-I also generated `viburni/B_genes.tsv` file from [SUPPLFILE1.xlsx](https://github.com/RossLab/B_viburni/blob/master/manuscript/supplementary/SUPPLFILE1.xlsx). It's a simple list of gene names and B1/2/3. Non-B genes are not included.
 
 I will use this list to filter B genes out of `viburni/transcripts.fa`. Following script
 
@@ -98,7 +97,7 @@ makeblastdb -in $GENES -dbtype nucl
 qsub -o logs -e logs -cwd -N selfblast -V -pe smp64 16 -b yes 'blastn -query '"$GENES"' -db '"$GENES"' -evalue 1e-10 -outfmt "6 std qlen slen" -num_threads 16 > blastout/longispinus_and_B_viburni_all_vs_all.blast'
 ```
 
-And using `python_scripts/reciprocal_blast.py` (originally written for Hodson et al. 2021) get the reciprocal hits out of all-to-all blast.
+And using `python_scripts/reciprocal_blast.py` (originally written for Hodson et al. 2021, available [here](https://raw.githubusercontent.com/RossLab/Bradysia-GRCs/master/scripts/genome_wide_paralogy/reciprocal_blast.py)) get the reciprocal hits out of all-to-all blast.
 
 ```
 python3 ../python_scripts/reciprocal_blast.py blastout/viburni_all_vs_all.blast blastout/Within_viburni_reciprocal
@@ -106,11 +105,45 @@ python3 ../python_scripts/reciprocal_blast.py blastout/solenopsis_and_B_viburni_
 python3 ../python_scripts/reciprocal_blast.py blastout/longispinus_and_B_viburni_all_vs_all.blast blastout/longispinus_and_B_viburni_reciprocal
 ```
 
-56 / 486 B-linked genes have a paralog within the viburni core genome, 10 - 20% within all three categories of confidence: 9 / 78, 24 / 297, 23 / 111 for B1, B2 and B3 respectivelly.
+and now I will process the table in `R`.
 
-For 1, 17, and 25 B genes we found an orthologs in longispinus and -/5/6 in solenopsis. For the few that were shared we manually checked that the similarity is always viburni > longispinus > solenopsis.
+```{R}
+B_genes <- read.table('viburni/B_genes.tsv', header = F, col.names = c('gene', 'asn'))
 
-My interpretation is that the B chromosomes occasionally harbour both copies and translocated genes and all of this traffic must happened after the viburni - longispinus. Of course question is where all those other 400 genes come from...
+load_reciprocal <- function(filename){
+  reciprocal <- read.table(filename, header = T)
+
+  reciprocal$gene1 <- sapply(strsplit(reciprocal$gene1, '.', fixed = TRUE), function(x){ x[1] })
+  reciprocal$gene2 <- sapply(strsplit(reciprocal$gene2, '.', fixed = TRUE), function(x){ x[1] })
+
+  reciprocal$gene1_asn <- 'A'
+  reciprocal$gene2_asn <- 'A'
+
+  reciprocal$gene1_asn[reciprocal$gene1 %in% B_genes[B_genes[, 'asn'] == 'B', 'gene']] <- 'B'
+  reciprocal$gene1_asn[reciprocal$gene1 %in% B_genes[B_genes[, 'asn'] == 'Bc', 'gene']] <- 'Bc'
+
+  reciprocal$gene2_asn[reciprocal$gene2 %in% B_genes[B_genes[, 'asn'] == 'B', 'gene']] <- 'B'
+  reciprocal$gene2_asn[reciprocal$gene2 %in% B_genes[B_genes[, 'asn'] == 'Bc', 'gene']] <- 'Bc'
+
+  return(reciprocal)
+}
+
+viburni_reciprocal <- load_reciprocal('blastout/Within_viburni_reciprocal_OG_pairs.tsv')
+
+viburni_reciprocal_no_A <- viburni_reciprocal[viburni_reciprocal$gene1_asn != 'A' | viburni_reciprocal$gene2_asn != 'A', ]
+
+viburni_BA_homologs <- viburni_reciprocal_no_A[viburni_reciprocal_no_A$gene1_asn == 'A' | viburni_reciprocal_no_A$gene2_asn == 'A', ]
+
+nrow(viburni_BA_homologs)
+
+nrow(viburni_BA_homologs[viburni_BA_homologs$gene1_asn == 'B' | viburni_BA_homologs$gene2_asn == 'B', ])
+```
+
+89 / 324 B-linked genes have a paralog within the viburni core genome, 10 - 20% within all both categories of confidence: 7 / 204, and 76 / 120. Of course, these are homologs between sequences assigned to the core or accessory genomes and the majority of B genes (146) are on a scaffold that is present BOTH in the core genome and B (scaffold_360). Taking this in account the real numbers would be 153 / 204 and 76 / 120 respectivelly.
+
+For 0 / 8 of B and Bc genes we found an orthologs in longispinus and 0 / 2 in solenopsis. For the few that were shared we manually checked that the similarity is always viburni > longispinus > solenopsis.
+
+My interpretation is that the B chromosomes occasionally harbour both copies and translocated genes and all of this traffic must happened after the viburni - longispinus.
 
 ### Hits to other species
 
