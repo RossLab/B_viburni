@@ -150,17 +150,17 @@ My interpretation is that the B chromosomes occasionally harbour both copies and
 Blast all B genes against ncbi (2020/02), and use diamond to search homology against uniprot (2019/08),
 
 ```bash
-qsub -o logs -e logs -cwd -N diamond -V -pe smp64 16 -b yes 'diamond blastx --query viburni/B_transcripts.fa --max-target-seqs 5 --sensitive --threads 16 --db /ceph/software/databases/uniprot_2019_08/full/reference_proteomes.dmnd --evalue 1e-25 --tmpdir /scratch/kjaron/ --outfmt 6 --out /scratch/kjaron/B_genes.diamond.out && rsync /scratch/kjaron/B_genes.diamond.out blastout'
+qsub -o logs -e logs -cwd -N diamond -V -pe smp64 16 -b yes 'diamond blastx --query viburni/B_transcripts.fa --max-target-seqs 5 --sensitive --threads 16 --db /ceph/software/databases/uniprot_2018_04/full/reference_proteomes.dmnd --evalue 1e-25 --tmpdir /scratch/kjaron/ --outfmt 6 --out /scratch/kjaron/B_genes.diamond.out && rsync /scratch/kjaron/B_genes.diamond.out blastout'
 
-qsub -o logs -e logs -cwd -N blastn -V -pe smp64 16 -b yes 'blastn -task megablast -query viburni/B_transcripts.fa -db /ceph/software/databases/ncbi_2020_02/nt -outfmt "6 qseqid staxids bitscore std" -max_target_seqs 10 -max_hsps 1 -num_threads 32 -evalue 1e-25 -out /scratch/kjaron/B_genes.blast.out && rsync /scratch/kjaron/B_genes.blast.out blastout'
+qsub -o logs -e logs -cwd -N blastn -V -pe smp64 16 -b yes 'blastn -task megablast -query viburni/B_transcripts.fa -db /ceph/software/databases/ncbi/nt -outfmt "6 qseqid staxids bitscore std" -max_target_seqs 10 -max_hsps 1 -num_threads 32 -evalue 1e-25 -out /scratch/kjaron/B_genes.blast.out && rsync /scratch/kjaron/B_genes.blast.out blastout'
 ```
 
 I will hijack the blobtools2 workflow in asiggning taxons to hits
 
-```
-conda activate blobtools2_env
-cp /ceph/software/databases/uniprot_2019_08/full/reference_proteomes.taxid_map .
-/ceph/software/blobtools/blobtools taxify -f B_genes.diamond.out -m reference_proteomes.taxid_map -s 0 -t 1
+```bash
+conda activate blobtools
+cp /ceph/software/databases/uniprot_2018_04/full/reference_proteomes.taxid_map .
+qsub -o logs -e logs -cwd -N taxify -V -pe smp64 1 -b yes '/ceph/software/blobtools/blobtools taxify -f blastout/B_genes.diamond.out -m reference_proteomes.taxid_map -s 0 -t 2'
 ```
 
 ```bash
