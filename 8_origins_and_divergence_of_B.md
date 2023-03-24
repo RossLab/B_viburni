@@ -134,12 +134,19 @@ viburni_reciprocal_no_A <- viburni_reciprocal[viburni_reciprocal$gene1_asn != 'A
 
 viburni_BA_homologs <- viburni_reciprocal_no_A[viburni_reciprocal_no_A$gene1_asn == 'A' | viburni_reciprocal_no_A$gene2_asn == 'A', ]
 
-nrow(viburni_BA_homologs)
+is_gene1_the_B_gene <- ('B' == viburni_BA_homologs$gene1_asn | 'Bc' == viburni_BA_homologs$gene1_asn) # logcal vector of T/F if it's first or the second in the pair
+viburni_BA_homologs$B_copy <- NA
+viburni_BA_homologs$B_copy[is_gene1_the_B_gene] <- viburni_BA_homologs$gene1[is_gene1_the_B_gene]
+viburni_BA_homologs$B_copy[!is_gene1_the_B_gene] <- viburni_BA_homologs$gene2[!is_gene1_the_B_gene]
+
+write.table(viburni_BA_homologs, '../output/B_inter_genome_homology.tsv', row.names = F, sep = '\t', quote = F)
+
+table(viburni_BA_homologs$B_copy)
 
 nrow(viburni_BA_homologs[viburni_BA_homologs$gene1_asn == 'B' | viburni_BA_homologs$gene2_asn == 'B', ])
 ```
 
-89 / 324 B-linked genes have a paralog within the viburni core genome, 10 - 20% within all both categories of confidence: 7 / 204, and 76 / 120. Of course, these are homologs between sequences assigned to the core or accessory genomes and the majority of B genes (146) are on a scaffold that is present BOTH in the core genome and B (scaffold_360). Taking this in account the real numbers would be 153 / 204 and 76 / 120 respectivelly.
+33 / 324 B-linked genes have a paralog within the viburni core genome: 6 / 204 among genes on B scaffolds, and 27 / 120 among genes on Bc scaffolds. Of course, these are homologs between sequences assigned to the core or accessory genomes and the majority of B genes (146) are on a scaffold that is present BOTH in the core genome and B (scaffold_360). Taking this in account the real numbers would be 152 / 204 and 27 / 120 respectivelly.
 
 For 0 / 8 of B and Bc genes we found an orthologs in longispinus and 0 / 2 in solenopsis. For the few that were shared we manually checked that the similarity is always viburni > longispinus > solenopsis.
 
@@ -173,6 +180,31 @@ To annotate the blast/diomant outputfiles using scientific names from the dictio
 python3 ../python_scripts/assigning_taxa.py blastout/B_genes.blast.out > B_genes.blast_taxa_overview.tsv
 python3 ../python_scripts/assigning_taxa.py blastout/B_genes.diamond.taxified.out > B_genes.diamond_taxa_overview.tsv
 ```
+
+and checking which of these hits do NOT have a hit within viburni!
+
+```R
+diamond <- read.table('output/B_genes.diamond_taxa_overview.tsv', sep = '\t', header = T)
+reciprocal_blast <- read.table('output/B_inter_genome_homology.tsv', sep = '\t', header = T)
+
+B_with_no_core_homology[!grepl("virus", B_with_no_core_homology$diamond_hits), ]
+nrow(diamond[diamond$gene %in% reciprocal_blast$B_copy,])
+
+Hemiptera <- B_with_no_core_homology[(grepl("citri", B_with_no_core_homology$diamond_hits) | grepl("pisum", B_with_no_core_homology$diamond_hits)), ]
+nrow(diamond[diamond$gene %in% Hemiptera$gene,])
+
+
+B_with_no_core_homology <- diamond[!diamond$gene %in% reciprocal_blast$B_copy,]
+
+
+
+```
+
+7 B-genes have a homolog in the rest of the genome and an arthropod hit.
+
+
+diamond[diamond$gene %in% reciprocal_blast$B_copy,]
+
 
 ### Exploration of the chromosomal origin
 

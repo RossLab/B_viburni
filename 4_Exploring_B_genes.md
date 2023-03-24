@@ -1,10 +1,12 @@
 
 # Exploring B genes
 
-	# working directory	
+```
+	# working directory
 	/data/ross/mealybugs/analyses/B_viburni_2020/5_B_genes
 	qlogin -pe smp64 32 -N bwa -l h=bigwig
     /ceph/software/utilities/sge/qlogin -pe smp64 32 -N bamfilter
+```
 
 We now have: 1) a genome assembly with an annotation (from blast, diamond, interproscan -- see 1_Genome_assembly), 2) a list of candidate B scaffolds (see 3_Coverage_analysis.md) and 3) lists of differentially expressed genes between B-carrying and non-carrying males and females. We can combine all this data and see what we can learn about the gene content of our putative B sequences.
 
@@ -19,10 +21,8 @@ The R script is [here](https://github.com/RossLab/B_viburni/blob/master/R_script
 | Status | Genes | Of which annotated |
 |--------|-------|--------------------|
 | A      | 23143 | 13309 (58%)        |
-| B1     | 78    | 32 (41%)           |
-| B2     | 297   | 112 (37%)          |
-| B3     | 111   | 62 (56%)           |
-
+| B      | 204   | 32 (41%)           |
+| Bc     | 120   | 112 (37%)          |
 
 These are the genes with annotation features located on candidate B scaffolds:
 
@@ -278,7 +278,7 @@ Let's ignore the B2/B3 genes for now (come back to them later). We can also look
 We can go back to the B non B male comparison and look at the A genes specifically
 
 #### Overexpressed genes B+ male vs B- lines male logFC>1
- 
+
 
 List of A linked genes
 | gene   | logFC      | AveExpr    | t          | P.Value    | adj.P.Val  | seq           | gene_len | blast       | diamond               | interpro                                                                                                                                                        | anno | length  | b.status.final | cov.04v13  | b.status | b.status.asn | b.status.kmer |
@@ -412,7 +412,7 @@ List of A linked genes
 | g10471 | -1.4041867 | 7.13312185 | -3.6889023 | 0.00056028 | 0.04361845 | scaffold_23   | 5388     | ECM29_HUMAN | A0A067QU84 | Proteasome stabiliser                                                                                                         | Y    | 1994711 | A              | -0.2206669 | A        | A            | A             |
 
 
-### 3.7 A DEGs B+ vs B- lines 
+### 3.7 A DEGs B+ vs B- lines
 
 I obtained DEGs between B and B- lines regardless of sex. (cf.[EdgeRscript Dec2020](https://github.com/RossLab/B_viburni/R_scripts/EdgeR-PviburniB_GENE_andres_isabelleDec2020.R) and [2_Transcriptome](https://github.com/RossLab/B_viburni/2_Transcriptome.md))
 
@@ -597,5 +597,3 @@ So it turns out only one term shows up in B/B- males:
 
 	GO:0003677      MF      e       DNA binding     10/69   336/7486        0.0009291132296118181   1       10      0.030660736577189998
     g11371, g11595, g15704, g18233, g2805, g2938, g5914, g6210, g6329, g6525
-
-

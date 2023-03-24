@@ -6,3 +6,6 @@ R_scripts/intermediate_scripts_andres
 misc/submission_to_ENA
 1_pacbio_assembly/
 7_B_divergence_and_origin/
+R_scripts/checking_hic_scaffolding.R
+misc/*.tiff
+misc/*.pdf
