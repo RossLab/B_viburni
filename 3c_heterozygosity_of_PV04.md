@@ -1,6 +1,6 @@
 ### B heterozygosity of scaffold_360 and scaffold_957
 
-Two scaffolds (`scaffold_360` and `scaffold_957`) are present on both autosomes and Bs. Namely, PV13 has 4 copies (2 autosomal, 2 B-copies) and PV04 has 8 copies (2 autosomal, 6 B-copies) of `scaffold_360` and `scaffold_957` should have 9 (8A, 1B) and 11 (8A, 3B) in PV13 and PV04 respectivelly.
+Two scaffolds (`scaffold_360`: 372701 nt and `scaffold_957`) are present on both autosomes and Bs. Namely, PV13 has 4 copies (2 autosomal, 2 B-copies) and PV04 has 8 copies (2 autosomal, 6 B-copies) of `scaffold_360` and `scaffold_957` should have 9 (8A, 1B) and 11 (8A, 3B) in PV13 and PV04 respectivelly.
 
 Furthermore, we might also detect some loci that are heterozygous within B and A. I will use [these assignments](output/scaffolds.final.assignment.table.csv).
 

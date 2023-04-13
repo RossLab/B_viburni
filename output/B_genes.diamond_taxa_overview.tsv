@@ -1,86 +1,86 @@
-gene	diamond_hits
-g98	Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum
-g101	Zootermopsis nevadensis,Acyrthosiphon pisum,Agrilus planipennis,Tribolium castaneum,Dendroctonus ponderosae
-g115	Zootermopsis nevadensis,Trachymyrmex septentrionalis,Harpegnathos saltator,Lasius niger,Apis mellifera
-g118	Kallithea virus,Unknown,Gryllus bimaculatus nudivirus
-g119	Kallithea virus
-g123	Kallithea virus
-g125	Acyrthosiphon pisum,Gryllus bimaculatus nudivirus,Kallithea virus,Unknown
-g126	Unknown,Gryllus bimaculatus nudivirus,Kallithea virus,Helicoverpa zea nudivirus 2,Heliothis zea nudivirus
-g130	Unknown
-g131	Unknown,Kallithea virus
-g133	Kallithea virus
-g135	Kallithea virus
-g137	Kallithea virus,Unknown
-g152	Unknown,Gryllus bimaculatus nudivirus,Kallithea virus
-g156	Kallithea virus,Unknown,Gryllus bimaculatus nudivirus,Tipula oleracea nudivirus,Penaeus monodon nudivirus
-g160	Kallithea virus,Unknown,Gryllus bimaculatus nudivirus
-g162	Unknown,Gryllus bimaculatus nudivirus,Kallithea virus,Tipula oleracea nudivirus
-g167	Unknown,Kallithea virus,Gryllus bimaculatus nudivirus
-g170	Gryllus bimaculatus nudivirus,Unknown
-g175	Unknown,Kallithea virus
-g184	Gryllus bimaculatus nudivirus,Unknown,Kallithea virus,Tipula oleracea nudivirus,Helicoverpa zea nudivirus 2
-g195	Unknown
-g201	Kallithea virus
-g208	Stegodyphus mimosarum,Stegodyphus mimosarum,Stegodyphus mimosarum,Macrostomum lignano,Stegodyphus mimosarum
-g221	Zootermopsis nevadensis,Zootermopsis nevadensis,Ooceraea biroi,Diaphorina citri
-g1206	Unknown,Gryllus bimaculatus nudivirus,Kallithea virus
-g1208	Diaphorina citri,Diaphorina citri
-g1595	Rhodnius prolixus,Camponotus floridanus,Solenopsis invicta,Acyrthosiphon pisum,Lucilia cuprina
-g2155	Phlebotomus papatasi,Aedes aegypti,Aedes albopictus,Ooceraea biroi,Culex quinquefasciatus
-g2644	Acyrthosiphon pisum,Acyrthosiphon pisum,Danaus plexippus plexippus,Acyrthosiphon pisum,Acyrthosiphon pisum
-g2710	Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum
-g5582	Hathewaya proteolytica DSM 3090
-g5824	Atta cephalotes,Atta colombica,Acromyrmex echinatior,Acromyrmex echinatior,Dufourea novaeangliae
-g5825	Ancylostoma duodenale,Acyrthosiphon pisum,Ancylostoma ceylanicum,Ancylostoma duodenale,Acyrthosiphon pisum
-g9062	Diaphorina citri,Ancylostoma ceylanicum,Lepisosteus oculatus,Ancylostoma duodenale,Ancylostoma duodenale
-g9063	Candidatus Babela massiliensis,Candidatus Cloacimonetes bacterium,bacterium A37T11,Treponema pedis str. T A4,Candidatus Cloacimonetes bacterium
-g11624	Diaphorina citri,Acyrthosiphon pisum,Anopheles sinensis,Anopheles maculatus,Drosophila sechellia
-g11625	Papilio xuthus,Acyrthosiphon pisum,Zootermopsis nevadensis,Papilio machaon,Danaus plexippus plexippus
-g12159	Acyrthosiphon pisum,Zootermopsis nevadensis,Papilio machaon,Papilio xuthus,Rhodnius prolixus
-g12160	Folsomia candida,Folsomia candida,Folsomia candida,Folsomia candida,Strigamia maritima
-g12541	Folsomia candida,Folsomia candida,Folsomia candida
-g12655	Strigamia maritima,Rhodnius prolixus,Tetranychus urticae,Drosophila simulans,Drosophila persimilis
-g12656	Acyrthosiphon pisum
-g12657	Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum
-g12658	Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Drosophila sechellia
-g13953	Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Solenopsis invicta,Zootermopsis nevadensis
-g13965	Branchiostoma floridae,Chelonia mydas,Oreochromis niloticus,Austrofundulus limnaeus,Austrofundulus limnaeus
-g15851	Diaphorina citri,Acyrthosiphon pisum,Rhodnius prolixus,Pediculus humanus corporis,Tribolium castaneum
-g16323	Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Cyphomyrmex costatus
-g16324	Lottia gigantea,Nasonia vitripennis,Stegodyphus mimosarum,Biomphalaria glabrata,Trichomalopsis sarcophagae
-g16455	Melipona quadrifasciata,Lottia gigantea,Nasonia vitripennis,Biomphalaria glabrata,Trichomalopsis sarcophagae
-g16456	Rhodnius prolixus,Zootermopsis nevadensis,Bombyx mori,Diaphorina citri,Acyrthosiphon pisum
-g17419	Diaphorina citri,Zootermopsis nevadensis,Rhodnius prolixus,Pediculus humanus corporis,Operophtera brumata
-g17647	Stegodyphus mimosarum,Zootermopsis nevadensis,Heliothis virescens,Zootermopsis nevadensis,Diaphorina citri
-g17648	Tribolium castaneum,Tribolium castaneum,Tribolium castaneum,Tribolium castaneum,Tribolium castaneum
-g17650	Brugia timori
-g17661	Brugia timori,Brugia timori,Tribolium castaneum,Tribolium castaneum,Tribolium castaneum
-g17662	Trachymyrmex septentrionalis,Solenopsis invicta,Tribolium castaneum,Camponotus floridanus,Trachymyrmex cornetzi
-g17663	Daphnia pulex,Rhodnius prolixus,Dendroctonus ponderosae,Daphnia magna,Acyrthosiphon pisum
-g17664	Acyrthosiphon pisum
-g18153	Zootermopsis nevadensis,Acyrthosiphon pisum,Tribolium castaneum,Dendroctonus ponderosae,Anopheles culicifacies
-g18439	Tetranychus urticae,Oryzias latipes,Pristionchus pacificus,Trichinella britovi,Tetranychus urticae
-g18800	Pediculus humanus corporis,Strigamia maritima,Dufourea novaeangliae,Habropoda laboriosa,Rhodnius prolixus
-g19056	Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Clunio marinus
-g19061	Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum
-g20084	Nasonia vitripennis,Globodera pallida,Acyrthosiphon pisum,Ixodes scapularis,Strongylocentrotus purpuratus
-g20092	Lasius niger,Lasius niger,Lasius niger,Anopheles funestus,Strongylocentrotus purpuratus
-g20097	Brugia timori,Brugia timori,Acyrthosiphon pisum,Nasonia vitripennis,Acyrthosiphon pisum
-g20100	Rhodnius prolixus,Puccinia striiformis f. sp. tritici PST-78,Rhodnius prolixus,Acyrthosiphon pisum,Acyrthosiphon pisum
-g20101	Stegodyphus mimosarum,Acyrthosiphon pisum,Acyrthosiphon pisum,Stegodyphus mimosarum,Acyrthosiphon pisum
-g20103	Monodelphis domestica
-g20106	Acyrthosiphon pisum,Ixodes scapularis,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum
-g20108	Cyphomyrmex costatus,Tribolium castaneum,Cyphomyrmex costatus,Trachymyrmex septentrionalis,Trachymyrmex septentrionalis
-g20110	Brugia timori,Apostichopus japonicus,Apostichopus japonicus,Apostichopus japonicus,Tetranychus urticae
-g20115	Tribolium castaneum,Tribolium castaneum,Tribolium castaneum,Nasonia vitripennis,Apostichopus japonicus
-g20745	Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Tribolium castaneum,Acyrthosiphon pisum
-g22245	Rhodnius prolixus,Zootermopsis nevadensis,Acyrthosiphon pisum,Helobdella robusta,Dendroctonus ponderosae
-g22529	Nasonia vitripennis,Agrilus planipennis,Acyrthosiphon pisum,Camponotus floridanus,Trachymyrmex septentrionalis
-g22530	Zootermopsis nevadensis,Pediculus humanus corporis,Habropoda laboriosa,Melipona quadrifasciata,Strigamia maritima
-g22531	Tribolium castaneum,Atta cephalotes,Habropoda laboriosa,Culex quinquefasciatus,Oryctes borbonicus
-g22533	Zootermopsis nevadensis,Agrilus planipennis,Tribolium castaneum,Nasonia vitripennis,Rhodnius prolixus
-g22534	Zootermopsis nevadensis,Anopheles minimus,Anopheles culicifacies,Anopheles farauti,Aedes albopictus
-g23009	Acyrthosiphon pisum,Zootermopsis nevadensis,Pediculus humanus corporis,Rhodnius prolixus,Clunio marinus
-g23012	Methanobrevibacter filiformis,Candidatus Babela massiliensis,Candidatus Babela massiliensis,Methanobrevibacter curvatus,Sulfurihydrogenibium azorense Az-Fu1
-g23391	Oryctes borbonicus,Zootermopsis nevadensis,Tribolium castaneum,Rhodnius prolixus,Agrilus planipennis
+gene	scf	diamond_hits	hit_type
+g98	scaffold_360	Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum	arthropod
+g101	scaffold_360	Zootermopsis nevadensis,Acyrthosiphon pisum,Agrilus planipennis,Tribolium castaneum,Dendroctonus ponderosae	arthropod
+g115	scaffold_360	Zootermopsis nevadensis,Trachymyrmex septentrionalis,Harpegnathos saltator,Lasius niger,Apis mellifera	arthropod
+g118	scaffold_360	Kallithea virus,Unknown,Gryllus bimaculatus nudivirus	virus
+g119	scaffold_360	Kallithea virus	virus
+g123	scaffold_360	Kallithea virus	virus
+g125	scaffold_360	Acyrthosiphon pisum,Gryllus bimaculatus nudivirus,Kallithea virus,Unknown	virus,arthropod
+g126	scaffold_360	Unknown,Gryllus bimaculatus nudivirus,Kallithea virus,Helicoverpa zea nudivirus 2,Heliothis zea nudivirus	virus
+g130	scaffold_360	Unknown	
+g131	scaffold_360	Unknown,Kallithea virus	virus
+g133	scaffold_360	Kallithea virus	virus
+g135	scaffold_360	Kallithea virus	virus
+g137	scaffold_360	Kallithea virus,Unknown	virus
+g152	scaffold_360	Unknown,Gryllus bimaculatus nudivirus,Kallithea virus	virus
+g156	scaffold_360	Kallithea virus,Unknown,Gryllus bimaculatus nudivirus,Tipula oleracea nudivirus,Penaeus monodon nudivirus	virus
+g160	scaffold_360	Kallithea virus,Unknown,Gryllus bimaculatus nudivirus	virus
+g162	scaffold_360	Unknown,Gryllus bimaculatus nudivirus,Kallithea virus,Tipula oleracea nudivirus	virus
+g167	scaffold_360	Unknown,Kallithea virus,Gryllus bimaculatus nudivirus	virus
+g170	scaffold_360	Gryllus bimaculatus nudivirus,Unknown	virus
+g175	scaffold_360	Unknown,Kallithea virus	virus
+g184	scaffold_360	Gryllus bimaculatus nudivirus,Unknown,Kallithea virus,Tipula oleracea nudivirus,Helicoverpa zea nudivirus 2	virus
+g195	scaffold_360	Unknown	
+g201	scaffold_360	Kallithea virus	virus
+g208	scaffold_360	Stegodyphus mimosarum,Stegodyphus mimosarum,Stegodyphus mimosarum,Macrostomum lignano,Stegodyphus mimosarum	arthropod
+g221	scaffold_360	Zootermopsis nevadensis,Zootermopsis nevadensis,Ooceraea biroi,Diaphorina citri	arthropod
+g1206	scaffold_1495	Unknown,Gryllus bimaculatus nudivirus,Kallithea virus	virus
+g1208	scaffold_2293	Diaphorina citri,Diaphorina citri	arthropod
+g1595	scaffold_1845	Rhodnius prolixus,Camponotus floridanus,Solenopsis invicta,Acyrthosiphon pisum,Lucilia cuprina	arthropod
+g2155	scaffold_887	Phlebotomus papatasi,Aedes aegypti,Aedes albopictus,Ooceraea biroi,Culex quinquefasciatus	arthropod
+g2644	scaffold_786	Acyrthosiphon pisum,Acyrthosiphon pisum,Danaus plexippus plexippus,Acyrthosiphon pisum,Acyrthosiphon pisum	arthropod
+g2710	scaffold_1321	Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum	arthropod
+g5582	scaffold_897	Hathewaya proteolytica DSM 3090	bacteria
+g5824	scaffold_1469	Atta cephalotes,Atta colombica,Acromyrmex echinatior,Acromyrmex echinatior,Dufourea novaeangliae	arthropod
+g5825	scaffold_1469	Ancylostoma duodenale,Acyrthosiphon pisum,Ancylostoma ceylanicum,Ancylostoma duodenale,Acyrthosiphon pisum	arthropod
+g9062	scaffold_848	Diaphorina citri,Ancylostoma ceylanicum,Lepisosteus oculatus,Ancylostoma duodenale,Ancylostoma duodenale	arthropod
+g9063	scaffold_848	Candidatus Babela massiliensis,Candidatus Cloacimonetes bacterium,bacterium A37T11,Treponema pedis str. T A4,Candidatus Cloacimonetes bacterium	bacteria
+g11624	scaffold_1060	Diaphorina citri,Acyrthosiphon pisum,Anopheles sinensis,Anopheles maculatus,Drosophila sechellia	arthropod
+g11625	scaffold_1060	Papilio xuthus,Acyrthosiphon pisum,Zootermopsis nevadensis,Papilio machaon,Danaus plexippus plexippus	arthropod
+g12159	scaffold_1269	Acyrthosiphon pisum,Zootermopsis nevadensis,Papilio machaon,Papilio xuthus,Rhodnius prolixus	arthropod
+g12160	scaffold_1269	Folsomia candida,Folsomia candida,Folsomia candida,Folsomia candida,Strigamia maritima	arthropod
+g12541	scaffold_2066	Folsomia candida,Folsomia candida,Folsomia candida	arthropod
+g12655	scaffold_746	Strigamia maritima,Rhodnius prolixus,Tetranychus urticae,Drosophila simulans,Drosophila persimilis	arthropod
+g12656	scaffold_746	Acyrthosiphon pisum	arthropod
+g12657	scaffold_746	Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum	arthropod
+g12658	scaffold_746	Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Drosophila sechellia	arthropod
+g13953	scaffold_2040	Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Solenopsis invicta,Zootermopsis nevadensis	arthropod
+g13965	scaffold_632	Branchiostoma floridae,Chelonia mydas,Oreochromis niloticus,Austrofundulus limnaeus,Austrofundulus limnaeus	chordata
+g15851	scaffold_1514	Diaphorina citri,Acyrthosiphon pisum,Rhodnius prolixus,Pediculus humanus corporis,Tribolium castaneum	arthropod
+g16323	scaffold_1148	Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Cyphomyrmex costatus	arthropod
+g16324	scaffold_1148	Lottia gigantea,Nasonia vitripennis,Stegodyphus mimosarum,Biomphalaria glabrata,Trichomalopsis sarcophagae	arthropod
+g16455	scaffold_1425	Melipona quadrifasciata,Lottia gigantea,Nasonia vitripennis,Biomphalaria glabrata,Trichomalopsis sarcophagae	arthropod
+g16456	scaffold_1425	Rhodnius prolixus,Zootermopsis nevadensis,Bombyx mori,Diaphorina citri,Acyrthosiphon pisum	arthropod
+g17419	scaffold_1288	Diaphorina citri,Zootermopsis nevadensis,Rhodnius prolixus,Pediculus humanus corporis,Operophtera brumata	arthropod
+g17647	scaffold_1472	Stegodyphus mimosarum,Zootermopsis nevadensis,Heliothis virescens,Zootermopsis nevadensis,Diaphorina citri	arthropod
+g17648	scaffold_1472	Tribolium castaneum,Tribolium castaneum,Tribolium castaneum,Tribolium castaneum,Tribolium castaneum	arthropod
+g17650	scaffold_1472	Brugia timori	nematode
+g17661	scaffold_1508	Brugia timori,Brugia timori,Tribolium castaneum,Tribolium castaneum,Tribolium castaneum	arthropod,nematode
+g17662	scaffold_1508	Trachymyrmex septentrionalis,Solenopsis invicta,Tribolium castaneum,Camponotus floridanus,Trachymyrmex cornetzi	arthropod
+g17663	scaffold_1508	Daphnia pulex,Rhodnius prolixus,Dendroctonus ponderosae,Daphnia magna,Acyrthosiphon pisum	arthropod
+g17664	scaffold_1508	Acyrthosiphon pisum	arthropod
+g18153	scaffold_1720	Zootermopsis nevadensis,Acyrthosiphon pisum,Tribolium castaneum,Dendroctonus ponderosae,Anopheles culicifacies	arthropod
+g18439	scaffold_1579	Tetranychus urticae,Oryzias latipes,Pristionchus pacificus,Trichinella britovi,Tetranychus urticae	arthropod
+g18800	scaffold_1581	Pediculus humanus corporis,Strigamia maritima,Dufourea novaeangliae,Habropoda laboriosa,Rhodnius prolixus	arthropod
+g19056	scaffold_1615	Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Clunio marinus	arthropod
+g19061	scaffold_902	Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum	arthropod
+g20084	scaffold_552	Nasonia vitripennis,Globodera pallida,Acyrthosiphon pisum,Ixodes scapularis,Strongylocentrotus purpuratus	arthropod
+g20092	scaffold_552	Lasius niger,Lasius niger,Lasius niger,Anopheles funestus,Strongylocentrotus purpuratus	arthropod
+g20097	scaffold_552	Brugia timori,Brugia timori,Acyrthosiphon pisum,Nasonia vitripennis,Acyrthosiphon pisum	arthropod,nematode
+g20100	scaffold_552	Rhodnius prolixus,Puccinia striiformis f. sp. tritici PST-78,Rhodnius prolixus,Acyrthosiphon pisum,Acyrthosiphon pisum	arthropod
+g20101	scaffold_552	Stegodyphus mimosarum,Acyrthosiphon pisum,Acyrthosiphon pisum,Stegodyphus mimosarum,Acyrthosiphon pisum	arthropod
+g20103	scaffold_552	Monodelphis domestica	chordata
+g20106	scaffold_552	Acyrthosiphon pisum,Ixodes scapularis,Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum	arthropod
+g20108	scaffold_552	Cyphomyrmex costatus,Tribolium castaneum,Cyphomyrmex costatus,Trachymyrmex septentrionalis,Trachymyrmex septentrionalis	arthropod
+g20110	scaffold_552	Brugia timori,Apostichopus japonicus,Apostichopus japonicus,Apostichopus japonicus,Tetranychus urticae	arthropod,nematode
+g20115	scaffold_552	Tribolium castaneum,Tribolium castaneum,Tribolium castaneum,Nasonia vitripennis,Apostichopus japonicus	arthropod
+g20745	scaffold_957	Acyrthosiphon pisum,Acyrthosiphon pisum,Acyrthosiphon pisum,Tribolium castaneum,Acyrthosiphon pisum	arthropod
+g22245	scaffold_874	Rhodnius prolixus,Zootermopsis nevadensis,Acyrthosiphon pisum,Helobdella robusta,Dendroctonus ponderosae	arthropod
+g22529	scaffold_551	Nasonia vitripennis,Agrilus planipennis,Acyrthosiphon pisum,Camponotus floridanus,Trachymyrmex septentrionalis	arthropod
+g22530	scaffold_551	Zootermopsis nevadensis,Pediculus humanus corporis,Habropoda laboriosa,Melipona quadrifasciata,Strigamia maritima	arthropod
+g22531	scaffold_551	Tribolium castaneum,Atta cephalotes,Habropoda laboriosa,Culex quinquefasciatus,Oryctes borbonicus	arthropod
+g22533	scaffold_551	Zootermopsis nevadensis,Agrilus planipennis,Tribolium castaneum,Nasonia vitripennis,Rhodnius prolixus	arthropod
+g22534	scaffold_551	Zootermopsis nevadensis,Anopheles minimus,Anopheles culicifacies,Anopheles farauti,Aedes albopictus	arthropod
+g23009	scaffold_529	Acyrthosiphon pisum,Zootermopsis nevadensis,Pediculus humanus corporis,Rhodnius prolixus,Clunio marinus	arthropod
+g23012	scaffold_529	Methanobrevibacter filiformis,Candidatus Babela massiliensis,Candidatus Babela massiliensis,Methanobrevibacter curvatus,Sulfurihydrogenibium azorense Az-Fu1	bacteria
+g23391	scaffold_1768	Oryctes borbonicus,Zootermopsis nevadensis,Tribolium castaneum,Rhodnius prolixus,Agrilus planipennis	arthropod

@@ -348,7 +348,7 @@ Same results using the m-to-m alignments. Only 57 scaffolds are present in B+ li
 
 ## 6. kmer method
 
-Following Christina and Kamil's *Sciara* pipeline: https://github.com/RossLab/Sciara-L-chromosome/blob/master/analyses/assigment-of-L-X-A.md
+Following Christina and Kamil's *Bradysia* pipeline: https://github.com/RossLab/Sciara-L-chromosome/blob/master/analyses/assigment-of-L-X-A.md
 
 	# /data/ross/mealybugs/analyses/B_viburni_2020/4_cov_analysis/kmer/initial
 	# build kmer db with kmc v.3.1.1

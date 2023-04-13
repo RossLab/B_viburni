@@ -187,6 +187,8 @@ and checking which of these hits do NOT have a hit within viburni!
 diamond <- read.table('output/B_genes.diamond_taxa_overview.tsv', sep = '\t', header = T)
 reciprocal_blast <- read.table('output/B_inter_genome_homology.tsv', sep = '\t', header = T)
 
+diamond[diamond$scf == 'scaffold_360', ]
+
 B_with_no_core_homology[!grepl("virus", B_with_no_core_homology$diamond_hits), ]
 nrow(diamond[diamond$gene %in% reciprocal_blast$B_copy,])
 
