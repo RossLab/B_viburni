@@ -1,7 +1,7 @@
 gene	seq	b.status.final
 g1	scaffold_1617	A
 g10	scaffold_93	A
-g100	scaffold_360	B
+g100	scaffold_360	B-A
 g1000	scaffold_832	A
 g10000	scaffold_53	A
 g10001	scaffold_53	A
@@ -112,7 +112,7 @@ g10096	scaffold_130	A
 g10097	scaffold_130	A
 g10098	scaffold_130	A
 g10099	scaffold_130	A
-g101	scaffold_360	B
+g101	scaffold_360	B-A
 g1010	scaffold_197	A
 g10100	scaffold_130	A
 g10101	scaffold_130	A
@@ -223,7 +223,7 @@ g10196	scaffold_72	A
 g10197	scaffold_72	A
 g10198	scaffold_72	A
 g10199	scaffold_72	A
-g102	scaffold_360	B
+g102	scaffold_360	B-A
 g1020	scaffold_197	A
 g10200	scaffold_72	A
 g10201	scaffold_72	A
@@ -334,7 +334,7 @@ g10296	scaffold_652	A
 g10297	scaffold_652	A
 g10298	scaffold_652	A
 g10299	scaffold_652	A
-g103	scaffold_360	B
+g103	scaffold_360	B-A
 g1030	scaffold_197	A
 g10300	scaffold_652	A
 g10301	scaffold_652	A
@@ -445,7 +445,7 @@ g10396	scaffold_159	A
 g10397	scaffold_159	A
 g10398	scaffold_159	A
 g10399	scaffold_159	A
-g104	scaffold_360	B
+g104	scaffold_360	B-A
 g1040	scaffold_197	A
 g10400	scaffold_159	A
 g10401	scaffold_159	A
@@ -556,7 +556,7 @@ g10496	scaffold_23	A
 g10497	scaffold_23	A
 g10498	scaffold_825	A
 g10499	scaffold_825	A
-g105	scaffold_360	B
+g105	scaffold_360	B-A
 g1050	scaffold_197	A
 g10500	scaffold_825	A
 g10501	scaffold_825	A
@@ -667,7 +667,7 @@ g10596	scaffold_32	A
 g10597	scaffold_32	A
 g10598	scaffold_32	A
 g10599	scaffold_32	A
-g106	scaffold_360	B
+g106	scaffold_360	B-A
 g1060	scaffold_197	A
 g10600	scaffold_32	A
 g10601	scaffold_32	A
@@ -778,7 +778,7 @@ g10696	scaffold_32	A
 g10697	scaffold_32	A
 g10698	scaffold_32	A
 g10699	scaffold_32	A
-g107	scaffold_360	B
+g107	scaffold_360	B-A
 g1070	scaffold_197	A
 g10700	scaffold_32	A
 g10701	scaffold_32	A
@@ -889,7 +889,7 @@ g10796	scaffold_270	A
 g10797	scaffold_270	A
 g10798	scaffold_270	A
 g10799	scaffold_270	A
-g108	scaffold_360	B
+g108	scaffold_360	B-A
 g1080	scaffold_197	A
 g10800	scaffold_270	A
 g10801	scaffold_464	A
@@ -1000,7 +1000,7 @@ g10896	scaffold_1	A
 g10897	scaffold_1	A
 g10898	scaffold_1	A
 g10899	scaffold_1	A
-g109	scaffold_360	B
+g109	scaffold_360	B-A
 g1090	scaffold_400	A
 g10900	scaffold_1	A
 g10901	scaffold_1	A
@@ -1112,7 +1112,7 @@ g10997	scaffold_1	A
 g10998	scaffold_1	A
 g10999	scaffold_1	A
 g11	scaffold_93	A
-g110	scaffold_360	B
+g110	scaffold_360	B-A
 g1100	scaffold_389	A
 g11000	scaffold_1	A
 g11001	scaffold_1	A
@@ -1223,7 +1223,7 @@ g11096	scaffold_165	A
 g11097	scaffold_165	A
 g11098	scaffold_165	A
 g11099	scaffold_165	A
-g111	scaffold_360	B
+g111	scaffold_360	B-A
 g1110	scaffold_389	A
 g11100	scaffold_165	A
 g11101	scaffold_165	A
@@ -1334,7 +1334,7 @@ g11196	scaffold_4	A
 g11197	scaffold_4	A
 g11198	scaffold_4	A
 g11199	scaffold_4	A
-g112	scaffold_360	B
+g112	scaffold_360	B-A
 g1120	scaffold_522	A
 g11200	scaffold_4	A
 g11201	scaffold_4	A
@@ -1445,7 +1445,7 @@ g11296	scaffold_73	A
 g11297	scaffold_73	A
 g11298	scaffold_73	A
 g11299	scaffold_73	A
-g113	scaffold_360	B
+g113	scaffold_360	B-A
 g1130	scaffold_605	A
 g11300	scaffold_73	A
 g11301	scaffold_73	A
@@ -1556,7 +1556,7 @@ g11396	scaffold_95	A
 g11397	scaffold_95	A
 g11398	scaffold_95	A
 g11399	scaffold_95	A
-g114	scaffold_360	B
+g114	scaffold_360	B-A
 g1140	scaffold_481	A
 g11400	scaffold_95	A
 g11401	scaffold_95	A
@@ -1667,7 +1667,7 @@ g11496	scaffold_106	A
 g11497	scaffold_106	A
 g11498	scaffold_1929	A
 g11499	scaffold_65	A
-g115	scaffold_360	B
+g115	scaffold_360	B-A
 g1150	scaffold_481	A
 g11500	scaffold_65	A
 g11501	scaffold_65	A
@@ -1778,7 +1778,7 @@ g11596	scaffold_1047	A
 g11597	scaffold_1047	A
 g11598	scaffold_1047	A
 g11599	scaffold_1047	A
-g116	scaffold_360	B
+g116	scaffold_360	B-A
 g1160	scaffold_736	A
 g11600	scaffold_289	A
 g11601	scaffold_289	A
@@ -1889,7 +1889,7 @@ g11696	scaffold_1032	A
 g11697	scaffold_168	A
 g11698	scaffold_168	A
 g11699	scaffold_168	A
-g117	scaffold_360	B
+g117	scaffold_360	B-A
 g1170	scaffold_220	A
 g11700	scaffold_168	A
 g11701	scaffold_168	A
@@ -2000,7 +2000,7 @@ g11796	scaffold_86	A
 g11797	scaffold_86	A
 g11798	scaffold_86	A
 g11799	scaffold_86	A
-g118	scaffold_360	B
+g118	scaffold_360	B-A
 g1180	scaffold_220	A
 g11800	scaffold_86	A
 g11801	scaffold_86	A
@@ -2111,7 +2111,7 @@ g11896	scaffold_74	A
 g11897	scaffold_74	A
 g11898	scaffold_74	A
 g11899	scaffold_74	A
-g119	scaffold_360	B
+g119	scaffold_360	B-A
 g1190	scaffold_435	A
 g11900	scaffold_74	A
 g11901	scaffold_74	A
@@ -2223,7 +2223,7 @@ g11997	scaffold_156	A
 g11998	scaffold_156	A
 g11999	scaffold_156	A
 g12	scaffold_93	A
-g120	scaffold_360	B
+g120	scaffold_360	B-A
 g1200	scaffold_993	A
 g12000	scaffold_156	A
 g12001	scaffold_156	A
@@ -2334,7 +2334,7 @@ g12096	scaffold_1482	A
 g12097	scaffold_1482	A
 g12098	scaffold_1482	A
 g12099	scaffold_1113	A
-g121	scaffold_360	B
+g121	scaffold_360	B-A
 g1210	scaffold_2136	A
 g12100	scaffold_1113	A
 g12101	scaffold_1113	A
@@ -2445,7 +2445,7 @@ g12196	scaffold_170	A
 g12197	scaffold_170	A
 g12198	scaffold_1216	A
 g12199	scaffold_449	A
-g122	scaffold_360	B
+g122	scaffold_360	B-A
 g1220	scaffold_704	A
 g12200	scaffold_449	A
 g12201	scaffold_449	A
@@ -2556,7 +2556,7 @@ g12296	scaffold_492	A
 g12297	scaffold_492	A
 g12298	scaffold_492	A
 g12299	scaffold_492	A
-g123	scaffold_360	B
+g123	scaffold_360	B-A
 g1230	scaffold_284	A
 g12300	scaffold_492	A
 g12301	scaffold_492	A
@@ -2667,7 +2667,7 @@ g12396	scaffold_50	A
 g12397	scaffold_50	A
 g12398	scaffold_50	A
 g12399	scaffold_50	A
-g124	scaffold_360	B
+g124	scaffold_360	B-A
 g1240	scaffold_284	A
 g12400	scaffold_50	A
 g12401	scaffold_50	A
@@ -2778,7 +2778,7 @@ g12496	scaffold_283	A
 g12497	scaffold_283	A
 g12498	scaffold_283	A
 g12499	scaffold_283	A
-g125	scaffold_360	B
+g125	scaffold_360	B-A
 g1250	scaffold_485	A
 g12500	scaffold_283	A
 g12501	scaffold_283	A
@@ -2889,7 +2889,7 @@ g12596	scaffold_116	A
 g12597	scaffold_116	A
 g12598	scaffold_116	A
 g12599	scaffold_116	A
-g126	scaffold_360	B
+g126	scaffold_360	B-A
 g1260	scaffold_413	A
 g12600	scaffold_116	A
 g12601	scaffold_116	A
@@ -3000,7 +3000,7 @@ g12696	scaffold_418	A
 g12697	scaffold_418	A
 g12698	scaffold_418	A
 g12699	scaffold_418	A
-g127	scaffold_360	B
+g127	scaffold_360	B-A
 g1270	scaffold_413	A
 g12700	scaffold_1692	A
 g12701	scaffold_1692	A
@@ -3111,7 +3111,7 @@ g12796	scaffold_1418	A
 g12797	scaffold_933	A
 g12798	scaffold_933	A
 g12799	scaffold_933	A
-g128	scaffold_360	B
+g128	scaffold_360	B-A
 g1280	scaffold_594	A
 g12800	scaffold_1467	A
 g12801	scaffold_1467	A
@@ -3222,7 +3222,7 @@ g12896	scaffold_44	A
 g12897	scaffold_44	A
 g12898	scaffold_44	A
 g12899	scaffold_44	A
-g129	scaffold_360	B
+g129	scaffold_360	B-A
 g1290	scaffold_274	A
 g12900	scaffold_44	A
 g12901	scaffold_44	A
@@ -3334,7 +3334,7 @@ g12997	scaffold_723	A
 g12998	scaffold_579	A
 g12999	scaffold_579	A
 g13	scaffold_93	A
-g130	scaffold_360	B
+g130	scaffold_360	B-A
 g1300	scaffold_274	A
 g13000	scaffold_579	A
 g13001	scaffold_579	A
@@ -3445,7 +3445,7 @@ g13096	scaffold_13	A
 g13097	scaffold_13	A
 g13098	scaffold_13	A
 g13099	scaffold_13	A
-g131	scaffold_360	B
+g131	scaffold_360	B-A
 g1310	scaffold_274	A
 g13100	scaffold_13	A
 g13101	scaffold_13	A
@@ -3556,7 +3556,7 @@ g13196	scaffold_424	A
 g13197	scaffold_424	A
 g13198	scaffold_424	A
 g13199	scaffold_424	A
-g132	scaffold_360	B
+g132	scaffold_360	B-A
 g1320	scaffold_274	A
 g13200	scaffold_424	A
 g13201	scaffold_424	A
@@ -3667,7 +3667,7 @@ g13296	scaffold_202	A
 g13297	scaffold_202	A
 g13298	scaffold_202	A
 g13299	scaffold_202	A
-g133	scaffold_360	B
+g133	scaffold_360	B-A
 g1330	scaffold_69	A
 g13300	scaffold_1243	A
 g13301	scaffold_1243	A
@@ -3778,7 +3778,7 @@ g13396	scaffold_297	A
 g13397	scaffold_297	A
 g13398	scaffold_297	A
 g13399	scaffold_297	A
-g134	scaffold_360	B
+g134	scaffold_360	B-A
 g1340	scaffold_69	A
 g13400	scaffold_297	A
 g13401	scaffold_297	A
@@ -3889,7 +3889,7 @@ g13496	scaffold_143	A
 g13497	scaffold_143	A
 g13498	scaffold_143	A
 g13499	scaffold_143	A
-g135	scaffold_360	B
+g135	scaffold_360	B-A
 g1350	scaffold_69	A
 g13500	scaffold_266	A
 g13501	scaffold_266	A
@@ -4000,7 +4000,7 @@ g13596	scaffold_391	A
 g13597	scaffold_391	A
 g13598	scaffold_391	A
 g13599	scaffold_391	A
-g136	scaffold_360	B
+g136	scaffold_360	B-A
 g1360	scaffold_69	A
 g13600	scaffold_391	A
 g13601	scaffold_391	A
@@ -4111,7 +4111,7 @@ g13696	scaffold_35	A
 g13697	scaffold_35	A
 g13698	scaffold_35	A
 g13699	scaffold_35	A
-g137	scaffold_360	B
+g137	scaffold_360	B-A
 g1370	scaffold_69	A
 g13700	scaffold_35	A
 g13701	scaffold_35	A
@@ -4222,7 +4222,7 @@ g13796	scaffold_254	A
 g13797	scaffold_254	A
 g13798	scaffold_254	A
 g13799	scaffold_254	A
-g138	scaffold_360	B
+g138	scaffold_360	B-A
 g1380	scaffold_69	A
 g13800	scaffold_254	A
 g13801	scaffold_254	A
@@ -4333,7 +4333,7 @@ g13896	scaffold_118	A
 g13897	scaffold_118	A
 g13898	scaffold_118	A
 g13899	scaffold_118	A
-g139	scaffold_360	B
+g139	scaffold_360	B-A
 g1390	scaffold_20	A
 g13900	scaffold_118	A
 g13901	scaffold_118	A
@@ -4445,7 +4445,7 @@ g13997	scaffold_39	A
 g13998	scaffold_39	A
 g13999	scaffold_39	A
 g14	scaffold_93	A
-g140	scaffold_360	B
+g140	scaffold_360	B-A
 g1400	scaffold_20	A
 g14000	scaffold_39	A
 g14001	scaffold_39	A
@@ -4556,7 +4556,7 @@ g14096	scaffold_203	A
 g14097	scaffold_203	A
 g14098	scaffold_203	A
 g14099	scaffold_203	A
-g141	scaffold_360	B
+g141	scaffold_360	B-A
 g1410	scaffold_20	A
 g14100	scaffold_203	A
 g14101	scaffold_203	A
@@ -4667,7 +4667,7 @@ g14196	scaffold_3	A
 g14197	scaffold_3	A
 g14198	scaffold_3	A
 g14199	scaffold_3	A
-g142	scaffold_360	B
+g142	scaffold_360	B-A
 g1420	scaffold_20	A
 g14200	scaffold_3	A
 g14201	scaffold_3	A
@@ -4778,7 +4778,7 @@ g14296	scaffold_3	A
 g14297	scaffold_3	A
 g14298	scaffold_3	A
 g14299	scaffold_3	A
-g143	scaffold_360	B
+g143	scaffold_360	B-A
 g1430	scaffold_20	A
 g14300	scaffold_3	A
 g14301	scaffold_3	A
@@ -4889,7 +4889,7 @@ g14396	scaffold_24	A
 g14397	scaffold_24	A
 g14398	scaffold_24	A
 g14399	scaffold_24	A
-g144	scaffold_360	B
+g144	scaffold_360	B-A
 g1440	scaffold_20	A
 g14400	scaffold_24	A
 g14401	scaffold_24	A
@@ -5000,7 +5000,7 @@ g14496	scaffold_145	A
 g14497	scaffold_145	A
 g14498	scaffold_145	A
 g14499	scaffold_145	A
-g145	scaffold_360	B
+g145	scaffold_360	B-A
 g1450	scaffold_20	A
 g14500	scaffold_145	A
 g14501	scaffold_145	A
@@ -5111,7 +5111,7 @@ g14596	scaffold_96	A
 g14597	scaffold_96	A
 g14598	scaffold_96	A
 g14599	scaffold_96	A
-g146	scaffold_360	B
+g146	scaffold_360	B-A
 g1460	scaffold_20	A
 g14600	scaffold_96	A
 g14601	scaffold_96	A
@@ -5222,7 +5222,7 @@ g14696	scaffold_718	A
 g14697	scaffold_718	A
 g14698	scaffold_844	A
 g14699	scaffold_844	A
-g147	scaffold_360	B
+g147	scaffold_360	B-A
 g1470	scaffold_20	A
 g14700	scaffold_844	A
 g14701	scaffold_844	A
@@ -5333,7 +5333,7 @@ g14796	scaffold_34	A
 g14797	scaffold_34	A
 g14798	scaffold_34	A
 g14799	scaffold_34	A
-g148	scaffold_360	B
+g148	scaffold_360	B-A
 g1480	scaffold_20	A
 g14800	scaffold_34	A
 g14801	scaffold_34	A
@@ -5444,7 +5444,7 @@ g14896	scaffold_33	A
 g14897	scaffold_33	A
 g14898	scaffold_33	A
 g14899	scaffold_33	A
-g149	scaffold_360	B
+g149	scaffold_360	B-A
 g1490	scaffold_20	A
 g14900	scaffold_33	A
 g14901	scaffold_33	A
@@ -5556,7 +5556,7 @@ g14997	scaffold_617	A
 g14998	scaffold_617	A
 g14999	scaffold_617	A
 g15	scaffold_93	A
-g150	scaffold_360	B
+g150	scaffold_360	B-A
 g1500	scaffold_20	A
 g15000	scaffold_617	A
 g15001	scaffold_617	A
@@ -5667,7 +5667,7 @@ g15096	scaffold_298	A
 g15097	scaffold_298	A
 g15098	scaffold_298	A
 g15099	scaffold_298	A
-g151	scaffold_360	B
+g151	scaffold_360	B-A
 g1510	scaffold_20	A
 g15100	scaffold_298	A
 g15101	scaffold_1298	A
@@ -5778,7 +5778,7 @@ g15196	scaffold_294	A
 g15197	scaffold_294	A
 g15198	scaffold_294	A
 g15199	scaffold_294	A
-g152	scaffold_360	B
+g152	scaffold_360	B-A
 g1520	scaffold_20	A
 g15200	scaffold_294	A
 g15201	scaffold_294	A
@@ -5889,7 +5889,7 @@ g15296	scaffold_100	A
 g15297	scaffold_100	A
 g15298	scaffold_100	A
 g15299	scaffold_100	A
-g153	scaffold_360	B
+g153	scaffold_360	B-A
 g1530	scaffold_20	A
 g15300	scaffold_100	A
 g15301	scaffold_100	A
@@ -6000,7 +6000,7 @@ g15396	scaffold_133	A
 g15397	scaffold_133	A
 g15398	scaffold_133	A
 g15399	scaffold_133	A
-g154	scaffold_360	B
+g154	scaffold_360	B-A
 g1540	scaffold_596	A
 g15400	scaffold_133	A
 g15401	scaffold_133	A
@@ -6111,7 +6111,7 @@ g15496	scaffold_29	A
 g15497	scaffold_29	A
 g15498	scaffold_29	A
 g15499	scaffold_29	A
-g155	scaffold_360	B
+g155	scaffold_360	B-A
 g1550	scaffold_721	A
 g15500	scaffold_29	A
 g15501	scaffold_29	A
@@ -6222,7 +6222,7 @@ g15596	scaffold_21	A
 g15597	scaffold_21	A
 g15598	scaffold_21	A
 g15599	scaffold_21	A
-g156	scaffold_360	B
+g156	scaffold_360	B-A
 g1560	scaffold_206	A
 g15600	scaffold_21	A
 g15601	scaffold_21	A
@@ -6333,7 +6333,7 @@ g15696	scaffold_493	A
 g15697	scaffold_493	A
 g15698	scaffold_493	A
 g15699	scaffold_493	A
-g157	scaffold_360	B
+g157	scaffold_360	B-A
 g1570	scaffold_206	A
 g15700	scaffold_493	A
 g15701	scaffold_493	A
@@ -6444,7 +6444,7 @@ g15796	scaffold_747	A
 g15797	scaffold_1906	A
 g15798	scaffold_1906	A
 g15799	scaffold_505	A
-g158	scaffold_360	B
+g158	scaffold_360	B-A
 g1580	scaffold_206	A
 g15800	scaffold_505	A
 g15801	scaffold_505	A
@@ -6555,7 +6555,7 @@ g15896	scaffold_187	A
 g15897	scaffold_187	A
 g15898	scaffold_187	A
 g15899	scaffold_187	A
-g159	scaffold_360	B
+g159	scaffold_360	B-A
 g1590	scaffold_824	A
 g15900	scaffold_187	A
 g15901	scaffold_187	A
@@ -6667,7 +6667,7 @@ g15997	scaffold_75	A
 g15998	scaffold_75	A
 g15999	scaffold_75	A
 g16	scaffold_93	A
-g160	scaffold_360	B
+g160	scaffold_360	B-A
 g1600	scaffold_346	A
 g16000	scaffold_75	A
 g16001	scaffold_75	A
@@ -6778,7 +6778,7 @@ g16096	scaffold_191	A
 g16097	scaffold_191	A
 g16098	scaffold_191	A
 g16099	scaffold_191	A
-g161	scaffold_360	B
+g161	scaffold_360	B-A
 g1610	scaffold_346	A
 g16100	scaffold_623	A
 g16101	scaffold_623	A
@@ -6889,7 +6889,7 @@ g16196	scaffold_54	A
 g16197	scaffold_54	A
 g16198	scaffold_54	A
 g16199	scaffold_54	A
-g162	scaffold_360	B
+g162	scaffold_360	B-A
 g1620	scaffold_346	A
 g16200	scaffold_54	A
 g16201	scaffold_54	A
@@ -7000,7 +7000,7 @@ g16296	scaffold_77	A
 g16297	scaffold_77	A
 g16298	scaffold_77	A
 g16299	scaffold_77	A
-g163	scaffold_360	B
+g163	scaffold_360	B-A
 g1630	scaffold_346	A
 g16300	scaffold_77	A
 g16301	scaffold_77	A
@@ -7111,7 +7111,7 @@ g16396	scaffold_499	A
 g16397	scaffold_499	A
 g16398	scaffold_499	A
 g16399	scaffold_499	A
-g164	scaffold_360	B
+g164	scaffold_360	B-A
 g1640	scaffold_157	A
 g16400	scaffold_550	A
 g16401	scaffold_550	A
@@ -7222,7 +7222,7 @@ g16496	scaffold_25	A
 g16497	scaffold_25	A
 g16498	scaffold_25	A
 g16499	scaffold_25	A
-g165	scaffold_360	B
+g165	scaffold_360	B-A
 g1650	scaffold_157	A
 g16500	scaffold_25	A
 g16501	scaffold_25	A
@@ -7333,7 +7333,7 @@ g16596	scaffold_154	A
 g16597	scaffold_154	A
 g16598	scaffold_154	A
 g16599	scaffold_154	A
-g166	scaffold_360	B
+g166	scaffold_360	B-A
 g1660	scaffold_157	A
 g16600	scaffold_154	A
 g16601	scaffold_154	A
@@ -7444,7 +7444,7 @@ g16696	scaffold_211	A
 g16697	scaffold_211	A
 g16698	scaffold_211	A
 g16699	scaffold_211	A
-g167	scaffold_360	B
+g167	scaffold_360	B-A
 g1670	scaffold_157	A
 g16700	scaffold_211	A
 g16701	scaffold_211	A
@@ -7555,7 +7555,7 @@ g16796	scaffold_8	A
 g16797	scaffold_8	A
 g16798	scaffold_8	A
 g16799	scaffold_8	A
-g168	scaffold_360	B
+g168	scaffold_360	B-A
 g1680	scaffold_243	A
 g16800	scaffold_8	A
 g16801	scaffold_8	A
@@ -7666,7 +7666,7 @@ g16896	scaffold_8	A
 g16897	scaffold_8	A
 g16898	scaffold_8	A
 g16899	scaffold_8	A
-g169	scaffold_360	B
+g169	scaffold_360	B-A
 g1690	scaffold_243	A
 g16900	scaffold_8	A
 g16901	scaffold_8	A
@@ -7778,7 +7778,7 @@ g16997	scaffold_436	A
 g16998	scaffold_436	A
 g16999	scaffold_436	A
 g17	scaffold_93	A
-g170	scaffold_360	B
+g170	scaffold_360	B-A
 g1700	scaffold_243	A
 g17000	scaffold_436	A
 g17001	scaffold_436	A
@@ -7889,7 +7889,7 @@ g17096	scaffold_219	A
 g17097	scaffold_219	A
 g17098	scaffold_219	A
 g17099	scaffold_219	A
-g171	scaffold_360	B
+g171	scaffold_360	B-A
 g1710	scaffold_243	A
 g17100	scaffold_219	A
 g17101	scaffold_219	A
@@ -8000,7 +8000,7 @@ g17196	scaffold_57	A
 g17197	scaffold_57	A
 g17198	scaffold_57	A
 g17199	scaffold_57	A
-g172	scaffold_360	B
+g172	scaffold_360	B-A
 g1720	scaffold_482	A
 g17200	scaffold_57	A
 g17201	scaffold_57	A
@@ -8111,7 +8111,7 @@ g17296	scaffold_329	A
 g17297	scaffold_329	A
 g17298	scaffold_329	A
 g17299	scaffold_329	A
-g173	scaffold_360	B
+g173	scaffold_360	B-A
 g1730	scaffold_482	A
 g17300	scaffold_329	A
 g17301	scaffold_329	A
@@ -8222,7 +8222,7 @@ g17396	scaffold_523	A
 g17397	scaffold_523	A
 g17398	scaffold_198	A
 g17399	scaffold_198	A
-g174	scaffold_360	B
+g174	scaffold_360	B-A
 g1740	scaffold_379	A
 g17400	scaffold_198	A
 g17401	scaffold_198	A
@@ -8333,7 +8333,7 @@ g17496	scaffold_41	A
 g17497	scaffold_41	A
 g17498	scaffold_41	A
 g17499	scaffold_41	A
-g175	scaffold_360	B
+g175	scaffold_360	B-A
 g1750	scaffold_1965	A
 g17500	scaffold_41	A
 g17501	scaffold_41	A
@@ -8444,7 +8444,7 @@ g17596	scaffold_247	A
 g17597	scaffold_247	A
 g17598	scaffold_247	A
 g17599	scaffold_247	A
-g176	scaffold_360	B
+g176	scaffold_360	B-A
 g1760	scaffold_199	A
 g17600	scaffold_247	A
 g17601	scaffold_247	A
@@ -8555,7 +8555,7 @@ g17696	scaffold_136	A
 g17697	scaffold_136	A
 g17698	scaffold_136	A
 g17699	scaffold_136	A
-g177	scaffold_360	B
+g177	scaffold_360	B-A
 g1770	scaffold_199	A
 g17700	scaffold_136	A
 g17701	scaffold_136	A
@@ -8666,7 +8666,7 @@ g17796	scaffold_295	A
 g17797	scaffold_295	A
 g17798	scaffold_295	A
 g17799	scaffold_295	A
-g178	scaffold_360	B
+g178	scaffold_360	B-A
 g1780	scaffold_199	A
 g17800	scaffold_295	A
 g17801	scaffold_295	A
@@ -8777,7 +8777,7 @@ g17896	scaffold_331	A
 g17897	scaffold_331	A
 g17898	scaffold_331	A
 g17899	scaffold_331	A
-g179	scaffold_360	B
+g179	scaffold_360	B-A
 g1790	scaffold_330	A
 g17900	scaffold_331	A
 g17901	scaffold_331	A
@@ -8889,7 +8889,7 @@ g17997	scaffold_457	A
 g17998	scaffold_457	A
 g17999	scaffold_457	A
 g18	scaffold_93	A
-g180	scaffold_360	B
+g180	scaffold_360	B-A
 g1800	scaffold_330	A
 g18000	scaffold_457	A
 g18001	scaffold_457	A
@@ -9000,7 +9000,7 @@ g18096	scaffold_286	A
 g18097	scaffold_286	A
 g18098	scaffold_286	A
 g18099	scaffold_286	A
-g181	scaffold_360	B
+g181	scaffold_360	B-A
 g1810	scaffold_330	A
 g18100	scaffold_286	A
 g18101	scaffold_286	A
@@ -9111,7 +9111,7 @@ g18196	scaffold_78	A
 g18197	scaffold_78	A
 g18198	scaffold_78	A
 g18199	scaffold_78	A
-g182	scaffold_360	B
+g182	scaffold_360	B-A
 g1820	scaffold_229	A
 g18200	scaffold_78	A
 g18201	scaffold_78	A
@@ -9222,7 +9222,7 @@ g18296	scaffold_250	A
 g18297	scaffold_250	A
 g18298	scaffold_250	A
 g18299	scaffold_250	A
-g183	scaffold_360	B
+g183	scaffold_360	B-A
 g1830	scaffold_229	A
 g18300	scaffold_250	A
 g18301	scaffold_250	A
@@ -9333,7 +9333,7 @@ g18396	scaffold_367	A
 g18397	scaffold_367	A
 g18398	scaffold_367	A
 g18399	scaffold_367	A
-g184	scaffold_360	B
+g184	scaffold_360	B-A
 g1840	scaffold_229	A
 g18400	scaffold_367	A
 g18401	scaffold_367	A
@@ -9444,7 +9444,7 @@ g18496	scaffold_273	A
 g18497	scaffold_273	A
 g18498	scaffold_273	A
 g18499	scaffold_273	A
-g185	scaffold_360	B
+g185	scaffold_360	B-A
 g1850	scaffold_229	A
 g18500	scaffold_273	A
 g18501	scaffold_273	A
@@ -9555,7 +9555,7 @@ g18596	scaffold_240	A
 g18597	scaffold_240	A
 g18598	scaffold_240	A
 g18599	scaffold_240	A
-g186	scaffold_360	B
+g186	scaffold_360	B-A
 g1860	scaffold_229	A
 g18600	scaffold_240	A
 g18601	scaffold_240	A
@@ -9666,7 +9666,7 @@ g18696	scaffold_279	A
 g18697	scaffold_279	A
 g18698	scaffold_279	A
 g18699	scaffold_279	A
-g187	scaffold_360	B
+g187	scaffold_360	B-A
 g1870	scaffold_1825	A
 g18700	scaffold_279	A
 g18701	scaffold_279	A
@@ -9777,7 +9777,7 @@ g18796	scaffold_114	A
 g18797	scaffold_1499	A
 g18798	scaffold_1056	A
 g18799	scaffold_953	A
-g188	scaffold_360	B
+g188	scaffold_360	B-A
 g1880	scaffold_620	A
 g18800	scaffold_1581	Bc
 g18801	scaffold_711	A
@@ -9888,7 +9888,7 @@ g18896	scaffold_1524	A
 g18897	scaffold_1524	A
 g18898	scaffold_846	A
 g18899	scaffold_1628	Bc
-g189	scaffold_360	B
+g189	scaffold_360	B-A
 g1890	scaffold_546	A
 g18900	scaffold_144	A
 g18901	scaffold_144	A
@@ -10000,7 +10000,7 @@ g18997	scaffold_234	A
 g18998	scaffold_234	A
 g18999	scaffold_234	A
 g19	scaffold_93	A
-g190	scaffold_360	B
+g190	scaffold_360	B-A
 g1900	scaffold_245	A
 g19000	scaffold_234	A
 g19001	scaffold_234	A
@@ -10111,7 +10111,7 @@ g19096	scaffold_38	A
 g19097	scaffold_38	A
 g19098	scaffold_38	A
 g19099	scaffold_38	A
-g191	scaffold_360	B
+g191	scaffold_360	B-A
 g1910	scaffold_245	A
 g19100	scaffold_38	A
 g19101	scaffold_38	A
@@ -10222,7 +10222,7 @@ g19196	scaffold_305	A
 g19197	scaffold_305	A
 g19198	scaffold_305	A
 g19199	scaffold_305	A
-g192	scaffold_360	B
+g192	scaffold_360	B-A
 g1920	scaffold_245	A
 g19200	scaffold_305	A
 g19201	scaffold_305	A
@@ -10333,7 +10333,7 @@ g19296	scaffold_18	A
 g19297	scaffold_18	A
 g19298	scaffold_18	A
 g19299	scaffold_18	A
-g193	scaffold_360	B
+g193	scaffold_360	B-A
 g1930	scaffold_218	A
 g19300	scaffold_18	A
 g19301	scaffold_18	A
@@ -10444,7 +10444,7 @@ g19396	scaffold_7	A
 g19397	scaffold_7	A
 g19398	scaffold_7	A
 g19399	scaffold_7	A
-g194	scaffold_360	B
+g194	scaffold_360	B-A
 g1940	scaffold_218	A
 g19400	scaffold_7	A
 g19401	scaffold_7	A
@@ -10555,7 +10555,7 @@ g19496	scaffold_7	A
 g19497	scaffold_7	A
 g19498	scaffold_7	A
 g19499	scaffold_7	A
-g195	scaffold_360	B
+g195	scaffold_360	B-A
 g1950	scaffold_218	A
 g19500	scaffold_7	A
 g19501	scaffold_7	A
@@ -10666,7 +10666,7 @@ g19596	scaffold_233	A
 g19597	scaffold_233	A
 g19598	scaffold_233	A
 g19599	scaffold_233	A
-g196	scaffold_360	B
+g196	scaffold_360	B-A
 g1960	scaffold_218	A
 g19600	scaffold_233	A
 g19601	scaffold_233	A
@@ -10777,7 +10777,7 @@ g19696	scaffold_207	A
 g19697	scaffold_207	A
 g19698	scaffold_207	A
 g19699	scaffold_207	A
-g197	scaffold_360	B
+g197	scaffold_360	B-A
 g1970	scaffold_218	A
 g19700	scaffold_207	A
 g19701	scaffold_207	A
@@ -10888,7 +10888,7 @@ g19796	scaffold_60	A
 g19797	scaffold_60	A
 g19798	scaffold_60	A
 g19799	scaffold_60	A
-g198	scaffold_360	B
+g198	scaffold_360	B-A
 g1980	scaffold_218	A
 g19800	scaffold_60	A
 g19801	scaffold_60	A
@@ -10999,7 +10999,7 @@ g19896	scaffold_408	A
 g19897	scaffold_408	A
 g19898	scaffold_408	A
 g19899	scaffold_2272	A
-g199	scaffold_360	B
+g199	scaffold_360	B-A
 g1990	scaffold_709	A
 g19900	scaffold_1249	Bc
 g19901	scaffold_969	A
@@ -11112,7 +11112,7 @@ g19998	scaffold_511	A
 g19999	scaffold_1347	A
 g2	scaffold_93	A
 g20	scaffold_93	A
-g200	scaffold_360	B
+g200	scaffold_360	B-A
 g2000	scaffold_977	A
 g20000	scaffold_769	A
 g20001	scaffold_769	A
@@ -11223,7 +11223,7 @@ g20096	scaffold_552	B
 g20097	scaffold_552	B
 g20098	scaffold_552	B
 g20099	scaffold_552	B
-g201	scaffold_360	B
+g201	scaffold_360	B-A
 g2010	scaffold_581	A
 g20100	scaffold_552	B
 g20101	scaffold_552	B
@@ -11334,7 +11334,7 @@ g20196	scaffold_71	A
 g20197	scaffold_71	A
 g20198	scaffold_71	A
 g20199	scaffold_71	A
-g202	scaffold_360	B
+g202	scaffold_360	B-A
 g2020	scaffold_126	A
 g20200	scaffold_71	A
 g20201	scaffold_71	A
@@ -11445,7 +11445,7 @@ g20296	scaffold_119	A
 g20297	scaffold_119	A
 g20298	scaffold_119	A
 g20299	scaffold_119	A
-g203	scaffold_360	B
+g203	scaffold_360	B-A
 g2030	scaffold_126	A
 g20300	scaffold_119	A
 g20301	scaffold_119	A
@@ -11556,7 +11556,7 @@ g20396	scaffold_164	A
 g20397	scaffold_164	A
 g20398	scaffold_164	A
 g20399	scaffold_164	A
-g204	scaffold_360	B
+g204	scaffold_360	B-A
 g2040	scaffold_126	A
 g20400	scaffold_164	A
 g20401	scaffold_164	A
@@ -11667,7 +11667,7 @@ g20496	scaffold_113	A
 g20497	scaffold_113	A
 g20498	scaffold_113	A
 g20499	scaffold_113	A
-g205	scaffold_360	B
+g205	scaffold_360	B-A
 g2050	scaffold_126	A
 g20500	scaffold_113	A
 g20501	scaffold_113	A
@@ -11778,7 +11778,7 @@ g20596	scaffold_277	A
 g20597	scaffold_215	A
 g20598	scaffold_215	A
 g20599	scaffold_215	A
-g206	scaffold_360	B
+g206	scaffold_360	B-A
 g2060	scaffold_126	A
 g20600	scaffold_215	A
 g20601	scaffold_215	A
@@ -11889,7 +11889,7 @@ g20696	scaffold_131	A
 g20697	scaffold_131	A
 g20698	scaffold_131	A
 g20699	scaffold_131	A
-g207	scaffold_360	B
+g207	scaffold_360	B-A
 g2070	scaffold_126	A
 g20700	scaffold_131	A
 g20701	scaffold_131	A
@@ -11938,9 +11938,9 @@ g2074	scaffold_126	A
 g20740	scaffold_654	A
 g20741	scaffold_654	A
 g20742	scaffold_654	A
-g20743	scaffold_957	B
-g20744	scaffold_957	B
-g20745	scaffold_957	B
+g20743	scaffold_957	B-A
+g20744	scaffold_957	B-A
+g20745	scaffold_957	B-A
 g20746	scaffold_608	A
 g20747	scaffold_608	A
 g20748	scaffold_608	A
@@ -12000,7 +12000,7 @@ g20796	scaffold_97	A
 g20797	scaffold_97	A
 g20798	scaffold_97	A
 g20799	scaffold_97	A
-g208	scaffold_360	B
+g208	scaffold_360	B-A
 g2080	scaffold_126	A
 g20800	scaffold_97	A
 g20801	scaffold_97	A
@@ -12111,7 +12111,7 @@ g20896	scaffold_91	A
 g20897	scaffold_91	A
 g20898	scaffold_91	A
 g20899	scaffold_91	A
-g209	scaffold_360	B
+g209	scaffold_360	B-A
 g2090	scaffold_122	A
 g20900	scaffold_91	A
 g20901	scaffold_91	A
@@ -12223,7 +12223,7 @@ g20997	scaffold_61	A
 g20998	scaffold_61	A
 g20999	scaffold_61	A
 g21	scaffold_93	A
-g210	scaffold_360	B
+g210	scaffold_360	B-A
 g2100	scaffold_122	A
 g21000	scaffold_61	A
 g21001	scaffold_61	A
@@ -12334,7 +12334,7 @@ g21096	scaffold_380	A
 g21097	scaffold_380	A
 g21098	scaffold_380	A
 g21099	scaffold_380	A
-g211	scaffold_360	B
+g211	scaffold_360	B-A
 g2110	scaffold_122	A
 g21100	scaffold_380	A
 g21101	scaffold_380	A
@@ -12445,7 +12445,7 @@ g21196	scaffold_98	A
 g21197	scaffold_98	A
 g21198	scaffold_98	A
 g21199	scaffold_98	A
-g212	scaffold_360	B
+g212	scaffold_360	B-A
 g2120	scaffold_122	A
 g21200	scaffold_98	A
 g21201	scaffold_98	A
@@ -12556,7 +12556,7 @@ g21296	scaffold_43	A
 g21297	scaffold_43	A
 g21298	scaffold_43	A
 g21299	scaffold_43	A
-g213	scaffold_360	B
+g213	scaffold_360	B-A
 g2130	scaffold_122	A
 g21300	scaffold_43	A
 g21301	scaffold_43	A
@@ -12667,7 +12667,7 @@ g21396	scaffold_110	A
 g21397	scaffold_110	A
 g21398	scaffold_110	A
 g21399	scaffold_110	A
-g214	scaffold_360	B
+g214	scaffold_360	B-A
 g2140	scaffold_122	A
 g21400	scaffold_110	A
 g21401	scaffold_110	A
@@ -12778,7 +12778,7 @@ g21496	scaffold_382	A
 g21497	scaffold_382	A
 g21498	scaffold_382	A
 g21499	scaffold_382	A
-g215	scaffold_360	B
+g215	scaffold_360	B-A
 g2150	scaffold_1260	A
 g21500	scaffold_382	A
 g21501	scaffold_382	A
@@ -12889,7 +12889,7 @@ g21596	scaffold_123	A
 g21597	scaffold_123	A
 g21598	scaffold_123	A
 g21599	scaffold_123	A
-g216	scaffold_360	B
+g216	scaffold_360	B-A
 g2160	scaffold_14	A
 g21600	scaffold_123	A
 g21601	scaffold_123	A
@@ -13000,7 +13000,7 @@ g21696	scaffold_9	A
 g21697	scaffold_9	A
 g21698	scaffold_9	A
 g21699	scaffold_9	A
-g217	scaffold_360	B
+g217	scaffold_360	B-A
 g2170	scaffold_14	A
 g21700	scaffold_9	A
 g21701	scaffold_9	A
@@ -13111,7 +13111,7 @@ g21796	scaffold_420	A
 g21797	scaffold_420	A
 g21798	scaffold_420	A
 g21799	scaffold_420	A
-g218	scaffold_360	B
+g218	scaffold_360	B-A
 g2180	scaffold_14	A
 g21800	scaffold_420	A
 g21801	scaffold_420	A
@@ -13222,7 +13222,7 @@ g21896	scaffold_634	A
 g21897	scaffold_634	A
 g21898	scaffold_634	A
 g21899	scaffold_634	A
-g219	scaffold_360	B
+g219	scaffold_360	B-A
 g2190	scaffold_14	A
 g21900	scaffold_22	A
 g21901	scaffold_22	A
@@ -13334,7 +13334,7 @@ g21997	scaffold_871	A
 g21998	scaffold_871	A
 g21999	scaffold_997	A
 g22	scaffold_93	A
-g220	scaffold_360	B
+g220	scaffold_360	B-A
 g2200	scaffold_14	A
 g22000	scaffold_1038	A
 g22001	scaffold_865	A
@@ -13445,7 +13445,7 @@ g22096	scaffold_11	A
 g22097	scaffold_11	A
 g22098	scaffold_11	A
 g22099	scaffold_11	A
-g221	scaffold_360	B
+g221	scaffold_360	B-A
 g2210	scaffold_14	A
 g22100	scaffold_11	A
 g22101	scaffold_11	A
@@ -13556,7 +13556,7 @@ g22196	scaffold_11	A
 g22197	scaffold_11	A
 g22198	scaffold_11	A
 g22199	scaffold_11	A
-g222	scaffold_360	B
+g222	scaffold_360	B-A
 g2220	scaffold_14	A
 g22200	scaffold_11	A
 g22201	scaffold_11	A
@@ -13667,7 +13667,7 @@ g22296	scaffold_488	A
 g22297	scaffold_488	A
 g22298	scaffold_488	A
 g22299	scaffold_488	A
-g223	scaffold_360	B
+g223	scaffold_360	B-A
 g2230	scaffold_14	A
 g22300	scaffold_989	A
 g22301	scaffold_650	A
@@ -13778,7 +13778,7 @@ g22396	scaffold_109	A
 g22397	scaffold_109	A
 g22398	scaffold_109	A
 g22399	scaffold_109	A
-g224	scaffold_360	B
+g224	scaffold_360	B-A
 g2240	scaffold_14	A
 g22400	scaffold_109	A
 g22401	scaffold_109	A
@@ -13889,7 +13889,7 @@ g22496	scaffold_228	A
 g22497	scaffold_228	A
 g22498	scaffold_228	A
 g22499	scaffold_228	A
-g225	scaffold_360	B
+g225	scaffold_360	B-A
 g2250	scaffold_14	A
 g22500	scaffold_228	A
 g22501	scaffold_228	A
@@ -14000,7 +14000,7 @@ g22596	scaffold_6	A
 g22597	scaffold_6	A
 g22598	scaffold_6	A
 g22599	scaffold_6	A
-g226	scaffold_360	B
+g226	scaffold_360	B-A
 g2260	scaffold_14	A
 g22600	scaffold_6	A
 g22601	scaffold_6	A
@@ -14111,7 +14111,7 @@ g22696	scaffold_6	A
 g22697	scaffold_6	A
 g22698	scaffold_6	A
 g22699	scaffold_6	A
-g227	scaffold_360	B
+g227	scaffold_360	B-A
 g2270	scaffold_14	A
 g22700	scaffold_6	A
 g22701	scaffold_6	A
@@ -14222,7 +14222,7 @@ g22796	scaffold_670	A
 g22797	scaffold_670	A
 g22798	scaffold_670	A
 g22799	scaffold_670	A
-g228	scaffold_360	B
+g228	scaffold_360	B-A
 g2280	scaffold_625	A
 g22800	scaffold_670	A
 g22801	scaffold_2089	A
@@ -21740,7 +21740,7 @@ g8296	scaffold_290	A
 g8297	scaffold_2115	A
 g8298	scaffold_120	A
 g8299	scaffold_120	A
-g83	scaffold_360	B
+g83	scaffold_360	B-A
 g830	scaffold_127	A
 g8300	scaffold_120	A
 g8301	scaffold_120	A
@@ -21851,7 +21851,7 @@ g8396	scaffold_531	A
 g8397	scaffold_531	A
 g8398	scaffold_531	A
 g8399	scaffold_531	A
-g84	scaffold_360	B
+g84	scaffold_360	B-A
 g840	scaffold_127	A
 g8400	scaffold_531	A
 g8401	scaffold_531	A
@@ -21962,7 +21962,7 @@ g8496	scaffold_583	A
 g8497	scaffold_583	A
 g8498	scaffold_583	A
 g8499	scaffold_583	A
-g85	scaffold_360	B
+g85	scaffold_360	B-A
 g850	scaffold_127	A
 g8500	scaffold_583	A
 g8501	scaffold_543	A
@@ -22073,7 +22073,7 @@ g8596	scaffold_87	A
 g8597	scaffold_87	A
 g8598	scaffold_87	A
 g8599	scaffold_87	A
-g86	scaffold_360	B
+g86	scaffold_360	B-A
 g860	scaffold_127	A
 g8600	scaffold_87	A
 g8601	scaffold_87	A
@@ -22184,7 +22184,7 @@ g8696	scaffold_251	A
 g8697	scaffold_251	A
 g8698	scaffold_251	A
 g8699	scaffold_251	A
-g87	scaffold_360	B
+g87	scaffold_360	B-A
 g870	scaffold_158	A
 g8700	scaffold_251	A
 g8701	scaffold_251	A
@@ -22295,7 +22295,7 @@ g8796	scaffold_177	A
 g8797	scaffold_177	A
 g8798	scaffold_177	A
 g8799	scaffold_177	A
-g88	scaffold_360	B
+g88	scaffold_360	B-A
 g880	scaffold_158	A
 g8800	scaffold_177	A
 g8801	scaffold_177	A
@@ -22406,7 +22406,7 @@ g8896	scaffold_2	A
 g8897	scaffold_2	A
 g8898	scaffold_2	A
 g8899	scaffold_2	A
-g89	scaffold_360	B
+g89	scaffold_360	B-A
 g890	scaffold_158	A
 g8900	scaffold_2	A
 g8901	scaffold_2	A
@@ -22518,7 +22518,7 @@ g8997	scaffold_175	A
 g8998	scaffold_175	A
 g8999	scaffold_175	A
 g9	scaffold_93	A
-g90	scaffold_360	B
+g90	scaffold_360	B-A
 g900	scaffold_158	A
 g9000	scaffold_175	A
 g9001	scaffold_175	A
@@ -22629,7 +22629,7 @@ g9096	scaffold_205	A
 g9097	scaffold_205	A
 g9098	scaffold_205	A
 g9099	scaffold_205	A
-g91	scaffold_360	B
+g91	scaffold_360	B-A
 g910	scaffold_828	A
 g9100	scaffold_205	A
 g9101	scaffold_205	A
@@ -22740,7 +22740,7 @@ g9196	scaffold_442	A
 g9197	scaffold_442	A
 g9198	scaffold_178	A
 g9199	scaffold_178	A
-g92	scaffold_360	B
+g92	scaffold_360	B-A
 g920	scaffold_536	A
 g9200	scaffold_178	A
 g9201	scaffold_178	A
@@ -22851,7 +22851,7 @@ g9296	scaffold_58	A
 g9297	scaffold_58	A
 g9298	scaffold_58	A
 g9299	scaffold_58	A
-g93	scaffold_360	B
+g93	scaffold_360	B-A
 g930	scaffold_603	A
 g9300	scaffold_58	A
 g9301	scaffold_58	A
@@ -22962,7 +22962,7 @@ g9396	scaffold_153	A
 g9397	scaffold_153	A
 g9398	scaffold_153	A
 g9399	scaffold_153	A
-g94	scaffold_360	B
+g94	scaffold_360	B-A
 g940	scaffold_875	A
 g9400	scaffold_153	A
 g9401	scaffold_153	A
@@ -23073,7 +23073,7 @@ g9496	scaffold_101	A
 g9497	scaffold_101	A
 g9498	scaffold_101	A
 g9499	scaffold_101	A
-g95	scaffold_360	B
+g95	scaffold_360	B-A
 g950	scaffold_699	A
 g9500	scaffold_101	A
 g9501	scaffold_101	A
@@ -23184,7 +23184,7 @@ g9596	scaffold_1727	A
 g9597	scaffold_1783	A
 g9598	scaffold_1096	A
 g9599	scaffold_287	A
-g96	scaffold_360	B
+g96	scaffold_360	B-A
 g960	scaffold_253	A
 g9600	scaffold_287	A
 g9601	scaffold_287	A
@@ -23295,7 +23295,7 @@ g9696	scaffold_111	A
 g9697	scaffold_111	A
 g9698	scaffold_1362	A
 g9699	scaffold_1362	A
-g97	scaffold_360	B
+g97	scaffold_360	B-A
 g970	scaffold_253	A
 g9700	scaffold_784	A
 g9701	scaffold_784	A
@@ -23406,7 +23406,7 @@ g9796	scaffold_47	A
 g9797	scaffold_47	A
 g9798	scaffold_47	A
 g9799	scaffold_47	A
-g98	scaffold_360	B
+g98	scaffold_360	B-A
 g980	scaffold_253	A
 g9800	scaffold_47	A
 g9801	scaffold_47	A
@@ -23517,7 +23517,7 @@ g9896	scaffold_80	A
 g9897	scaffold_80	A
 g9898	scaffold_80	A
 g9899	scaffold_80	A
-g99	scaffold_360	B
+g99	scaffold_360	B-A
 g990	scaffold_1966	A
 g9900	scaffold_80	A
 g9901	scaffold_80	A

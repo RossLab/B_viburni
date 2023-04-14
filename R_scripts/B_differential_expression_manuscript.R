@@ -1,4 +1,3 @@
-rm(list=ls())
 #if (!requireNamespace("BiocManager", quietly = TRUE))
 #    install.packages("BiocManager")
 #BiocManager::install("edgeR")
@@ -33,7 +32,7 @@ freeze.v0.genes.anno <- read_delim("output/freeze.v0.genes.anno.complete.csv",",
 # scaffolds.preprint.assignment <- read_delim("output/scaffolds.preprint.assignment.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
 scaffolds.final.assignment <- read_delim('output/scaffolds.final.assignment.tsv',"\t", escape_double = FALSE, col_names = T,trim_ws = TRUE)
 
-genes.by.scaffold <- read_delim("output/genes.by.scaffolds.csv",",", escape_double = FALSE, col_names = T,trim_ws = TRUE)
+genes.by.scaffold <- read_delim("output/genes.by.scaffolds.tsv","\t", escape_double = FALSE, col_names = T,trim_ws = TRUE)
 
 
 # count file from all samples
@@ -58,7 +57,7 @@ head(a)
 replicate <- as.factor(c("X04F","X04F","X04F","X04M","X04M","X04M","X13F","X13F","X13F","X13M","X13M","X13M","X13M","X15F","X15F","X15F","X15M","X15M","X15M","X21F","X21F","X21F","X21M","X21M","X21M","X21M"))
 
 #create the DGE object including all count matrix, replicate info and annotations when available
-x <- DGEList(counts=round(a),genes=rownames(a), group = replicate)
+x <- DGEList(counts=round(a), genes=rownames(a), group = replicate)
 head(x)
 
 # filter out low count
@@ -95,22 +94,22 @@ x$samples$norm.factors
 # }
 
 ## Hierarchical clustering
-var_genes <- apply(logcounts, 1, var)
-head(var_genes)
-select_var <- names(sort(var_genes, decreasing=TRUE))[1:1000]
-head(select_var)
-highly_variable_lcpm <- logcounts[select_var,]
-dim(highly_variable_lcpm)
-head(highly_variable_lcpm)
+# var_genes <- apply(logcounts, 1, var)
+# head(var_genes)
+# select_var <- names(sort(var_genes, decreasing=TRUE))[1:1000]
+# head(select_var)
+# highly_variable_lcpm <- logcounts[select_var,]
+# dim(highly_variable_lcpm)
+# head(highly_variable_lcpm)
 
 # plot the heatmap by sex
-
-mypalette <- brewer.pal(11,"RdYlBu")
-morecols <- colorRampPalette(mypalette)
-heatmap.2(highly_variable_lcpm,col=rev(morecols(50)),trace="none", main="Top 1000 most variable genes across samples",ColSideColors=col.sex,scale="row")
-
-# plot the heatmap by B presence
-heatmap.2(highly_variable_lcpm,col=rev(morecols(50)),trace="none", main="Top 1000 most variable genes across samples",ColSideColors=col.B,scale="row")
+#
+# mypalette <- brewer.pal(11,"RdYlBu")
+# morecols <- colorRampPalette(mypalette)
+# heatmap.2(highly_variable_lcpm,col=rev(morecols(50)),trace="none", main="Top 1000 most variable genes across samples",ColSideColors=col.sex,scale="row")
+#
+# # plot the heatmap by B presence
+# heatmap.2(highly_variable_lcpm,col=rev(morecols(50)),trace="none", main="Top 1000 most variable genes across samples",ColSideColors=col.B,scale="row")
 
 ## Model design
 

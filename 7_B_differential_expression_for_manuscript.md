@@ -7,7 +7,7 @@ Here I am going to repeat the voom/limma analysis on 2_Transcriptome with a diff
 
 Number of genes with expression in at least one sample: 21236. 2393 genes with TPM = 0 in all samples (10.1%). NOTE: this percentage might have been misreported before, check the previous markdown files. This is due to an error in the original script -- this is the right one.
 
-The script for the analysis is here: [B_differential_expression_manuscript.R](: )https://github.com/RossLab/B_viburni/blob/master/R_scripts/B_differential_expression_manuscript.R). Hopefully this will be the final version.
+The script for the analysis is here: [B_differential_expression_manuscript.R](R_scripts/B_differential_expression_manuscript.R). Hopefully this will be the final version.
 
 Filtering options:
 

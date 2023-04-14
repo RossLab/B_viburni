@@ -146,7 +146,7 @@ table(viburni_BA_homologs$B_copy)
 nrow(viburni_BA_homologs[viburni_BA_homologs$gene1_asn == 'B' | viburni_BA_homologs$gene2_asn == 'B', ])
 ```
 
-33 / 324 B-linked genes have a paralog within the viburni core genome: 6 / 204 among genes on B scaffolds, and 27 / 120 among genes on Bc scaffolds. Of course, these are homologs between sequences assigned to the core or accessory genomes and the majority of B genes (146) are on a scaffold that is present BOTH in the core genome and B (scaffold_360). Taking this in account the real numbers would be 152 / 204 and 27 / 120 respectivelly.
+33 / 324 B-linked genes have a paralog within the viburni core genome: 6 / 204 among genes on B scaffolds, and 27 / 120 among genes on Bc scaffolds. Of course, these are homologs between sequences assigned to the core or accessory genomes and the majority of B genes (146) are on a scaffold that is present BOTH in the core genome and B (scaffold_360) and moreover 3 more are on scaffold_957, which also is shared between the core and autosomes. Taking this in account the real numbers would be 155 / 204 and 27 / 120 respectivelly.
 
 For 0 / 8 of B and Bc genes we found an orthologs in longispinus and 0 / 2 in solenopsis. For the few that were shared we manually checked that the similarity is always viburni > longispinus > solenopsis.
 
