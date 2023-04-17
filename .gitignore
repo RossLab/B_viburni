@@ -9,3 +9,6 @@ misc/submission_to_ENA
 R_scripts/checking_hic_scaffolding.R
 misc/*.tiff
 misc/*.pdf
+manuscript/figures_revision/
+manuscript/supplementary
+*.tiff
