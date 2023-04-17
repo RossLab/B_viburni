@@ -197,6 +197,12 @@ table(f.tfit$de)
 # merge with annotation
 m.tfit.anno <- left_join(m.tfit, genes.by.scaffold, by="gene")
 f.tfit.anno <- left_join(f.tfit, genes.by.scaffold, by="gene")
+
+table(m.tfit.anno[m.tfit.anno$de == "B+", 'b.status.final'])
+table(m.tfit.anno[m.tfit.anno$de == "B-", 'b.status.final'])
+table(f.tfit.anno[f.tfit.anno$de == "B+", 'b.status.final'])
+table(f.tfit.anno[f.tfit.anno$de == "B-", 'b.status.final'])
+
 m.tfit.anno <- left_join(m.tfit.anno, freeze.v0.genes.anno, by="gene")
 f.tfit.anno <- left_join(f.tfit.anno, freeze.v0.genes.anno, by="gene")
 m.tfit.anno.de <- m.tfit.anno[m.tfit.anno$de != "NS",]
