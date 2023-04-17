@@ -134,7 +134,10 @@ fit1 <- lmFit(v1)
 colnames(design1)
 
 # I only want transcripts differentially expressed in male B samples.
-cont.matrix1 <- makeContrasts(MB.vs.MnoB = group1MB - group1MnoB, MB.vs.FB = group1MB - group1FB, MB.vs.FnoB = group1MB - group1FnoB, FB.vs.FnoB = group1FB - group1FnoB, levels=design1)
+cont.matrix1 <- makeContrasts(MB.vs.MnoB = group1MB - group1MnoB,
+                              MB.vs.FB = group1MB - group1FB,
+                              MB.vs.FnoB = group1MB - group1FnoB,
+                              FB.vs.FnoB = group1FB - group1FnoB, levels=design1)
 cont.matrix1
 
 fit.cont1 <- contrasts.fit(fit1, cont.matrix1)
@@ -225,6 +228,7 @@ with(f.tfit.anno.de, table(b.status.final, anno, de))
 
 # extracting and examined DE that are differentially expressed in B males compared to the other groups
 
+# this is what defines MALES vs ALL
 over.bm <- which(dt[,1]==1 & dt[,2]==1 &dt[,3]==1)
 under.bm <- which(dt[,1]==-1 & dt[,2]==-1 &dt[,3]==-1)
 length(under.bm)
@@ -319,7 +323,7 @@ length(f_genes)
 
 # run hypergeometric test in M and collect results
 
-Get_GO_params_all <- function(genes_of_i,universe,pvalue_cut){
+Get_GO_params_all <- function(genes_of_i, universe, pvalue_cut, gene_set){
   onto_terms <- c("BP","CC","MF")
   directions <- c("over","under")
   param_list <- list()
@@ -330,7 +334,7 @@ Get_GO_params_all <- function(genes_of_i,universe,pvalue_cut){
       parameters <- GSEAGOHyperGParams(name="Hygeo params",
                                        geneSetCollection = gsc,
                                        universeGeneIds = universe,
-                                       geneIds = m_genes,
+                                       geneIds = gene_set,
                                        ontology = paste(onto_terms[i]),
                                        pvalueCutoff = pvalue_cut,
                                        conditional = T,testDirection = paste(directions[j]))
@@ -341,20 +345,9 @@ Get_GO_params_all <- function(genes_of_i,universe,pvalue_cut){
   return(param_list)
 }
 
-param_list <- Get_GO_params_all(genes_of_i = DE_Genes_A,universe = universe,
-                                pvalue_cut = 0.01)
-
-Hyper_G_test <- function(param_list){
-  Hyper_G_list <- list()
-  for(i in 1:length(param_list)){
-    res <- hyperGTest(param_list[[i]])
-    Hyper_G_list <- c(Hyper_G_list,res)
-  }
-  names(Hyper_G_list) <- names(param_list)
-  return(Hyper_G_list)
-}
-
-GO_enrichment.M <- Hyper_G_test(param_list = param_list)
+param_list_m <- Get_GO_params_all(genes_of_i = DE_Genes_A,universe = universe,
+                                pvalue_cut = 0.01, m_genes)
+GO_enrichment.M <- lapply(param_list_m, hyperGTest)
 
 Result.BP.M <- summary(GO_enrichment.M[["BP_over"]])
 Result.CC.M <- summary(GO_enrichment.M[["CC_over"]])
@@ -371,42 +364,9 @@ GO.enriched.M <- rbind(Result.BP.M,Result.CC.M,Result.MF.M)
 
 # run hypergeometric test in F and collect results
 
-Get_GO_params_all <- function(genes_of_i,universe,pvalue_cut){
-  onto_terms <- c("BP","CC","MF")
-  directions <- c("over","under")
-  param_list <- list()
-  name_1 <- list()
-  for(i in 1:3){
-    for(j in 1:2){
-      name_1 <- c(name_1,paste(onto_terms[i],directions[j],sep = "_"))
-      parameters <- GSEAGOHyperGParams(name="Hygeo params",
-                                       geneSetCollection = gsc,
-                                       universeGeneIds = universe,
-                                       geneIds = f_genes,
-                                       ontology = paste(onto_terms[i]),
-                                       pvalueCutoff = pvalue_cut,
-                                       conditional = T,testDirection = paste(directions[j]))
-      param_list <- c(param_list,parameters)
-    }
-  }
-  names(param_list) <- name_1
-  return(param_list)
-}
-
-param_list <- Get_GO_params_all(genes_of_i = DE_Genes_A,universe = universe,
-                                pvalue_cut = 0.01)
-
-Hyper_G_test <- function(param_list){
-  Hyper_G_list <- list()
-  for(i in 1:length(param_list)){
-    res <- hyperGTest(param_list[[i]])
-    Hyper_G_list <- c(Hyper_G_list,res)
-  }
-  names(Hyper_G_list) <- names(param_list)
-  return(Hyper_G_list)
-}
-
-GO_enrichment.F <- Hyper_G_test(param_list = param_list)
+param_list_f <- Get_GO_params_all(genes_of_i = DE_Genes_A,universe = universe,
+                                pvalue_cut = 0.01, f_genes)
+GO_enrichment.F <- lapply(param_list_f, hyperGTest)
 
 Result.BP.F <- summary(GO_enrichment.F[["BP_over"]])
 Result.CC.F <- summary(GO_enrichment.F[["CC_over"]])

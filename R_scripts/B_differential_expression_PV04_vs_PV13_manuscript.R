@@ -52,6 +52,8 @@ replicate <- as.factor(c("X04F","X04F","X04F","X04M","X04M","X04M","X13F","X13F"
 x <- DGEList(counts=round(a), genes=rownames(a), group = replicate)
 head(x)
 
+unfilt_logcounts <- cpm(x, log=TRUE)
+
 # rowSums(x$counts==0) # for each sample where the count is 0, then sums the samples that have counts = 0 for a gene
 table(rowSums(x$counts==0) == 13) #number of genes that have all samples with 0 counts
 proportion_0_count <- 2871 * 100 / nrow(x)
@@ -66,6 +68,8 @@ dim(x1)
 x <- x1
 
 x <- calcNormFactors(x, method = "TMM")
+logcounts <- cpm(x, log=TRUE)
+
 x$samples$norm.factors
 
 # define groups by sex and B presence or absence
@@ -150,6 +154,8 @@ F04.vs.F13.plot.ns <- F04.vs.F13.plot[F04.vs.F13.plot$de == "NS",]
 
 M04.vs.M13.plot.b1.de <- M04.vs.M13.plot[M04.vs.M13.plot$b.status.final == "B" & M04.vs.M13.plot$de != "NS",]
 M04.vs.M13.plot.b1.ns <- M04.vs.M13.plot[M04.vs.M13.plot$b.status.final == "B" & M04.vs.M13.plot$de == "NS",]
+M04.vs.M13.plot.Bc.de <- M04.vs.M13.plot[M04.vs.M13.plot$b.status.final == "Bc" & M04.vs.M13.plot$de != "NS",]
+M04.vs.M13.plot.Bc.ns <- M04.vs.M13.plot[M04.vs.M13.plot$b.status.final == "Bc" & M04.vs.M13.plot$de == "NS",]
 M04.vs.M13.plot.BA.de <- M04.vs.M13.plot[M04.vs.M13.plot$b.status.final == "B-A" & M04.vs.M13.plot$de != "NS",]
 M04.vs.M13.plot.BA.ns <- M04.vs.M13.plot[M04.vs.M13.plot$b.status.final == "B-A" & M04.vs.M13.plot$de == "NS",]
 M04.vs.M13.plot <- M04.vs.M13.plot[M04.vs.M13.plot$b.status.final != "B",]
@@ -162,8 +168,8 @@ p1 <- ggplot() +
   geom_point(data=F04.vs.F13.plot.de, aes(x = logFC, y = AveExpr,shape=de),fill="#c2b8b8",colour="gray60") +
   geom_point(data=F04.vs.F13.plot.BA.ns, aes(x = logFC, y = AveExpr),fill="lightpink2",colour="lightpink2") +
   geom_point(data=F04.vs.F13.plot.BA.de, aes(x = logFC, y = AveExpr,shape=de,colour=de),fill="lightpink2",colour="lightpink2") +
-	# geom_point(data=F04.vs.F13.plot.Bc.ns, aes(x = logFC, y = AveExpr),fill="deepskyblue",colour="deepskyblue") +
-	# geom_point(data=F04.vs.F13.plot.Bc.de, aes(x = logFC, y = AveExpr,shape=de,colour=de),fill="deepskyblue",colour="deepskyblue") +
+	geom_point(data=F04.vs.F13.plot.Bc.ns, aes(x = logFC, y = AveExpr),fill="deepskyblue",colour="deepskyblue") +
+	geom_point(data=F04.vs.F13.plot.Bc.de, aes(x = logFC, y = AveExpr,shape=de,colour=de),fill="deepskyblue",colour="deepskyblue") +
 	geom_point(data=F04.vs.F13.plot.b1.ns, aes(x = logFC, y = AveExpr),fill="royalblue4",colour="royalblue4") +
 	geom_point(data=F04.vs.F13.plot.b1.de, aes(x = logFC, y = AveExpr,shape=de,colour=de),fill="royalblue4",colour="royalblue4") +
   scale_shape_manual(name="Expression",values=c(25,24)) +
@@ -179,6 +185,8 @@ p2 <- ggplot() +
   geom_point(data=M04.vs.M13.plot.de, aes(x = logFC, y = AveExpr,shape=de),fill="#b8bac2",colour="gray60") +
 	geom_point(data=M04.vs.M13.plot.BA.ns, aes(x = logFC, y = AveExpr),fill="lightpink2",colour="lightpink2") +
 	geom_point(data=M04.vs.M13.plot.BA.de, aes(x = logFC, y = AveExpr,shape=de,colour=de),fill="lightpink2",colour="lightpink2") +
+  geom_point(data=M04.vs.M13.plot.Bc.ns, aes(x = logFC, y = AveExpr),fill="deepskyblue",colour="deepskyblue") +
+  geom_point(data=M04.vs.M13.plot.Bc.de, aes(x = logFC, y = AveExpr,shape=de,colour=de),fill="deepskyblue",colour="deepskyblue") +
   geom_point(data=M04.vs.M13.plot.b1.ns, aes(x = logFC, y = AveExpr),fill="royalblue4",colour="royalblue4") +
   geom_point(data=M04.vs.M13.plot.b1.de, aes(x = logFC, y = AveExpr,shape=de,colour=de),fill="royalblue4",colour="royalblue4") +
   scale_shape_manual(name="Expression",values=c(25,24)) +
@@ -196,4 +204,50 @@ tiff("manuscript/figures_revision/fig6a_expression_PV04_vs_PV13_males.tiff", wid
     p2
 dev.off()
 
-#########################
+######################### expression barplots
+
+X13F_cpm <- rowMeans(logcounts[, c("X13F_1", "X13F_2", "X13F_3")])
+X13M_cpm <- rowMeans(logcounts[, c("X13M_1", "X13M_2", "X13M_3", "X13M_4")])
+X04F_cpm <- rowMeans(logcounts[, c("X04F_1","X04F_2","X04F_3")])
+X04M_cpm <- rowMeans(logcounts[, c("X04M_1", "X04M_2", "X04M_3")])
+
+cpms <- data.frame(gene = names(X13F_cpm), X13F_cpm = X13F_cpm, X13M_cpm = X13M_cpm, X04F_cpm = X04F_cpm, X04M_cpm = X04M_cpm)
+cpms <- left_join(cpms, genes.by.scaffold[, c('gene', 'b.status.final')], by="gene")
+
+
+unfilt_logcounts_df <- data.frame(gene = rownames(unfilt_logcounts), cmp_means = rowMeans(unfilt_logcounts), cpm_max = apply(unfilt_logcounts, 1, max))
+unfilt_logcounts_df <- left_join(unfilt_logcounts_df, genes.by.scaffold[, c('gene', 'b.status.final')], by="gene")
+
+unfilt_logcounts_df[unfilt_logcounts_df$b.status.final == "B" & unfilt_logcounts_df$cpm_max > 0, ]
+# g13953, g20085, g2644
+
+# unfilt_logcounts_df[unfilt_logcounts_df$gene %in% c('g13953', 'g1208', 'g5582', 'g9061', 'g9062'), ]
+
+BA_col = "lightpink2"
+B_col = "royalblue4"
+Bc_col = "deepskyblue"
+
+pdf('output/cpm_expression_PV13_PV04_per_sex.pdf', width = 14, height = 6)
+
+plot(NULL, xlim = c(0, 4), ylim = c(-5, 14), xlab = '', ylab = 'Expression (log2 counts per million)')
+boxplot(cpms[cpms$b.status.final == 'A', 'X13F_cpm'], at = 0.15, add = T, boxwex = 0.3)
+boxplot(cpms[cpms$b.status.final == 'A', 'X04F_cpm'], at = 0.35, add = T, boxwex = 0.3)
+boxplot(cpms[cpms$b.status.final == 'A', 'X13M_cpm'], at = 0.65, add = T, boxwex = 0.3)
+boxplot(cpms[cpms$b.status.final == 'A', 'X04M_cpm'], at = 0.85, add = T, boxwex = 0.3)
+
+boxplot(cpms[cpms$b.status.final == 'B-A', 'X13F_cpm'], at = 1.15, add = T, col = BA_col, boxwex = 0.3)
+boxplot(cpms[cpms$b.status.final == 'B-A', 'X04F_cpm'], at = 1.35, add = T, col = BA_col, boxwex = 0.3)
+boxplot(cpms[cpms$b.status.final == 'B-A', 'X13M_cpm'], at = 1.65, add = T, col = BA_col, boxwex = 0.3)
+boxplot(cpms[cpms$b.status.final == 'B-A', 'X04M_cpm'], at = 1.85, add = T, col = BA_col, boxwex = 0.3)
+
+boxplot(cpms[cpms$b.status.final == 'B', 'X13F_cpm'], at = 2.15, add = T, col = B_col, boxwex = 0.3)
+boxplot(cpms[cpms$b.status.final == 'B', 'X04F_cpm'], at = 2.35, add = T, col = B_col, boxwex = 0.3)
+boxplot(cpms[cpms$b.status.final == 'B', 'X13M_cpm'], at = 2.65, add = T, col = B_col, boxwex = 0.3)
+boxplot(cpms[cpms$b.status.final == 'B', 'X04M_cpm'], at = 2.85, add = T, col = B_col, boxwex = 0.3)
+
+boxplot(cpms[cpms$b.status.final == 'Bc', 'X13F_cpm'], at = 3.15, add = T, col = Bc_col, boxwex = 0.3)
+boxplot(cpms[cpms$b.status.final == 'Bc', 'X04F_cpm'], at = 3.35, add = T, col = Bc_col, boxwex = 0.3)
+boxplot(cpms[cpms$b.status.final == 'Bc', 'X13M_cpm'], at = 3.65, add = T, col = Bc_col, boxwex = 0.3)
+boxplot(cpms[cpms$b.status.final == 'Bc', 'X04M_cpm'], at = 3.85, add = T, col = Bc_col, boxwex = 0.3)
+#
+dev.off()

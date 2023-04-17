@@ -18,7 +18,6 @@ freeze.v0.genes.anno <- read_delim("output/freeze.v0.genes.anno.complete.csv",",
 
 # Assignments
 genes.by.scaffold <- read.table("output/genes.by.scaffolds.tsv", sep = "\t", header = T)
-genes.by.scaffold[genes.by.scaffold$seq %in% c("scaffold_360", "scaffold_957"), 'b.status.final'] <- 'B-A'
 # genes.by.scaffold$b.status.final <- factor(genes.by.scaffold$b.status.final, levels = c('A', 'B-A', 'B', 'Bc'))
 # gene           seq b.status.final
 # 1     g1 scaffold_1617              A
