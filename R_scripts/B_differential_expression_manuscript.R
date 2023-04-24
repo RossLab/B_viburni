@@ -1,24 +1,26 @@
 #if (!requireNamespace("BiocManager", quietly = TRUE))
 #    install.packages("BiocManager")
 #BiocManager::install("edgeR")
-rm(list=ls())
+# rm(list=ls())
 library(edgeR)
-library(methods)
+# library(methods)
 library(dplyr)
-library(tidyverse)
+# library(tidyverse)
+library(readr)
 library(limma)
-#BiocManager::install("Glimma")
-library(Glimma)
-library(gplots)
-#BiocManager::install("org.Mm.eg.db")
-library(org.Mm.eg.db)
-library(RColorBrewer)
-#BiocManager::install("GOstats")
+# #BiocManager::install("Glimma")
+# library(Glimma)
+# library(gplots)
+# #BiocManager::install("org.Mm.eg.db")
+# library(org.Mm.eg.db)
+# library(RColorBrewer)
+# #BiocManager::install("GOstats")
 library(GOstats)
 library(GSEABase)
-#BiocManager::install("treemap")
-library(treemap)
-library(patchwork)
+# #BiocManager::install("treemap")
+# library(treemap)
+# library(patchwork)
+
 
 B_col = "royalblue4"
 B_c_col = "deepskyblue"
@@ -198,10 +200,19 @@ table(f.tfit$de)
 m.tfit.anno <- left_join(m.tfit, genes.by.scaffold, by="gene")
 f.tfit.anno <- left_join(f.tfit, genes.by.scaffold, by="gene")
 
-table(m.tfit.anno[m.tfit.anno$de == "B+", 'b.status.final'])
-table(m.tfit.anno[m.tfit.anno$de == "B-", 'b.status.final'])
-table(f.tfit.anno[f.tfit.anno$de == "B+", 'b.status.final'])
-table(f.tfit.anno[f.tfit.anno$de == "B-", 'b.status.final'])
+table(m.tfit.anno$de, m.tfit.anno$b.status.final)
+table(f.tfit.anno$de, f.tfit.anno$b.status.final)
+
+# > table(m.tfit.anno$de, m.tfit.anno$b.status.final)  
+#          A     B   B-A    Bc
+#   B+   289     2     1    10
+#   B-   137     0     0     2
+#   NS 17428     3   139    55
+# > table(f.tfit.anno$de, f.tfit.anno$b.status.final)
+#          A     B   B-A    Bc
+#   B+   217     1     0    11
+#   B-   179     0     0     2
+#   NS 17458     4   140    54
 
 m.tfit.anno <- left_join(m.tfit.anno, freeze.v0.genes.anno, by="gene")
 f.tfit.anno <- left_join(f.tfit.anno, freeze.v0.genes.anno, by="gene")

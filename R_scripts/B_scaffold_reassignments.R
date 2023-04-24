@@ -44,6 +44,7 @@ assignment_changes_table <- table(assignments$assignment_changes)
 assignment_change_size <- sapply(names(assignment_changes_table), function(x){ round(sum(assignments[assignments$assignment_changes == x, 'length']) / 1e6, 2) } )
 data.frame(change = names(assignment_changes_table), number_of_scaffolds = as.vector(assignment_changes_table), length = as.vector(assignment_change_size))
 
+# assignments <- read.table('output/scaffolds.final.assignment.tsv', sep = '\t', header = T)
 sapply(c('A', 'B1', 'B2', 'B3'), function(x){ round(sum(assignments[assignments$b.status.old.final == x, 'length']) / 1e6, 2) } )
 sapply(c('A', 'B', 'Bc'), function(x){ round(sum(assignments[assignments$b.status.final == x, 'length']) / 1e6, 2) } )
 

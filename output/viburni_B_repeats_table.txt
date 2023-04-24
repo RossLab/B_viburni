@@ -1,0 +1,59 @@
+==================================================
+file name: t_633558964c526.fna      
+sequences:            78
+total length:    1429993 bp  (1429993 bp excl N/X-runs)
+GC level:         35.82 %
+bases masked:     887634 bp ( 62.07 %)
+==================================================
+               number of      length   percentage
+               elements*    occupied  of sequence
+--------------------------------------------------
+Retroelements           57        50790 bp    3.55 %
+   SINEs:                1          130 bp    0.01 %
+   Penelope              0            0 bp    0.00 %
+   LINEs:                9         5610 bp    0.39 %
+    CRE/SLACS            0            0 bp    0.00 %
+     L2/CR1/Rex          1          687 bp    0.05 %
+     R1/LOA/Jockey       5         1522 bp    0.11 %
+     R2/R4/NeSL          2         2501 bp    0.17 %
+     RTE/Bov-B           1          900 bp    0.06 %
+     L1/CIN4             0            0 bp    0.00 %
+   LTR elements:        47        45050 bp    3.15 %
+     BEL/Pao             2         1384 bp    0.10 %
+     Ty1/Copia           4         4571 bp    0.32 %
+     Gypsy/DIRS1        32        30370 bp    2.12 %
+       Retroviral        1           88 bp    0.01 %
+
+DNA transposons         55        15530 bp    1.09 %
+   hobo-Activator       11         3017 bp    0.21 %
+   Tc1-IS630-Pogo        2          555 bp    0.04 %
+   En-Spm                0            0 bp    0.00 %
+   MuDR-IS905            0            0 bp    0.00 %
+   PiggyBac              2          403 bp    0.03 %
+   Tourist/Harbinger     4          323 bp    0.02 %
+   Other (Mirage,        0            0 bp    0.00 %
+    P-element, Transib)
+
+Rolling-circles          2          388 bp    0.03 %
+
+Unclassified:          784       794396 bp   55.55 %
+
+Total interspersed repeats:      860716 bp   60.19 %
+
+
+Small RNA:               0            0 bp    0.00 %
+
+Satellites:              3         2574 bp    0.18 %
+Simple repeats:        428        22357 bp    1.56 %
+Low complexity:         33         1599 bp    0.11 %
+==================================================
+
+* most repeats fragmented by insertions or deletions
+  have been counted as one element
+                                                      
+
+RepeatMasker version 4.1.1 , sensitive mode
+                                      
+run with rmblastn version 2.10.0+
+The query was compared to classified sequences in ".../db_PV_repeatmodeler-families_Hemiptera.Repbase.2020.combined.fasta"
+
